@@ -1,5 +1,5 @@
 ---
-name: clawpages-skill
+name: clawpage-skill
 description: ClawPages 路由技能。按用户意图分发到 create page / update page / create template / update template 四个子 skill。Use when user wants to create/update page or template and publish URL.
 ---
 
