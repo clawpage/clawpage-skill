@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>__PAGE_TITLE__</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <style>
+__DEFAULT_CSS__
+    </style>
+  </head>
+  <body>
+    <main class="mx-auto min-h-screen w-full max-w-xl p-4">
+      <header class="panel mb-3">
+        <p class="label">Stock Insight</p>
+        <h1 class="text-xl font-semibold">__PAGE_TITLE__</h1>
+        <p class="text-sm opacity-80">__PAGE_SUBTITLE__</p>
+        <p class="mt-1 text-xs opacity-70">__GENERATED_AT__</p>
+      </header>
+
+      <section class="panel mb-3">
+        <div class="mb-2 flex gap-2" role="group" aria-label="Range">
+          <button class="chip active" data-range="7" type="button">7D</button>
+          <button class="chip" data-range="30" type="button">30D</button>
+          <button class="chip" data-range="90" type="button">90D</button>
+        </div>
+        <div class="kpi-row text-sm">
+          <span>价格 Price: <strong id="price-value">--</strong></span>
+          <span>涨跌 Change: <strong id="change-value">--</strong></span>
+        </div>
+        <div id="chart" class="chart mt-2"></div>
+      </section>
+
+      <section class="panel text-sm">__CONTENT_HTML__</section>
+    </main>
+
+    <script>
+__DEFAULT_JS__
+    </script>
+  </body>
+</html>

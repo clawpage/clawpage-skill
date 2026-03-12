@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>__PAGE_TITLE__</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+__DEFAULT_CSS__
+    </style>
+  </head>
+  <body>
+    <main class="mx-auto min-h-screen w-full max-w-xl p-4">
+      <header class="panel mb-3">
+        <p class="label">Insight Hub</p>
+        <h1 class="text-xl font-semibold">__PAGE_TITLE__</h1>
+        <p class="text-sm text-slate-600">__PAGE_SUBTITLE__</p>
+        <p class="mt-1 text-xs text-slate-500">__GENERATED_AT__</p>
+      </header>
+
+      <section class="panel mb-3">
+        <input id="search-input" class="field mb-2" type="search" placeholder="搜索关键词 Search" />
+        <div class="flex flex-wrap gap-2">
+          <button class="chip active" data-tag="all" type="button">全部 All</button>
+          <button class="chip" data-tag="product" type="button">产品 Product</button>
+          <button class="chip" data-tag="growth" type="button">增长 Growth</button>
+          <button class="chip" data-tag="ops" type="button">运营 Ops</button>
+        </div>
+      </section>
+
+      <section id="card-list" class="grid gap-2"></section>
+
+      <section class="panel mt-3 text-sm">__CONTENT_HTML__</section>
+    </main>
+
+    <script>
+__DEFAULT_JS__
+    </script>
+  </body>
+</html>

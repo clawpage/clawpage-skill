@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  background: #020617;
+  color: #e2e8f0;
+  font-family: "ui-sans-serif", "system-ui", sans-serif;
+}
+
+.panel {
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  background: #0b1220;
+  padding: 14px;
+}
+
+.label {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #93c5fd;
+}
+
+.kpi-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chart {
+  height: 240px;
+  width: 100%;
+}
+
+.chip {
+  border: 1px solid #334155;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #111827;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.chip.active {
+  border-color: #38bdf8;
+  color: #e0f2fe;
+}

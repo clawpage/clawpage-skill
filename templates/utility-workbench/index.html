@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>__PAGE_TITLE__</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+__DEFAULT_CSS__
+    </style>
+  </head>
+  <body>
+    <main class="mx-auto min-h-screen w-full max-w-lg p-4">
+      <header class="panel mb-3">
+        <p class="label">Utility Tool</p>
+        <h1 class="text-xl font-semibold">__PAGE_TITLE__</h1>
+        <p class="text-sm text-slate-600">__PAGE_SUBTITLE__</p>
+        <p class="mt-1 text-xs text-slate-500">__GENERATED_AT__</p>
+      </header>
+
+      <section class="panel mb-3">
+        <label class="label" for="input-text">输入 Input</label>
+        <textarea id="input-text" rows="5" placeholder="Paste text..." class="field"></textarea>
+
+        <label class="label mt-3" for="mode">模式 Mode</label>
+        <select id="mode" class="field">
+          <option value="trim">去空格 Trim</option>
+          <option value="upper">大写 Uppercase</option>
+          <option value="lower">小写 Lowercase</option>
+          <option value="count">统计 Count</option>
+        </select>
+
+        <div class="mt-3 flex gap-2">
+          <button id="run-btn" class="btn flex-1" type="button">执行 Run</button>
+          <button id="copy-btn" class="btn-secondary flex-1" type="button">复制 Copy</button>
+        </div>
+      </section>
+
+      <section class="panel mb-3">
+        <p class="label">输出 Output</p>
+        <pre id="output" class="output"></pre>
+      </section>
+
+      <section class="panel text-sm">__CONTENT_HTML__</section>
+    </main>
+
+    <script>
+__DEFAULT_JS__
+    </script>
+  </body>
+</html>

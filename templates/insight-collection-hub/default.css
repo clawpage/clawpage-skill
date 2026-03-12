@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  background: #f1f5f9;
+  color: #0f172a;
+  font-family: "ui-sans-serif", "system-ui", sans-serif;
+}
+
+.panel,
+.card {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+}
+
+.label {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.field {
+  width: 100%;
+  border: 1px solid #94a3b8;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font: inherit;
+}
+
+.chip {
+  border: 1px solid #94a3b8;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  background: #fff;
+}
+
+.chip.active {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+}
+
+.card h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.card p {
+  margin: 0;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.5;
+}

@@ -1,0 +1,26 @@
+# Secrets
+keys.local.json
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Generated local pages (keep folder in repo)
+.pages/*
+!.pages/.gitkeep
+
+# Node/runtime artifacts
+node_modules/
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS/editor artifacts
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo

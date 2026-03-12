@@ -1,0 +1,47 @@
+:root {
+  --bg: #0f172a;
+  --card: #111827;
+  --line: #334155;
+  --text: #e2e8f0;
+  --accent: #22d3ee;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #1e293b, var(--bg) 40%);
+  color: var(--text);
+  font-family: "ui-sans-serif", "system-ui", sans-serif;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 88%, #000 12%);
+  padding: 14px;
+}
+
+.tap-btn,
+.action-btn {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 600;
+  background: #0b1220;
+  color: var(--text);
+}
+
+.tap-btn {
+  background: linear-gradient(135deg, #0891b2, #155e75);
+  border-color: #22d3ee;
+  min-height: 96px;
+  font-size: 24px;
+}
+
+.tap-btn:disabled {
+  opacity: 0.45;
+}
+
+.content {
+  min-height: 56px;
+  line-height: 1.6;
+}
