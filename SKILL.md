@@ -1,13 +1,13 @@
 ---
 name: clawpage-skill
-description: ClawPages router skill that dispatches to create page / update page / create template / update template workflows. Use when a user wants to build, revise, or publish a ClawPages web page/template and get a URL.
+description: Clawpage router skill that dispatches to create page / update page / create template / update template workflows. Use when a user wants to build, revise, or publish a Clawpage web page/template and get a URL.
 ---
 
-# ClawPages Skill (Router)
+# Clawpage Skill (Router)
 
 ## When to use
 
-- User wants a new ClawPages web page
+- User wants a new Clawpage web page
 - User wants to revise an existing page
 - User wants a new template or template update
 - User wants publish output with URL / pageId / expiry / access-code status
@@ -78,7 +78,7 @@ Save token to `keys.local.json`:
 
 ```json
 {
-  "clawpages": {
+  "clawpage": {
     "token": "sk_replace_me",
     "apiHost": "https://api.clawpage.ai"
   }

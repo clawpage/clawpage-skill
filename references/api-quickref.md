@@ -1,4 +1,4 @@
-# ClawPages API Quick Reference
+# Clawpage API Quick Reference
 
 ## 1. Request prerequisites
 

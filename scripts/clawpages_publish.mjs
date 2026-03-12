@@ -229,13 +229,18 @@ function loadKeys(filePath) {
   }
   const obj = JSON.parse(fs.readFileSync(filePath, "utf8"));
   const token =
+    obj?.clawpage?.token ??
     obj?.clawpages?.token ??
     obj?.token ??
+    obj?.clawpageToken ??
+    obj?.clawpage_api_token ??
     obj?.clawpagesToken ??
     obj?.clawpages_api_token;
   const apiHost =
+    obj?.clawpage?.apiHost ??
     obj?.clawpages?.apiHost ??
     obj?.apiHost ??
+    obj?.clawpageApiHost ??
     obj?.clawpagesApiHost ??
     DEFAULT_API_HOST;
 
@@ -505,6 +510,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(`[clawpages] ${err.message}`);
+  console.error(`[clawpage] ${err.message}`);
   process.exit(1);
 });

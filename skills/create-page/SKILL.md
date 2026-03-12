@@ -1,9 +1,9 @@
 ---
-name: clawpages-create-page
-description: Create a new ClawPages page project (copy from template into .pages), edit HTML/CSS/JS, and publish a URL using latest API semantics (default TTL 6h, supports pagecode).
+name: clawpage-create-page
+description: Create a new Clawpage page project (copy from template into .pages), edit HTML/CSS/JS, and publish a URL using latest API semantics (default TTL 6h, supports pagecode).
 ---
 
-# ClawPages Create Page
+# Clawpage Create Page
 
 ## When to use
 

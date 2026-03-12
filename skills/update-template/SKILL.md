@@ -1,9 +1,9 @@
 ---
-name: clawpages-update-template
-description: Update an existing ClawPages template (structure/style/interaction/docs) while keeping metadata-first selection and publish compatibility.
+name: clawpage-update-template
+description: Update an existing Clawpage template (structure/style/interaction/docs) while keeping metadata-first selection and publish compatibility.
 ---
 
-# ClawPages Update Template
+# Clawpage Update Template
 
 ## When to use
 

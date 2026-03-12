@@ -1,9 +1,9 @@
 ---
-name: clawpages-create-template
-description: Create a new ClawPages template (index.html/default.css/default.js/index.md) that is reusable in page projects and compatible with publish bundling.
+name: clawpage-create-template
+description: Create a new Clawpage template (index.html/default.css/default.js/index.md) that is reusable in page projects and compatible with publish bundling.
 ---
 
-# ClawPages Create Template
+# Clawpage Create Template
 
 ## When to use
 

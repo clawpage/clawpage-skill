@@ -1,9 +1,9 @@
 ---
-name: clawpages-update-page
+name: clawpage-update-page
 description: Update an existing .pages project, quickly match targets via index.md metadata first, then publish updates with optional TTL/pagecode changes.
 ---
 
-# ClawPages Update Page
+# Clawpage Update Page
 
 ## When to use
 

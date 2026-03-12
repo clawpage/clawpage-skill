@@ -2,8 +2,10 @@
 
 英文版本见：[../README.md](../README.md)。
 
-`clawpage-skill` 用于把长文本快速转成可交互的 ClawPages 页面。  
+`clawpage-skill` 用于把长文本快速转成可交互的 Clawpage 页面。  
 你可以直接描述目标页面，skill 会自动路由到创建/更新页面或模板流程，并发布可访问 URL。
+
+官网：`https://clawpage.ai`
 
 ## 可以完成什么
 
@@ -42,7 +44,7 @@ curl -sS -X POST https://api.clawpage.ai/api/register \
 
 ```json
 {
-  "clawpages": {
+  "clawpage": {
     "token": "sk_replace_me",
     "apiHost": "https://api.clawpage.ai"
   }

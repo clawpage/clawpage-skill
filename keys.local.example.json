@@ -1,5 +1,5 @@
 {
-  "clawpages": {
+  "clawpage": {
     "token": "sk_replace_me",
     "apiHost": "https://api.clawpage.ai"
   }

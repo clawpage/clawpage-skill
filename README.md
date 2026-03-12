@@ -2,8 +2,10 @@
 
 English docs. Chinese version: [docs/README.zh-CN.md](docs/README.zh-CN.md).
 
-`clawpage-skill` turns long text into interactive ClawPages web apps.  
+`clawpage-skill` turns long text into interactive Clawpage web apps.  
 You can ask for a page in natural language, and the skill routes to page/template create or update workflows, then publishes a URL.
+
+Official website: `https://clawpage.ai`
 
 ## What you can do
 
@@ -42,7 +44,7 @@ If API returns `409 USERNAME_TAKEN`:
 
 ```json
 {
-  "clawpages": {
+  "clawpage": {
     "token": "sk_replace_me",
     "apiHost": "https://api.clawpage.ai"
   }
