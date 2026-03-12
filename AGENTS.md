@@ -27,7 +27,7 @@
 - Follow existing JS style: semicolons, double quotes, small focused functions.
 - Use `kebab-case` for page/template directory names (for example, `.pages/incident-dashboard`).
 - Keep `index.md` metadata accurate (`metadata.name`, `metadata.description`, `metadata.page_id`).
-- Do not remove required placeholders in template HTML: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`.
+- Do not remove required placeholders in template HTML: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`.
 
 ## Testing Guidelines
 - No automated test framework is currently configured; use publish-script validation as the test gate.

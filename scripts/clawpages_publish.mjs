@@ -47,6 +47,19 @@ function computeExpiryIso(nowMs, ttlMs) {
   return null;
 }
 
+function formatExpiryText({ isUpdate, ttlProvided, ttlMsApplied, nowMs }) {
+  if (isUpdate && !ttlProvided) {
+    return "沿用当前页面设置（本次未修改）";
+  }
+  if (ttlMsApplied === null) {
+    return "永久有效";
+  }
+  if (typeof ttlMsApplied === "number" && Number.isFinite(ttlMsApplied)) {
+    return new Date(nowMs + ttlMsApplied).toLocaleString("zh-CN", { hour12: false });
+  }
+  return "未知";
+}
+
 function escapeHtml(input) {
   return input
     .replace(/&/g, "&amp;")
@@ -233,11 +246,12 @@ function loadKeys(filePath) {
   return { token, apiHost };
 }
 
-function renderHtml({ template, title, subtitle, generatedAt, contentHtml }) {
+function renderHtml({ template, title, subtitle, generatedAt, expiresAt, contentHtml }) {
   return template
     .replaceAll("__PAGE_TITLE__", escapeHtml(title))
     .replaceAll("__PAGE_SUBTITLE__", escapeHtml(subtitle))
     .replaceAll("__GENERATED_AT__", escapeHtml(generatedAt))
+    .replaceAll("__EXPIRES_AT__", escapeHtml(expiresAt))
     .replaceAll("__CONTENT_HTML__", contentHtml);
 }
 
@@ -255,7 +269,7 @@ function bundleTemplate(templateDir) {
     .replaceAll("__DEFAULT_JS__", js);
 }
 
-function bundlePageProject({ pageDir, title, subtitle, generatedAt }) {
+function bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt }) {
   const indexPath = path.join(pageDir, "index.html");
   const cssPath = path.join(pageDir, "default.css");
   const jsPath = path.join(pageDir, "default.js");
@@ -296,6 +310,7 @@ function bundlePageProject({ pageDir, title, subtitle, generatedAt }) {
     title,
     subtitle,
     generatedAt,
+    expiresAt,
     contentHtml: "",
   });
 }
@@ -396,10 +411,20 @@ async function main() {
   const title = String(args.title || defaultTitle);
   const subtitle = String(args.subtitle || "结构化阅读版本");
   const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
+  const pageId = args["page-id"] ? String(args["page-id"]) : "";
+  const isUpdate = Boolean(pageId);
+  const ttlArg = parseTtlArg(args["ttl-ms"]);
+  const ttlMs = isUpdate
+    ? (ttlArg.provided ? ttlArg.ttlMs : undefined)
+    : (ttlArg.provided ? ttlArg.ttlMs : DEFAULT_CREATE_TTL_MS);
+  const nowMs = Date.now();
+  const ttlMsApplied = isUpdate ? (ttlArg.provided ? ttlMs : null) : ttlMs;
+  const expiresAt = computeExpiryIso(nowMs, ttlMsApplied);
+  const expiresAtText = formatExpiryText({ isUpdate, ttlProvided: ttlArg.provided, ttlMsApplied, nowMs });
 
   let html = "";
   if (pageDir) {
-    html = bundlePageProject({ pageDir, title, subtitle, generatedAt });
+    html = bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt: expiresAtText });
   } else {
     let rawContent = "";
     if (args["content-file"]) {
@@ -413,7 +438,7 @@ async function main() {
     const templateDir = path.join(skillRoot, "templates", "genernal_template");
     const template = bundleTemplate(templateDir);
     const contentHtml = markdownToHtml(rawContent);
-    html = renderHtml({ template, title, subtitle, generatedAt, contentHtml });
+    html = renderHtml({ template, title, subtitle, generatedAt, expiresAt: expiresAtText, contentHtml });
   }
 
   const outputHtml = path.resolve(String(args["output-html"] || "/tmp/clawpages-preview.html"));
@@ -437,20 +462,11 @@ async function main() {
   const keysFile = path.resolve(String(args["keys-file"] || path.join(skillRoot, "keys.local.json")));
   const { token, apiHost: keyApiHost } = loadKeys(keysFile);
   const apiHost = String(args["api-host"] || keyApiHost || DEFAULT_API_HOST);
-  const pageId = args["page-id"] ? String(args["page-id"]) : "";
-  const isUpdate = Boolean(pageId);
-  const ttlArg = parseTtlArg(args["ttl-ms"]);
-  const ttlMs = isUpdate
-    ? (ttlArg.provided ? ttlArg.ttlMs : undefined)
-    : (ttlArg.provided ? ttlArg.ttlMs : DEFAULT_CREATE_TTL_MS);
   const pageName = typeof args["page-name"] === "string"
     ? String(args["page-name"])
     : (isUpdate ? undefined : title);
   const pagecodeRaw = args.pagecode !== undefined ? args.pagecode : args.password;
   const pagecode = pagecodeRaw === undefined ? undefined : String(pagecodeRaw) === "null" ? null : String(pagecodeRaw);
-  const nowMs = Date.now();
-  const ttlMsApplied = isUpdate ? (ttlArg.provided ? ttlMs : null) : ttlMs;
-  const expiresAt = computeExpiryIso(nowMs, ttlMsApplied);
   const pagecodeUpdated = pagecode !== undefined;
 
   const data = pageId

@@ -48,11 +48,32 @@ description: ClawPages 路由技能。按用户意图分发到 create page / upd
 
 若 `keys.local.json` 不存在，先注册（`username` 必填）：
 
+注册时先引导用户确定 `username`，不要直接替用户拍板。
+
+`username` 规则（必须满足）：
+
+- 仅使用小写字母、数字、连字符（`a-z` / `0-9` / `-`）
+- 长度至少 6 位
+- 不能以 `-` 开头或结尾
+
+当用户未提供 `username` 时：
+
+- 先基于用户场景给 3 个可选名（都要符合规则）
+- 优先使用“语义词 + 连字符 + 短数字”模式（如 `builder-lab-27`）
+- 让用户从建议里选一个再发起注册
+
 ```bash
 curl -sS -X POST https://api.clawpage.ai/api/register \
   -H 'Content-Type: application/json' \
-  -d '{"username":"builder01"}'
+  -d '{"username":"<username>"}'
 ```
+
+若返回 `409 USERNAME_TAKEN`：
+
+- 明确告知“该用户名已被占用”
+- 基于原候选名给 3 个新建议（优先追加 2-4 位数字或语义后缀，如 `-lab`、`-app`）
+- 引导用户选择后立即重试注册
+- 注册成功后再继续后续 page/template 流程
 
 获取 token 后存储到 `keys.local.json`：
 

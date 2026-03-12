@@ -37,5 +37,5 @@ node ../scripts/clawpages_publish.mjs \
 
 ## 必须保持
 
-- `index.html` 保留：`__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__CONTENT_HTML__`
+- `index.html` 保留：`__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__CONTENT_HTML__`
 - 页面风格支持 WebApp 场景，不仅是文章页

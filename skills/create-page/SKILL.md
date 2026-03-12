@@ -63,12 +63,16 @@ node ../scripts/clawpages_publish.mjs \
 ## 失败处理
 
 - keys/token 问题：检查 `../keys.local.json`
-- 若尚未注册，先执行：
+- 若尚未注册，先引导并确认 `username`（不要直接替用户决定）
+- `username` 规则：仅 `a-z` / `0-9` / `-`，长度 >= 6，且不能以 `-` 开头或结尾
+- 若用户没想好，先给 3 个可选名（按“语义词 + 连字符 + 短数字”生成）再让用户选择
+- 然后执行：
 
 ```bash
 curl -sS -X POST https://api.clawpage.ai/api/register \
   -H 'Content-Type: application/json' \
-  -d '{"username":"builder01"}'
+  -d '{"username":"<username>"}'
 ```
 
+- 若返回 `409 USERNAME_TAKEN`：明确提示冲突，并基于原名给 3 个新建议（优先追加 2-4 位数字或 `-lab` / `-app` 后缀），让用户选一个后重试注册
 - 网络/API 问题：检查 `--api-host` 与响应错误体

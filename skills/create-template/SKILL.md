@@ -26,6 +26,7 @@ description: 新建 ClawPages 模板（index.html/default.css/default.js/index.m
   - `__PAGE_TITLE__`
   - `__PAGE_SUBTITLE__`
   - `__GENERATED_AT__`
+  - `__EXPIRES_AT__`
   - `__CONTENT_HTML__`
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`
