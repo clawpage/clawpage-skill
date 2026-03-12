@@ -49,15 +49,15 @@ function computeExpiryIso(nowMs, ttlMs) {
 
 function formatExpiryText({ isUpdate, ttlProvided, ttlMsApplied, nowMs }) {
   if (isUpdate && !ttlProvided) {
-    return "沿用当前页面设置（本次未修改）";
+    return "__I18N_TEXT_0001__(__I18N_TEXT_0002__)";
   }
   if (ttlMsApplied === null) {
-    return "永久有效";
+    return "__I18N_TEXT_0003__";
   }
   if (typeof ttlMsApplied === "number" && Number.isFinite(ttlMsApplied)) {
     return new Date(nowMs + ttlMsApplied).toLocaleString("zh-CN", { hour12: false });
   }
-  return "未知";
+  return "__I18N_TEXT_0004__";
 }
 
 function escapeHtml(input) {
@@ -81,7 +81,7 @@ function renderInline(text) {
 
   // plain links (strip common trailing punctuation)
   s = s.replace(/(^|\s)(https?:\/\/[^\s<]+)/g, (_m, p1, rawUrl) => {
-    const url = rawUrl.replace(/[),.!?;:'"，。！？；：、]+$/u, "");
+    const url = rawUrl.replace(/[),.!?;:'",.!?;:,]+$/u, "");
     const trailing = rawUrl.slice(url.length);
     const idx = links.push({ label: url, url }) - 1;
     return `${p1}__LINK_${idx}__${trailing}`;
@@ -407,9 +407,9 @@ async function main() {
 
   const pageDirArg = args["page-dir"] ? String(args["page-dir"]) : "";
   const pageDir = pageDirArg ? path.resolve(pageDirArg) : "";
-  const defaultTitle = pageDir ? path.basename(pageDir) : "内容页面";
+  const defaultTitle = pageDir ? path.basename(pageDir) : "__I18N_TEXT_0005__";
   const title = String(args.title || defaultTitle);
-  const subtitle = String(args.subtitle || "结构化阅读版本");
+  const subtitle = String(args.subtitle || "__I18N_TEXT_0006__");
   const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
   const pageId = args["page-id"] ? String(args["page-id"]) : "";
   const isUpdate = Boolean(pageId);

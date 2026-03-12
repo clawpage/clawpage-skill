@@ -1,13 +1,13 @@
 ---
 metadata:
   name: insight-collection-hub
-  description: 经验信息收集与展示模板，强调筛选、检索和卡片化呈现。
+  description: __I18N_TEXT_0147__,__I18N_TEXT_0148__,__I18N_TEXT_0149__.
   page_id: ""
 ---
 
-# 模板说明
+# __I18N_TEXT_0018__
 
-- 方向：经验信息收集展示 / Insight Collection
-- 场景：复盘沉淀、案例库、知识共享
-- 结构：搜索、标签筛选、经验卡片列表
-- 特点：信息简洁，移动端快速浏览
+- __I18N_TEXT_0019__:__I18N_TEXT_0150__ / Insight Collection
+- __I18N_TEXT_0021__:__I18N_TEXT_0151__,__I18N_TEXT_0152__,__I18N_TEXT_0153__
+- __I18N_TEXT_0025__:__I18N_TEXT_0154__,__I18N_TEXT_0155__,__I18N_TEXT_0156__
+- __I18N_TEXT_0029__:__I18N_TEXT_0157__,__I18N_TEXT_0158__

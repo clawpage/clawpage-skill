@@ -1,13 +1,13 @@
 ---
 metadata:
   name: stock-analysis-terminal
-  description: 股票分析展示模板，含轻量 KPI 与趋势图，移动端优先。
+  description: __I18N_TEXT_0177__,__I18N_TEXT_0178__ KPI __I18N_TEXT_0179__,__I18N_TEXT_0165__.
   page_id: ""
 ---
 
-# 模板说明
+# __I18N_TEXT_0018__
 
-- 方向：股票分析展示 / Stock Analysis
-- 场景：行情解读、策略复盘、演示汇报
-- 结构：周期切换、核心指标、趋势图
-- 特点：低代码量、少信息块、快速替换数据
+- __I18N_TEXT_0019__:__I18N_TEXT_0180__ / Stock Analysis
+- __I18N_TEXT_0021__:__I18N_TEXT_0181__,__I18N_TEXT_0182__,__I18N_TEXT_0183__
+- __I18N_TEXT_0025__:__I18N_TEXT_0184__,__I18N_TEXT_0185__,__I18N_TEXT_0108__
+- __I18N_TEXT_0029__:__I18N_TEXT_0186__,__I18N_TEXT_0187__,__I18N_TEXT_0188__

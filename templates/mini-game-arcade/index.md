@@ -1,13 +1,13 @@
 ---
 metadata:
   name: mini-game-arcade
-  description: 轻量点击小游戏模板，移动端优先，适合活动页与互动教学。
+  description: __I18N_TEXT_0164__,__I18N_TEXT_0165__,__I18N_TEXT_0166__.
   page_id: ""
 ---
 
-# 模板说明
+# __I18N_TEXT_0018__
 
-- 方向：小游戏 / Mini Game
-- 场景：活动互动、课堂暖场、趣味演示
-- 结构：状态区、操作区、内容区
-- 特点：代码体量小，默认触控优先
+- __I18N_TEXT_0019__:__I18N_TEXT_0167__ / Mini Game
+- __I18N_TEXT_0021__:__I18N_TEXT_0168__,__I18N_TEXT_0169__,__I18N_TEXT_0170__
+- __I18N_TEXT_0025__:__I18N_TEXT_0171__,__I18N_TEXT_0106__,__I18N_TEXT_0172__
+- __I18N_TEXT_0029__:__I18N_TEXT_0173__,__I18N_TEXT_0174__

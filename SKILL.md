@@ -1,66 +1,65 @@
 ---
 name: clawpage-skill
-description: ClawPages 路由技能。按用户意图分发到 create page / update page / create template / update template 四个子 skill。Use when user wants to create/update page or template and publish URL.
+description: ClawPages router skill that dispatches to create page / update page / create template / update template workflows. Use when a user wants to build, revise, or publish a ClawPages web page/template and get a URL.
 ---
 
 # ClawPages Skill (Router)
 
-## 何时使用
+## When to use
 
-- 用户要创建或改版 ClawPages 页面（WebApp 页面）
-- 用户要创建或更新模板
-- 用户要发布页面并获取可访问 URL
+- User wants a new ClawPages web page
+- User wants to revise an existing page
+- User wants a new template or template update
+- User wants publish output with URL / pageId / expiry / access-code status
 
-## 子 Skill 列表
+## Sub-skills
 
 1. `create page`
-- 路径：`skills/create-page/SKILL.md`
-- 用于：新建页面工程并发布（创建语义按最新 API：默认 TTL 6h、支持 pagecode）
+- Path: `skills/create-page/SKILL.md`
+- Purpose: create a page project and publish (create default TTL 6h, supports `pagecode`)
 
 2. `update page`
-- 路径：`skills/update-page/SKILL.md`
-- 用于：在存量页面上改版并发布（优先读 `index.md` 的 `page-id` 走 PATCH，支持修改 TTL/pagecode）
+- Path: `skills/update-page/SKILL.md`
+- Purpose: update an existing page project and publish (prefer `page-id` from `index.md`, supports TTL/pagecode updates)
 
 3. `create template`
-- 路径：`skills/create-template/SKILL.md`
-- 用于：新增模板目录与模板能力
+- Path: `skills/create-template/SKILL.md`
+- Purpose: create a reusable template folder
 
 4. `update template`
-- 路径：`skills/update-template/SKILL.md`
-- 用于：修改已有模板的结构/样式/交互/说明
+- Path: `skills/update-template/SKILL.md`
+- Purpose: update an existing template structure/style/interaction/docs
 
-## 分发规则
+## Routing rules
 
-- 用户说“新建页面/做个新 page”：使用 `create page`
-- 用户说“改这个页面/复用现有页面”：使用 `update page`
-- 用户说“新建模板/做个新 template”：使用 `create template`
-- 用户说“改模板/优化默认模板”：使用 `update template`
+- "create/new page" -> `create page`
+- "update/rework existing page" -> `update page`
+- "create/new template" -> `create template`
+- "update/improve template" -> `update template`
 
-## 全局前置约定
+## Global conventions
 
-- API 默认：`https://api.clawpage.ai`
-- 预览 URL 模式：`https://u-[username].clawpage.ai/pages/[pageId]`
-- key 文件：`keys.local.json`
-- 页面目录：`.pages/<page-name>`
-- 模板目录：`templates/<template-name>`
-- 发布脚本：`scripts/clawpages_publish.mjs`
-- API 语义参考：`references/api-quickref.md`
+- API default: `https://api.clawpage.ai`
+- Preview URL pattern: `https://u-[username].clawpage.ai/pages/[pageId]`
+- Key file: `keys.local.json`
+- Page folder: `.pages/<page-name>`
+- Template folder: `templates/<template-name>`
+- Publish script: `scripts/clawpages_publish.mjs`
+- API reference: `references/api-quickref.md`
 
-若 `keys.local.json` 不存在，先注册（`username` 必填）：
+## Registration workflow
 
-注册时先引导用户确定 `username`，不要直接替用户拍板。
+If `keys.local.json` does not exist, register first (`username` required):
 
-`username` 规则（必须满足）：
+- Do not pick a username on behalf of the user without confirmation.
+- If user does not provide one, propose 3 options based on user context.
+- Prefer `semantic-word + hyphen + short-digits` (example: `builder-lab-27`).
 
-- 仅使用小写字母、数字、连字符（`a-z` / `0-9` / `-`）
-- 长度至少 6 位
-- 不能以 `-` 开头或结尾
+Username rules:
 
-当用户未提供 `username` 时：
-
-- 先基于用户场景给 3 个可选名（都要符合规则）
-- 优先使用“语义词 + 连字符 + 短数字”模式（如 `builder-lab-27`）
-- 让用户从建议里选一个再发起注册
+- lowercase letters, digits, hyphen only (`a-z`, `0-9`, `-`)
+- length >= 6
+- cannot start or end with `-`
 
 ```bash
 curl -sS -X POST https://api.clawpage.ai/api/register \
@@ -68,14 +67,14 @@ curl -sS -X POST https://api.clawpage.ai/api/register \
   -d '{"username":"<username>"}'
 ```
 
-若返回 `409 USERNAME_TAKEN`：
+If API returns `409 USERNAME_TAKEN`:
 
-- 明确告知“该用户名已被占用”
-- 基于原候选名给 3 个新建议（优先追加 2-4 位数字或语义后缀，如 `-lab`、`-app`）
-- 引导用户选择后立即重试注册
-- 注册成功后再继续后续 page/template 流程
+- explicitly tell user the name is already taken
+- provide 3 new candidates based on the original candidate
+- prefer adding 2-4 digits or suffixes like `-lab`, `-app`
+- retry registration after user selection
 
-获取 token 后存储到 `keys.local.json`：
+Save token to `keys.local.json`:
 
 ```json
 {
@@ -86,21 +85,29 @@ curl -sS -X POST https://api.clawpage.ai/api/register \
 }
 ```
 
-## 通用发布命令
+## Localization placeholders policy
+
+- This repo uses uppercase placeholders for localized text (for example `__I18N_TEXT_0001__`).
+- Before publish, fill placeholders using the user's preferred language.
+- Infer preferred language from the user's prompt; if unclear, ask briefly.
+- Apply this rule to page/template content and user-visible labels.
+
+## Common publish command
 
 ```bash
 node scripts/clawpages_publish.mjs \
   --page-dir .pages/<page-name> \
-  --title "页面标题" \
-  --subtitle "可选副标题"
+  --title "<TITLE_PLACEHOLDER>" \
+  --subtitle "<SUBTITLE_PLACEHOLDER>"
 ```
 
-说明：创建页面默认有效期以最新 API 语义为准（未显式设置时默认 6h，即 `21600000` ms），可通过 `--ttl-ms` 覆盖。
+Create mode default TTL is 6h (`21600000`) unless `--ttl-ms` overrides it.
 
-## 输出约束
+## Output contract
 
-- 向用户返回 1-2 句摘要
-- 返回页面 URL（`rootUrl`）
-- 若页面受口令保护，同时返回可访问入口（`accessUrl` 或带 `pagecode` 的访问说明）
-- 创建/更新页面都要返回：有效时间信息、是否受保护、若本次设置了口令则返回本次口令
-- 发布失败时给出明确原因和可执行修复动作
+- Return a short 1-2 sentence summary
+- Return page URL (`rootUrl`)
+- If page is protected, return access guidance (`accessUrl` or `pagecode` instructions)
+- Return expiry info and protection status for both create/update
+- If this run sets `pagecode`, return the current code
+- On failure, return explicit cause and actionable fix

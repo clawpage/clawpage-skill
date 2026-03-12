@@ -37,7 +37,7 @@
       if (seconds <= 0) {
         seconds = 0;
         stop();
-        alert("游戏结束 / Game Over. Score: " + score);
+        alert("__I18N_TEXT_0159__ / Game Over. Score: " + score);
       }
       render();
     }, 1000);

@@ -1,13 +1,13 @@
 ---
 metadata:
   name: utility-workbench
-  description: 轻量小工具程序模板，适合输入-处理-输出类需求。
+  description: __I18N_TEXT_0198__,__I18N_TEXT_0199__-__I18N_TEXT_0126__-__I18N_TEXT_0200__.
   page_id: ""
 ---
 
-# 模板说明
+# __I18N_TEXT_0018__
 
-- 方向：小工具程序 / Utility Workbench
-- 场景：文本处理、参数计算、快速转换
-- 结构：输入区、模式切换、输出区
-- 特点：低信息密度、移动端单列、易扩展
+- __I18N_TEXT_0019__:__I18N_TEXT_0201__ / Utility Workbench
+- __I18N_TEXT_0021__:__I18N_TEXT_0202__,__I18N_TEXT_0203__,__I18N_TEXT_0204__
+- __I18N_TEXT_0025__:__I18N_TEXT_0110__,__I18N_TEXT_0205__,__I18N_TEXT_0206__
+- __I18N_TEXT_0029__:__I18N_TEXT_0030__,__I18N_TEXT_0207__,__I18N_TEXT_0208__

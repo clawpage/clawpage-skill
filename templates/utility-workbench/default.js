@@ -27,9 +27,9 @@
     var text = outputEl.textContent || "";
     if (!text) return;
     navigator.clipboard.writeText(text).then(function() {
-      copyBtn.textContent = "已复制 Copied";
+      copyBtn.textContent = "__I18N_TEXT_0189__ Copied";
       setTimeout(function() {
-        copyBtn.textContent = "复制 Copy";
+        copyBtn.textContent = "__I18N_TEXT_0190__ Copy";
       }, 1000);
     });
   });

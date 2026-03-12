@@ -1,8 +1,8 @@
 (function conceptAnimationLab() {
   var steps = [
-    { title: "步骤 1 / Input", desc: "从输入源开始，标记问题范围。", mode: "input" },
-    { title: "步骤 2 / Transform", desc: "在处理中间层完成转换与组织。", mode: "transform" },
-    { title: "步骤 3 / Output", desc: "输出结果并形成可执行结论。", mode: "output" },
+    { title: "__I18N_TEXT_0007__ 1 / Input", desc: "__I18N_TEXT_0008__,__I18N_TEXT_0009__.", mode: "input" },
+    { title: "__I18N_TEXT_0007__ 2 / Transform", desc: "__I18N_TEXT_0010__.", mode: "transform" },
+    { title: "__I18N_TEXT_0007__ 3 / Output", desc: "__I18N_TEXT_0011__.", mode: "output" },
   ];
 
   var index = 0;

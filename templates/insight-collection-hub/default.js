@@ -2,10 +2,10 @@
   var state = { tag: "all", q: "" };
 
   var items = [
-    { tag: "product", title: "功能上线后，首日引导最关键", note: "新功能说明应放在入口 1 屏内。" },
-    { tag: "growth", title: "转化高峰出现在晚间", note: "重点活动建议 20:00-22:00 推送。" },
-    { tag: "ops", title: "FAQ 置顶可减少重复咨询", note: "标准化问题优先卡片化。" },
-    { tag: "product", title: "选项越少，完成率越高", note: "移动端每步不超过 3 个决策项。" },
+    { tag: "product", title: "__I18N_TEXT_0128__,__I18N_TEXT_0129__", note: "__I18N_TEXT_0130__ 1 __I18N_TEXT_0131__." },
+    { tag: "growth", title: "__I18N_TEXT_0132__", note: "__I18N_TEXT_0133__ 20:00-22:00 __I18N_TEXT_0134__." },
+    { tag: "ops", title: "FAQ __I18N_TEXT_0135__", note: "__I18N_TEXT_0136__." },
+    { tag: "product", title: "__I18N_TEXT_0137__,__I18N_TEXT_0138__", note: "__I18N_TEXT_0139__ 3 __I18N_TEXT_0140__." },
   ];
 
   var searchInput = document.getElementById("search-input");
@@ -26,7 +26,7 @@
     }).join("");
 
     if (visible.length === 0) {
-      listEl.innerHTML = '<article class="card"><p>暂无匹配结果 / No matching insight.</p></article>';
+      listEl.innerHTML = '<article class="card"><p>__I18N_TEXT_0141__ / No matching insight.</p></article>';
     }
   }
 

@@ -1,88 +1,88 @@
 ---
 metadata:
   name: genernal-template
-  description: 科幻风 WebApp Shell 模板，适用于 dashboard、command center、interactive tool surface 等页面。
+  description: __I18N_TEXT_0034__ WebApp Shell __I18N_TEXT_0035__,__I18N_TEXT_0036__ dashboard,command center,interactive tool surface __I18N_TEXT_0037__.
   page_id: ""
 ---
 
-# 页面说明（用于路由与复用决策）
+# __I18N_TEXT_0038__(__I18N_TEXT_0039__)
 
-- 页面名：`<page-name>`
-- 页面目标：用于构建 `<topic>` 的 WebApp 信息界面
-- 目标用户：`<audience>`
-- 典型场景：`<scenario>`
-- 主要模块：`<dashboard>`, `<controls>`, `<insight-panel>`, `<actions>`
-- 交互能力：`<filter/tab/drill-down/chart/timeline>`
-- 改版策略：优先改 `index.html`，必要时同步调整 `default.css` / `default.js`
-- page-id：
-- page-preview-url：
+- __I18N_TEXT_0040__:`<page-name>`
+- __I18N_TEXT_0041__:__I18N_TEXT_0042__ `<topic>` __I18N_TEXT_0043__ WebApp __I18N_TEXT_0044__
+- __I18N_TEXT_0045__:`<audience>`
+- __I18N_TEXT_0046__:`<scenario>`
+- __I18N_TEXT_0047__:`<dashboard>`, `<controls>`, `<insight-panel>`, `<actions>`
+- __I18N_TEXT_0048__:`<filter/tab/drill-down/chart/timeline>`
+- __I18N_TEXT_0049__:__I18N_TEXT_0050__ `index.html`,__I18N_TEXT_0051__ `default.css` / `default.js`
+- page-id:
+- page-preview-url:
 
-## 模板定位
+## __I18N_TEXT_0052__
 
-这个模板是一个科幻风 WebApp Shell。每个 page 都应被当成 webapp，而不是文章页。
+__I18N_TEXT_0053__ WebApp Shell.__I18N_TEXT_0054__ page __I18N_TEXT_0055__ webapp,__I18N_TEXT_0056__.
 
-建议默认采用：
+__I18N_TEXT_0057__:
 
-- 主内容区（content）
-- 侧边组件区（widget/状态）
-- 可视化区（图表/流程图）
-- 交互区（筛选/切换/参数）
+- __I18N_TEXT_0058__(content)
+- __I18N_TEXT_0059__(widget/__I18N_TEXT_0060__)
+- __I18N_TEXT_0061__(__I18N_TEXT_0062__/__I18N_TEXT_0063__)
+- __I18N_TEXT_0064__(__I18N_TEXT_0065__/__I18N_TEXT_0066__/__I18N_TEXT_0067__)
 
-## 预置工具与能力
+## __I18N_TEXT_0068__
 
-已内置 CDN：
+__I18N_TEXT_0069__ CDN:
 
 - `jQuery`
 - `Tailwind CSS`
 - `Mermaid`
 - `marked`
 - `DOMPurify`
-- 浏览器原生 `Canvas API`
+- __I18N_TEXT_0070__ `Canvas API`
 
-`default.js` 自动支持以下数据组件：
+`default.js` __I18N_TEXT_0071__:
 
-- KPI 卡片：`data-kpi="标签|值|备注"`
-- 时间线：`data-timeline='[{"time":"T-1","event":"..."}]'`
-- Canvas 折线图：`data-canvas-json='{"width":640,"height":320,"lines":[...]}'`
-- Mermaid 图：markdown 代码块使用 ` ```mermaid `
-- Markdown 片段：`data-md="## title"`
+- KPI __I18N_TEXT_0072__:`data-kpi="__I18N_TEXT_0073__|__I18N_TEXT_0074__|__I18N_TEXT_0075__"`
+- __I18N_TEXT_0076__:`data-timeline='[{"time":"T-1","event":"..."}]'`
+- Canvas __I18N_TEXT_0077__:`data-canvas-json='{"width":640,"height":320,"lines":[...]}'`
+- Mermaid __I18N_TEXT_0078__:markdown __I18N_TEXT_0079__ ` ```mermaid `
+- Markdown __I18N_TEXT_0080__:`data-md="## title"`
 
-全局对象：
+__I18N_TEXT_0081__:
 
-- `window.clawpagesWebApp.rerender()`：当你动态插入上述数据组件后，调用它进行重新渲染
-- `window.clawpagesToolkit`：查看当前可用工具与推荐模式
+- `window.clawpagesWebApp.rerender()`:__I18N_TEXT_0082__,__I18N_TEXT_0083__
+- `window.clawpagesToolkit`:__I18N_TEXT_0084__
 
-## LLM 使用指南
+## LLM __I18N_TEXT_0085__
 
-你在编辑这个页面时应按“webapp 交互界面”思路工作：
+__I18N_TEXT_0086__"webapp __I18N_TEXT_0087__"__I18N_TEXT_0088__:
 
-- 先定义信息架构，再组织内容，不要先写长文
-- 优先使用卡片/面板/图表/时间线承载信息
-- 复杂逻辑放在 `default.js`，不要把行为逻辑写进 markdown 文本
-- 样式统一收敛在 `default.css`，避免大量 inline style
-- 保持移动端优先，同时确保桌面端有更强布局
+- __I18N_TEXT_0089__,__I18N_TEXT_0090__,__I18N_TEXT_0091__
+- __I18N_TEXT_0092__/__I18N_TEXT_0093__/__I18N_TEXT_0062__/__I18N_TEXT_0094__
+- __I18N_TEXT_0095__ `default.js`,__I18N_TEXT_0096__ markdown __I18N_TEXT_0097__
+- __I18N_TEXT_0098__ `default.css`,__I18N_TEXT_0099__ inline style
+- __I18N_TEXT_0100__,__I18N_TEXT_0101__
 
-## 推荐模式（可混合）
+## __I18N_TEXT_0102__(__I18N_TEXT_0103__)
 
-- Command Center：状态卡 + 告警 + 时间线 + 操作区
-- Insight Dashboard：指标卡 + 趋势图 + 分组详情
-- Tool Surface：输入区 + 参数区 + 结果区 + 导出区
-- Story Explorer：导航 + 图解 + 证据块 + 行动项
+- Command Center:__I18N_TEXT_0104__ + __I18N_TEXT_0105__ + __I18N_TEXT_0076__ + __I18N_TEXT_0106__
+- Insight Dashboard:__I18N_TEXT_0107__ + __I18N_TEXT_0108__ + __I18N_TEXT_0109__
+- Tool Surface:__I18N_TEXT_0110__ + __I18N_TEXT_0111__ + __I18N_TEXT_0112__ + __I18N_TEXT_0113__
+- Story Explorer:__I18N_TEXT_0114__ + __I18N_TEXT_0115__ + __I18N_TEXT_0116__ + __I18N_TEXT_0117__
 
-## 快速片段示例
+## __I18N_TEXT_0118__
 
 ```html
-<div class="kpi" data-kpi="请求成功率|99.92%|24h rolling"></div>
+<div class="kpi" data-kpi="__I18N_TEXT_0119__|99.92%|24h rolling"></div>
 
-<div class="timeline" data-timeline='[{"time":"09:30","event":"同步完成"},{"time":"10:10","event":"规则更新"}]'></div>
+<div class="timeline" data-timeline='[{"time":"09:30","event":"__I18N_TEXT_0120__"},{"time":"10:10","event":"__I18N_TEXT_0121__"}]'></div>
 
 <div data-canvas-json='{"width":540,"height":220,"lines":[{"x":20,"y":180},{"x":120,"y":120},{"x":240,"y":140},{"x":360,"y":80},{"x":500,"y":60}]}'></div>
 
-<div data-md="### 诊断结论\n- 负载稳定\n- 可以继续扩容"></div>
+<div data-md="### __I18N_TEXT_0122__\n- __I18N_TEXT_0123__\n- __I18N_TEXT_0124__"></div>
 ```
 
 ```mermaid
 graph TD
-A[输入] --> B[处理]
-B --> C[结果]
+A[__I18N_TEXT_0125__] --> B[__I18N_TEXT_0126__]
+B --> C[__I18N_TEXT_0127__]
 ```
