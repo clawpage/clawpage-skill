@@ -24,9 +24,15 @@ FILE_LIST="$(mktemp)"
 trap 'rm -f "${FILE_LIST}"' EXIT
 
 git ls-files -z --cached --others --exclude-standard | while IFS= read -r -d '' f; do
+  base="${f##*/}"
   [[ "${f}" == ".gitignore" ]] && continue
   [[ "${f}" == "pack_skill.sh" ]] && continue
+  [[ "${f}" == "README.md" ]] && continue
+  [[ "${f}" == docs/* ]] && continue
   [[ "${f}" == dist/* ]] && continue
+  [[ "${base}" == ".gitkeep" ]] && continue
+  [[ "${base}" == ".keep" ]] && continue
+  [[ "${base}" == ".empty" ]] && continue
   printf '%s\0' "${f}"
 done > "${FILE_LIST}"
 

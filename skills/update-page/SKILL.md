@@ -61,7 +61,12 @@ Optional:
 
 7. Return to user
 - 1-2 sentence summary
-- page URL (`rootUrl`)
+- return two URLs:
+  - URL without `pagecode` (`rootUrl` / `pageUrlNoPagecode`)
+  - URL with `pagecode` (`accessUrl` / `pageUrlWithPagecode`) when protected
+- add sharing caution:
+  - for cautious external sharing, prefer URL without `pagecode`
+  - share `pagecode` separately and only to intended recipients
 - expiry info (`ttlMsApplied`, `expiresAt`) and whether changed this run
 - protection status and whether changed this run
 - if pagecode set this run, return current code/access method

@@ -47,6 +47,26 @@ function computeExpiryIso(nowMs, ttlMs) {
   return null;
 }
 
+function buildAccessUrl({ rootUrl, accessUrl, pagecode }) {
+  if (typeof accessUrl === "string" && accessUrl.trim() !== "") {
+    return accessUrl;
+  }
+  if (typeof rootUrl !== "string" || rootUrl.trim() === "") {
+    return null;
+  }
+  if (typeof pagecode !== "string" || pagecode === "") {
+    return null;
+  }
+  try {
+    const u = new URL(rootUrl);
+    u.searchParams.set("pagecode", pagecode);
+    return u.toString();
+  } catch {
+    const sep = rootUrl.includes("?") ? "&" : "?";
+    return `${rootUrl}${sep}pagecode=${encodeURIComponent(pagecode)}`;
+  }
+}
+
 function formatExpiryText({ isUpdate, ttlProvided, ttlMsApplied, nowMs }) {
   if (isUpdate && !ttlProvided) {
     return "__I18N_TEXT_0001__(__I18N_TEXT_0002__)";
@@ -483,7 +503,12 @@ async function main() {
   const pagecodeProtected = resolvedPagecode === undefined
     ? (isUpdate ? null : (returnedPagecode ? true : null))
     : (resolvedPagecode !== null && resolvedPagecode !== "");
-  const accessUrl = data?.accessUrl || null;
+  const rootUrl = page.rootUrl || data?.rootUrl || null;
+  const accessUrl = buildAccessUrl({
+    rootUrl,
+    accessUrl: data?.accessUrl || null,
+    pagecode: typeof resolvedPagecode === "string" ? resolvedPagecode : null,
+  });
 
   const result = {
     ok: true,
@@ -491,8 +516,12 @@ async function main() {
     pageId: page.pageId || pageId,
     username: page.username || data?.username || null,
     pageName: page.pageName || pageName || null,
-    url: page.rootUrl || data?.rootUrl,
+    url: rootUrl,
+    rootUrl,
     accessUrl,
+    pageUrlNoPagecode: rootUrl,
+    pageUrlWithPagecode: accessUrl,
+    shareRecommendedUrl: rootUrl,
     pagecode: resolvedPagecode ?? null,
     pagecodeUpdated,
     pagecodeProtected,

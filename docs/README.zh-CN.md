@@ -98,3 +98,7 @@ Skill 规则要求 LLM 在发布前根据用户偏好语言填充这些占位符
 
 - 不要提交真实 `keys.local.json`
 - 仅提交 `keys.local.example.json`
+
+## License
+
+本项目采用 MIT 开源协议，详见 `../LICENSE`。

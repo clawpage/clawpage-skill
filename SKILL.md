@@ -106,8 +106,12 @@ Create mode default TTL is 6h (`21600000`) unless `--ttl-ms` overrides it.
 ## Output contract
 
 - Return a short 1-2 sentence summary
-- Return page URL (`rootUrl`)
-- If page is protected, return access guidance (`accessUrl` or `pagecode` instructions)
+- Return two page URLs:
+  - URL without `pagecode` (`rootUrl` / `pageUrlNoPagecode`)
+  - URL with `pagecode` (`accessUrl` / `pageUrlWithPagecode`) when protection is enabled
+- Always include sharing guidance:
+  - for cautious external sharing, prefer the URL without `pagecode`
+  - share `pagecode` only with intended recipients
 - Return expiry info and protection status for both create/update
 - If this run sets `pagecode`, return the current code
 - On failure, return explicit cause and actionable fix

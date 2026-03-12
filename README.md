@@ -115,3 +115,7 @@ Skill instructions require the LLM to fill these placeholders using the user’s
 
 - do not commit real credentials from `keys.local.json`
 - keep `keys.local.example.json` as the committed baseline
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE`.
