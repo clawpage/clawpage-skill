@@ -27,8 +27,9 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 3. Update `default.js` interaction/render logic
 4. Sync `index.md` metadata and usage notes
 5. Fill/normalize localization placeholders for user-visible text
-- keep uppercase placeholder naming consistent
-- ensure placeholders can be filled with user-preferred language
+- use semantic placeholders (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`)
+- do not use numeric key placeholders
+- do not maintain key-mapping tables; fill directly with user-preferred language text
 
 6. Validate with dry-run:
 

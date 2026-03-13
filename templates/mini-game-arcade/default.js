@@ -37,7 +37,7 @@
       if (seconds <= 0) {
         seconds = 0;
         stop();
-        alert("__I18N_TEXT_0159__ / Game Over. Score: " + score);
+        alert("[GAME_OVER] [SCORE_LABEL]: " + score);
       }
       render();
     }, 1000);

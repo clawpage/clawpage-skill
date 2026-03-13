@@ -87,8 +87,9 @@ Save token to `keys.local.json`:
 
 ## Localization placeholders policy
 
-- This repo uses uppercase placeholders for localized text (for example `__I18N_TEXT_0001__`).
-- Before publish, fill placeholders using the user's preferred language.
+- Use semantic placeholders for localized text (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`).
+- Do not use numeric key placeholders.
+- Do not maintain any key-mapping table; fill placeholders directly in user-preferred language.
 - Infer preferred language from the user's prompt; if unclear, ask briefly.
 - Apply this rule to page/template content and user-visible labels.
 

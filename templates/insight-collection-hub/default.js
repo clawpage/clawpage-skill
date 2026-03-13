@@ -2,10 +2,10 @@
   var state = { tag: "all", q: "" };
 
   var items = [
-    { tag: "product", title: "__I18N_TEXT_0128__,__I18N_TEXT_0129__", note: "__I18N_TEXT_0130__ 1 __I18N_TEXT_0131__." },
-    { tag: "growth", title: "__I18N_TEXT_0132__", note: "__I18N_TEXT_0133__ 20:00-22:00 __I18N_TEXT_0134__." },
-    { tag: "ops", title: "FAQ __I18N_TEXT_0135__", note: "__I18N_TEXT_0136__." },
-    { tag: "product", title: "__I18N_TEXT_0137__,__I18N_TEXT_0138__", note: "__I18N_TEXT_0139__ 3 __I18N_TEXT_0140__." },
+    { tag: "product", title: "[INSIGHT_TITLE_1A], [INSIGHT_TITLE_1B]", note: "[INSIGHT_NOTE_1_PREFIX] 1 [INSIGHT_NOTE_1_SUFFIX]." },
+    { tag: "growth", title: "[INSIGHT_TITLE_2]", note: "[INSIGHT_NOTE_2_PREFIX] 20:00-22:00 [INSIGHT_NOTE_2_SUFFIX]." },
+    { tag: "ops", title: "FAQ [INSIGHT_TITLE_3]", note: "[INSIGHT_NOTE_3]." },
+    { tag: "product", title: "[INSIGHT_TITLE_4A], [INSIGHT_TITLE_4B]", note: "[INSIGHT_NOTE_4_PREFIX] 3 [INSIGHT_NOTE_4_SUFFIX]." },
   ];
 
   var searchInput = document.getElementById("search-input");
@@ -26,7 +26,7 @@
     }).join("");
 
     if (visible.length === 0) {
-      listEl.innerHTML = '<article class="card"><p>__I18N_TEXT_0141__ / No matching insight.</p></article>';
+      listEl.innerHTML = '<article class="card"><p>[NO_MATCHING_INSIGHT]</p></article>';
     }
   }
 

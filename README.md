@@ -108,8 +108,9 @@ Common flags:
 
 ## Localization placeholders
 
-Non-README Chinese descriptions in this repo were replaced with UPPERCASE placeholders.  
-Skill instructions require the LLM to fill these placeholders using the user’s preferred language before publish.
+Use semantic placeholders for localized text, for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`.  
+Skill instructions require the LLM to fill these placeholders directly using the user's preferred language before publish.  
+Do not use numeric key placeholders or maintain key-mapping tables.
 
 ## Security
 

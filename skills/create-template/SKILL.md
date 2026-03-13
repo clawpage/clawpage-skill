@@ -32,7 +32,8 @@ Required files:
   - `__DEFAULT_JS__`
 - `index.md` must include metadata: `metadata.name`, `metadata.description`
 - default structure should be WebApp-oriented, not article-only
-- user-visible text should use uppercase localization placeholders when required by project conventions
+- user-visible text should use semantic localization placeholders (for example `[EXPIRE_AT]`, `[SEARCH_PLACEHOLDER]`)
+- do not use numeric key placeholders
 
 ## Workflow
 
@@ -41,7 +42,7 @@ Required files:
 3. Write `index.html` structure
 4. Write `default.css` visual system
 5. Write `default.js` interactions/components
-6. Ensure placeholders are designed to be filled by user-preferred language
+6. Ensure placeholders are semantic and can be filled directly by user-preferred language (no key mapping table)
 7. Validate with dry-run:
 
 ```bash

@@ -1,8 +1,8 @@
 (function conceptAnimationLab() {
   var steps = [
-    { title: "__I18N_TEXT_0007__ 1 / Input", desc: "__I18N_TEXT_0008__,__I18N_TEXT_0009__.", mode: "input" },
-    { title: "__I18N_TEXT_0007__ 2 / Transform", desc: "__I18N_TEXT_0010__.", mode: "transform" },
-    { title: "__I18N_TEXT_0007__ 3 / Output", desc: "__I18N_TEXT_0011__.", mode: "output" },
+    { title: "[STEP] 1 / [INPUT]", desc: "[STEP_INPUT_DESC_A], [STEP_INPUT_DESC_B].", mode: "input" },
+    { title: "[STEP] 2 / [TRANSFORM]", desc: "[STEP_TRANSFORM_DESC].", mode: "transform" },
+    { title: "[STEP] 3 / [OUTPUT]", desc: "[STEP_OUTPUT_DESC].", mode: "output" },
   ];
 
   var index = 0;

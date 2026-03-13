@@ -42,7 +42,9 @@ PAGE_ID=$(sed -n 's/^[[:space:]]*page_id:[[:space:]]*//p; s/^- page-id:[[:space:
 
 4. If semantics changed, sync `index.md` metadata and notes
 5. Fill localization placeholders
-- replace uppercase placeholders (for example `__I18N_TEXT_0001__`) using user-preferred language
+- use semantic placeholders (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`)
+- do not use numeric key placeholders
+- do not maintain key-mapping tables; fill placeholders directly using user-preferred language
 - infer language from user prompt; ask only if unclear
 
 6. Publish update (PATCH when `page-id` exists):

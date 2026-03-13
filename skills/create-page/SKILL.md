@@ -38,7 +38,9 @@ cp -R ../templates/genernal_template ../.pages/<page-name>
 - keep WebApp-first structure, not article-only layout
 
 5. Fill localization placeholders
-- replace uppercase placeholders (for example `__I18N_TEXT_0001__`) with user-preferred language text
+- use semantic placeholders (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`)
+- do not use numeric key placeholders
+- do not maintain key-mapping tables; fill placeholders directly with user-preferred language text
 - infer preferred language from user prompt; ask briefly only if unclear
 
 6. Publish page

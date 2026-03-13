@@ -16,8 +16,8 @@ __DEFAULT_CSS__
         <p class="label">Stock Insight</p>
         <h1 class="text-xl font-semibold">__PAGE_TITLE__</h1>
         <p class="text-sm opacity-80">__PAGE_SUBTITLE__</p>
-        <p class="mt-1 text-xs opacity-70">__I18N_TEXT_0012__ / Generated: __GENERATED_AT__</p>
-        <p class="mt-1 text-xs opacity-70">__I18N_TEXT_0013__ / Expires: __EXPIRES_AT__</p>
+        <p class="mt-1 text-xs opacity-70">[GENERATED_AT]: __GENERATED_AT__</p>
+        <p class="mt-1 text-xs opacity-70">[EXPIRE_AT]: __EXPIRES_AT__</p>
       </header>
 
       <section class="panel mb-3">
@@ -27,8 +27,8 @@ __DEFAULT_CSS__
           <button class="chip" data-range="90" type="button">90D</button>
         </div>
         <div class="kpi-row text-sm">
-          <span>__I18N_TEXT_0175__ Price: <strong id="price-value">--</strong></span>
-          <span>__I18N_TEXT_0176__ Change: <strong id="change-value">--</strong></span>
+          <span>[PRICE_LABEL]: <strong id="price-value">--</strong></span>
+          <span>[CHANGE_LABEL]: <strong id="change-value">--</strong></span>
         </div>
         <div id="chart" class="chart mt-2"></div>
       </section>

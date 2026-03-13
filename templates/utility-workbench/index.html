@@ -15,30 +15,30 @@ __DEFAULT_CSS__
         <p class="label">Utility Tool</p>
         <h1 class="text-xl font-semibold">__PAGE_TITLE__</h1>
         <p class="text-sm text-slate-600">__PAGE_SUBTITLE__</p>
-        <p class="mt-1 text-xs text-slate-500">__I18N_TEXT_0012__ / Generated: __GENERATED_AT__</p>
-        <p class="mt-1 text-xs text-slate-500">__I18N_TEXT_0013__ / Expires: __EXPIRES_AT__</p>
+        <p class="mt-1 text-xs text-slate-500">[GENERATED_AT]: __GENERATED_AT__</p>
+        <p class="mt-1 text-xs text-slate-500">[EXPIRE_AT]: __EXPIRES_AT__</p>
       </header>
 
       <section class="panel mb-3">
-        <label class="label" for="input-text">__I18N_TEXT_0125__ Input</label>
+        <label class="label" for="input-text">[INPUT_LABEL]</label>
         <textarea id="input-text" rows="5" placeholder="Paste text..." class="field"></textarea>
 
-        <label class="label mt-3" for="mode">__I18N_TEXT_0191__ Mode</label>
+        <label class="label mt-3" for="mode">[MODE_LABEL]</label>
         <select id="mode" class="field">
-          <option value="trim">__I18N_TEXT_0192__ Trim</option>
-          <option value="upper">__I18N_TEXT_0193__ Uppercase</option>
-          <option value="lower">__I18N_TEXT_0194__ Lowercase</option>
-          <option value="count">__I18N_TEXT_0195__ Count</option>
+          <option value="trim">[MODE_TRIM]</option>
+          <option value="upper">[MODE_UPPER]</option>
+          <option value="lower">[MODE_LOWER]</option>
+          <option value="count">[MODE_COUNT]</option>
         </select>
 
         <div class="mt-3 flex gap-2">
-          <button id="run-btn" class="btn flex-1" type="button">__I18N_TEXT_0196__ Run</button>
-          <button id="copy-btn" class="btn-secondary flex-1" type="button">__I18N_TEXT_0190__ Copy</button>
+          <button id="run-btn" class="btn flex-1" type="button">[RUN_BUTTON]</button>
+          <button id="copy-btn" class="btn-secondary flex-1" type="button">[COPY_BUTTON]</button>
         </div>
       </section>
 
       <section class="panel mb-3">
-        <p class="label">__I18N_TEXT_0197__ Output</p>
+        <p class="label">[OUTPUT_LABEL]</p>
         <pre id="output" class="output"></pre>
       </section>
 

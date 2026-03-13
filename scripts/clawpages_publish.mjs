@@ -69,15 +69,15 @@ function buildAccessUrl({ rootUrl, accessUrl, pagecode }) {
 
 function formatExpiryText({ isUpdate, ttlProvided, ttlMsApplied, nowMs }) {
   if (isUpdate && !ttlProvided) {
-    return "__I18N_TEXT_0001__(__I18N_TEXT_0002__)";
+    return "[EXPIRE_AT_UNCHANGED]";
   }
   if (ttlMsApplied === null) {
-    return "__I18N_TEXT_0003__";
+    return "[NEVER_EXPIRES]";
   }
   if (typeof ttlMsApplied === "number" && Number.isFinite(ttlMsApplied)) {
     return new Date(nowMs + ttlMsApplied).toLocaleString("zh-CN", { hour12: false });
   }
-  return "__I18N_TEXT_0004__";
+  return "[EXPIRE_AT_UNKNOWN]";
 }
 
 function escapeHtml(input) {
@@ -432,9 +432,9 @@ async function main() {
 
   const pageDirArg = args["page-dir"] ? String(args["page-dir"]) : "";
   const pageDir = pageDirArg ? path.resolve(pageDirArg) : "";
-  const defaultTitle = pageDir ? path.basename(pageDir) : "__I18N_TEXT_0005__";
+  const defaultTitle = pageDir ? path.basename(pageDir) : "[PAGE_TITLE]";
   const title = String(args.title || defaultTitle);
-  const subtitle = String(args.subtitle || "__I18N_TEXT_0006__");
+  const subtitle = String(args.subtitle || "[PAGE_SUBTITLE]");
   const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
   const pageId = args["page-id"] ? String(args["page-id"]) : "";
   const isUpdate = Boolean(pageId);

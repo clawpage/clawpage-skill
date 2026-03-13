@@ -27,9 +27,9 @@
     var text = outputEl.textContent || "";
     if (!text) return;
     navigator.clipboard.writeText(text).then(function() {
-      copyBtn.textContent = "__I18N_TEXT_0189__ Copied";
+      copyBtn.textContent = "[COPY_DONE]";
       setTimeout(function() {
-        copyBtn.textContent = "__I18N_TEXT_0190__ Copy";
+        copyBtn.textContent = "[COPY_BUTTON]";
       }, 1000);
     });
   });
