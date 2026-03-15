@@ -42,6 +42,7 @@ cp -R ../../templates/genernal_template ../../.pages/[PAGE_NAME]
 
 4. Edit page project (`index.html` first, then `default.css` / `default.js` as needed).
 - **Important:** `index.html` contains `__CONTENT_HTML__` as the main content zone. You must replace it with real HTML content before publish. The publish script does **not** fill this placeholder — any unresolved `__CONTENT_HTML__` will be left as a literal string in the output.
+- **Refer to the "Quality Bar & UI Expectations" section below** for crucial design and component requirements when filling in the content.
 
 5. Apply localization and output contracts from `../../references/prompt-contracts.md`.
 
@@ -94,3 +95,12 @@ Optional:
 - `429 OWNER_DAILY_PAGE_CREATE_LIMIT_REACHED` -> stop create attempts and retry later.
 - `429 OWNER_MONTHLY_PERMANENT_PAGE_LIMIT_REACHED` -> suggest shorter TTL or cleanup of permanent pages.
 - network/5xx -> report status/body and retry with `--api-host` verification.
+
+## Quality Bar & UI Expectations (Crucial)
+
+**Treat the generated page as a modern Web App, not a plain text document.** Always apply these principles:
+- **Preloaded Toolchain**: The default template includes TailwindCSS, Mermaid.js, and jQuery (`index.html` `<head>`). **You MUST heavily utilize them**.
+- **Modern Layout with Tailwind**: Never generate bare HTML tags like `<p>` and `<ul>`. Use Tailwind utility classes for structure (e.g., responsive grids, flexbox), modern aesthetics (e.g., `bg-white/10` glassmorphism, `rounded-xl`, `shadow-lg`, gradients), and proper layout spacing.
+- **Rich Components over Long Text**: Break down long information into Data Cards, Dashboards, Accordions, Interactive Tabs, or collapsible sections.
+- **Data Visualization**: Whenever explaining complex logic, structures, workflows, or data, **use Mermaid.js** (mindmaps, pie charts, flowcharts) embedded directly in the page instead of writing lengthy text.
+- **Animations & Micro-interactions**: Actively write CSS in `default.css` to add CSS animations (e.g., fade-in keyframes, slide-up entries) and interactive hover states (`transition-all`, `hover:-translate-y-1`, hover styles, etc.) to make the interface feel alive and premium.

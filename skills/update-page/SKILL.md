@@ -86,7 +86,12 @@ Optional:
 - `429 OWNER_MONTHLY_PERMANENT_PAGE_LIMIT_REACHED` -> suggest shorter TTL or cleanup of permanent pages.
 - network/5xx -> report status/body and retry with `--api-host` verification.
 
-## Quality bar
+## Quality Bar & UI Expectations (Crucial)
 
-- keep WebApp behavior, do not regress to article-only page
-- prioritize modular panels, state areas, and interaction blocks
+**Treat the updated page as a modern Web App, not a plain text document.** Always apply these principles:
+- **Keep WebApp behavior**, do not regress an interactive page into an article-only page.
+- **Preloaded Toolchain**: Rely heavily on the preloaded TailwindCSS, Mermaid.js, and jQuery.
+- **Modern Layout**: Use Tailwind utility classes for modern aesthetics (e.g., responsive grids, flexbox, glassmorphism `bg-white/10`, `rounded-xl`, `shadow-lg`). Do not output bare HTML tags without styling.
+- **Rich Components**: Prioritize modular panels, data cards, state areas, accordions, and interaction blocks over raw text paragraphs.
+- **Data Visualization**: Use Mermaid.js (mindmaps, pie charts, flowcharts) for complex logic/structure instead of long text explanations.
+- **Animations & Micro-interactions**: Add engaging CSS animations (fade-in, slide-up keyframes) and interactive hover states in `default.css` to make the page feel premium.
