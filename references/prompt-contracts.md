@@ -2,13 +2,19 @@
 
 Use this file as the single source for shared prompt contracts across router/create/update skills.
 
-## 1. Localization Contract
+## 1. Placeholder Ownership & Localization Contract
 
-- Use semantic placeholders only (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`).
+**A. System-Managed Placeholders (DO NOT REPLACE)**
+- Format: `__UPPERCASE__` (e.g., `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__GENERATED_AT__`, `__EXPIRES_AT__`).
+- Rule: The Agent **must leave these untouched** in the HTML. The publish script will compute and replace them automatically.
+- *Exception*: `__CONTENT_HTML__` MUST be replaced by the Agent with rich UI components.
+
+**B. AI-Managed Semantic Placeholders (MUST REPLACE)**
+- Format: `[UPPERCASE]` (e.g., `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`).
+- Rule: The Agent **must instantiate** these placeholders into natural, goal-language strings (e.g. translate `[GENERATED_AT]` to "生成时间" or "Generated At").
 - Do not use numeric key placeholders.
 - Do not maintain key-mapping tables.
 - Infer user language from prompt; ask only when unclear.
-- Apply consistently to page/template user-visible text.
 
 ## 2. Output Schema (Fixed Fields)
 
@@ -55,7 +61,7 @@ Run and pass all checks before publish:
 1. `meta.md` metadata is complete (`metadata.name`, `metadata.description`; keep/update `metadata.page_id` when available).
 2. Required HTML placeholders are preserved: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`.
 3. Dry-run succeeds: `node scripts/clawpages_publish.mjs --page-dir <dir> --title "Preview" --dry-run`.
-4. No obvious unreplaced localization tags remain (for example unresolved semantic placeholders not intended for runtime).
+4. **Smart Zero-Tolerance for AI Placeholders:** Final HTML outputs must strictly NOT contain any uninstantiated semantic placeholders like `[GENERATED_AT]` or `[SEARCH_PLACEHOLDER]`. They must be translated and replaced before publishing. *(Note: Do not blindly strip all `[...]` to avoid breaking valid JavaScript arrays, Markdown links, or literal UI text like `Press [Enter]`).*
 5. **Non-empty content gate (mandatory):** before returning links, verify published HTML is not an empty shell.
    - Ensure `index.html` does not leave `__CONTENT_HTML__` unresolved — it must be replaced with real content HTML before publish.
    - If this gate fails, do not send URL; fill in the content and republish first.

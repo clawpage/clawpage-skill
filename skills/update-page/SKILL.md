@@ -40,14 +40,16 @@ done
 
 4. If semantics changed, sync `meta.md` metadata and notes.
 
-5. Apply localization and output contracts from `../../references/prompt-contracts.md`.
+5. **Placeholder Instantiation Pass (Mandatory)**: Before proceeding, scan your `index.html`, `default.css`, and `default.js` for any AI-Managed Semantic Placeholders (e.g., `[GENERATED_AT]`, `[EXPIRE_AT]`, `[SEARCH]`) and translate them into their literal localized strings based on the user's language.
 
-6. Run pre-publish hard checklist (must pass all):
+6. Apply localization and output contracts from `../../references/prompt-contracts.md`.
+
+7. Run pre-publish hard checklist (must pass all):
 - metadata complete in `meta.md`
-- required placeholders preserved in HTML
+- required `__SYSTEM__` placeholders preserved in HTML, while `[AI_SEMANTIC]` placeholders are fully translated
 - dry-run succeeds
 
-7. Publish update:
+8. Publish update:
 **Note:** Always replace placeholders in the following commands with real values.
 
 ```bash
@@ -63,7 +65,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection
 - `--page-name [SLUG]` rename page
 
-8. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
+9. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
 
 ## If `page-id` is missing
 

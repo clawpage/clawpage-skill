@@ -44,14 +44,16 @@ cp -R ../../templates/genernal_template ../../.pages/[PAGE_NAME]
 - **Important:** `index.html` contains `__CONTENT_HTML__` as the main content zone. You must replace it with real HTML content before publish. The publish script does **not** fill this placeholder — any unresolved `__CONTENT_HTML__` will be left as a literal string in the output.
 - **Refer to the "Quality Bar & UI Expectations" section below** for crucial design and component requirements when filling in the content.
 
-5. Apply localization and output contracts from `../../references/prompt-contracts.md`.
+5. **Placeholder Instantiation Pass (Mandatory)**: Before proceeding, scan your `index.html`, `default.css`, and `default.js` for any AI-Managed Semantic Placeholders (e.g., `[GENERATED_AT]`, `[EXPIRE_AT]`, `[SEARCH]`) and translate them into their literal localized strings based on the user's language.
 
-6. Run pre-publish hard checklist (must pass all):
+6. Apply localization and output contracts from `../../references/prompt-contracts.md`.
+
+7. Run pre-publish hard checklist (must pass all):
 - metadata complete in `meta.md`
-- required placeholders preserved in HTML
+- required `__SYSTEM__` placeholders preserved in HTML, while `[AI_SEMANTIC]` placeholders are fully translated
 - dry-run succeeds
 
-7. Publish page:
+8. Publish page:
 - **Resolve PAGECODE**: If a private page is required, generate a 6-8 character random safe string (e.g., base64url or alphanumeric). Do not use fragile shell scripts for generation.
 
 ```bash
@@ -68,13 +70,13 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
 - `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
 
-8. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
+9. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
 
-9. Write returned `pageId` back to `../../.pages/[PAGE_NAME]/meta.md`:
+10. Write returned `pageId` back to `../../.pages/[PAGE_NAME]/meta.md`:
 - prefer `metadata.page_id`
 - optional mirror field: `page-id`
 
-10. Management-page proactive reminder rule:
+11. Management-page proactive reminder rule:
 - count non-management local page projects under `../../.pages` using this deterministic rule:
   - include only directories that contain `meta.md`
   - exclude directory named `page-management-center`
