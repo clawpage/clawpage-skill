@@ -80,6 +80,68 @@ function formatExpiryText({ isUpdate, ttlProvided, ttlMsApplied, nowMs }) {
   return "[EXPIRE_AT_UNKNOWN]";
 }
 
+function extractApiErrorCode(message) {
+  const match = message.match(/"(?:error|code)"\s*:\s*"([A-Z0-9_]+)"/);
+  return match ? match[1] : null;
+}
+
+function buildFailureResult(err) {
+  const errorMessage = err instanceof Error ? err.message : String(err);
+  const apiCode = extractApiErrorCode(errorMessage);
+  const statusMatch = errorMessage.match(/\bHTTP\s+(\d{3})\b/);
+  const status = statusMatch ? Number(statusMatch[1]) : null;
+
+  let errorCode = apiCode || (status ? `HTTP_${status}` : "UNKNOWN_ERROR");
+  let action = "Check inputs and retry.";
+
+  if (errorMessage.includes("keys file not found")) {
+    errorCode = "LOCAL_KEYS_FILE_MISSING";
+    action = "Create keys.local.json from keys.local.example.json, then add clawpage.token.";
+  } else if (errorMessage.includes("token missing in keys.local.json")) {
+    errorCode = "LOCAL_TOKEN_MISSING";
+    action = "Add a valid clawpage.token in keys.local.json and retry.";
+  } else if (errorMessage.includes("fetch failed")) {
+    errorCode = "NETWORK_ERROR";
+    action = "Check network connectivity/DNS and api-host reachability, then retry.";
+  } else if (apiCode === "UNAUTHORIZED" || status === 401) {
+    errorCode = "UNAUTHORIZED";
+    action = "Verify token in keys.local.json and retry.";
+  } else if (apiCode === "PAGE_NOT_FOUND" || status === 404) {
+    errorCode = "PAGE_NOT_FOUND";
+    action = "Verify pageId ownership/existence; create/bind page first if needed.";
+  } else if (apiCode === "USERNAME_TAKEN") {
+    errorCode = "USERNAME_TAKEN";
+    action = "Choose another username and retry registration.";
+  } else if (apiCode === "IP_DAILY_REGISTRATION_LIMIT_REACHED") {
+    errorCode = "IP_DAILY_REGISTRATION_LIMIT_REACHED";
+    action = "Retry registration the next day or use an existing account.";
+  } else if (apiCode === "OWNER_DAILY_PAGE_CREATE_LIMIT_REACHED") {
+    errorCode = "OWNER_DAILY_PAGE_CREATE_LIMIT_REACHED";
+    action = "Retry page creation later when daily quota resets.";
+  } else if (apiCode === "OWNER_MONTHLY_PERMANENT_PAGE_LIMIT_REACHED") {
+    errorCode = "OWNER_MONTHLY_PERMANENT_PAGE_LIMIT_REACHED";
+    action = "Use shorter TTL or delete/repurpose permanent pages.";
+  } else if (status === 429) {
+    errorCode = "RATE_LIMITED";
+    action = "Retry later and inspect rate-limit details in response body.";
+  } else if (status && status >= 500) {
+    errorCode = "SERVER_ERROR";
+    action = "Retry later and verify --api-host if needed.";
+  }
+
+  return {
+    ok: false,
+    errorCode,
+    errorMessage,
+    action,
+  };
+}
+
+function buildSuccessSummary({ mode, pageId, publicUrl, rootUrl, accessUrl }) {
+  const primaryUrl = publicUrl || rootUrl || accessUrl || "[NO_URL]";
+  return `${mode} page ${pageId} successfully. Share: ${primaryUrl}`;
+}
+
 function escapeHtml(input) {
   return input
     .replace(/&/g, "&amp;")
@@ -514,6 +576,13 @@ async function main() {
   const result = {
     ok: true,
     mode: isUpdate ? "updated" : "created",
+    summary: buildSuccessSummary({
+      mode: isUpdate ? "updated" : "created",
+      pageId: page.pageId || pageId,
+      publicUrl,
+      rootUrl,
+      accessUrl,
+    }),
     pageId: page.pageId || pageId,
     username: page.username || data?.username || null,
     pageName: page.pageName || pageName || null,
@@ -541,6 +610,7 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(`[clawpage] ${err.message}`);
+  const failure = buildFailureResult(err);
+  console.log(JSON.stringify(failure, null, 2));
   process.exit(1);
 });

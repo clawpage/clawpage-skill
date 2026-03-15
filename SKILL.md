@@ -1,26 +1,24 @@
 ---
 name: clawpage-skill
-description: Clawpage router skill that dispatches to create page / update page / create template / update template workflows. Use when a user wants to build, revise, or publish a Clawpage web page/template and get a URL.
+description: Router for Clawpage workflows. Trigger on intents like create/new page, update existing page/pageId/.pages project, create/update template, publish and return URL fields (`publicUrl`/`rootUrl`/`accessUrl`). Do not use for unrelated coding tasks outside Clawpage page/template lifecycle.
 ---
 
 # Clawpage Skill (Router)
 
-## When to use
+## Purpose
 
-- User wants a new Clawpage web page
-- User wants to revise an existing page
-- User wants a new template or template update
-- User wants publish output with `publicUrl` / `rootUrl` / `accessUrl` / pageId / expiry / access-code status
+This router only decides which sub-skill to invoke.
+All execution details (workflow, output, localization, checks, failure handling) are defined in sub-skills and shared contracts.
 
 ## Sub-skills
 
 1. `create page`
 - Path: `skills/create-page/SKILL.md`
-- Purpose: create a page project and publish (create default TTL 6h, supports `pagecode`)
+- Purpose: create a new page project and publish
 
 2. `update page`
 - Path: `skills/update-page/SKILL.md`
-- Purpose: update an existing page project and publish (prefer `page-id` from `index.md`, supports TTL/pagecode updates)
+- Purpose: update an existing page project and republish
 
 3. `create template`
 - Path: `skills/create-template/SKILL.md`
@@ -30,93 +28,30 @@ description: Clawpage router skill that dispatches to create page / update page 
 - Path: `skills/update-template/SKILL.md`
 - Purpose: update an existing template structure/style/interaction/docs
 
-## Routing rules
+## Routing Priority (Conflict Resolution)
 
-- "create/new page" -> `create page`
-- "update/rework existing page" -> `update page`
-- "create/new template" -> `create template`
-- "update/improve template" -> `update template`
+Apply this priority order when intent is mixed:
 
-## Global conventions
+1. Explicit `page-id` / `pageId` / "update existing page" signal -> `update page`
+2. Existing local project intent (`.pages/<name>`, "基于旧页面", "沿用现有页面") -> `update page`
+3. Template-only intent (create/update template) -> `create template` or `update template`
+4. Otherwise default to creating a new page -> `create page`
 
-- API default: `https://api.clawpage.ai`
-- Preview URL pattern: `https://u-[username].clawpage.ai/pages/[pageId]`
-- Public URL pattern (no password): `https://[username].clawpage.ai/p/[page-name]`
-- Key file: `keys.local.json`
-- Page folder: `.pages/<page-name>`
-- Template folder: `templates/<template-name>`
-- Publish script: `scripts/clawpages_publish.mjs`
-- API reference: `references/api-quickref.md`
+## Keyword Hints
 
-## Registration workflow
+- Create page: "new/create page", "from template", "发布新页面"
+- Update page: "update/rework/revise", "existing page", "page-id"
+- Create template: "new template", "模板搭建"
+- Update template: "improve template", "模板改版"
 
-If `keys.local.json` does not exist, register first (`username` required):
+## Global Non-Negotiable Constraints
 
-- Do not pick a username on behalf of the user without confirmation.
-- If user does not provide one, propose 3 options based on user context.
-- Prefer `semantic-word + hyphen + short-digits` (example: `builder-lab-27`).
+- Never remove required HTML placeholders: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`.
+- Do not fabricate `pageId` for updates.
+- Use API default `https://api.clawpage.ai` unless user overrides.
 
-Username rules:
+## References
 
-- lowercase letters, digits, hyphen only (`a-z`, `0-9`, `-`)
-- length >= 6
-- cannot start or end with `-`
-
-```bash
-curl -sS -X POST https://api.clawpage.ai/api/register \
-  -H 'Content-Type: application/json' \
-  -d '{"username":"<username>"}'
-```
-
-If API returns `409 USERNAME_TAKEN`:
-
-- explicitly tell user the name is already taken
-- provide 3 new candidates based on the original candidate
-- prefer adding 2-4 digits or suffixes like `-lab`, `-app`
-- retry registration after user selection
-
-Save token to `keys.local.json`:
-
-```json
-{
-  "clawpage": {
-    "token": "sk_replace_me",
-    "apiHost": "https://api.clawpage.ai"
-  }
-}
-```
-
-## Localization placeholders policy
-
-- Use semantic placeholders for localized text (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`).
-- Do not use numeric key placeholders.
-- Do not maintain any key-mapping table; fill placeholders directly in user-preferred language.
-- Infer preferred language from the user's prompt; if unclear, ask briefly.
-- Apply this rule to page/template content and user-visible labels.
-
-## Common publish command
-
-```bash
-node scripts/clawpages_publish.mjs \
-  --page-dir .pages/<page-name> \
-  --title "<TITLE_PLACEHOLDER>" \
-  --subtitle "<SUBTITLE_PLACEHOLDER>"
-```
-
-Create mode default TTL is 6h (`21600000`) unless `--ttl-ms` overrides it.
-Use `--page-name` with `--pagecode null` when user wants a stable public sharing URL (`publicUrl`).
-
-## Output contract
-
-- Return a short 1-2 sentence summary
-- Return URL fields with priority:
-  - `publicUrl` (best sharing URL when page is public/no-password)
-  - `rootUrl` / `pageUrlNoPagecode` (preview URL without `pagecode`)
-  - `accessUrl` / `pageUrlWithPagecode` when protection is enabled
-- Always include sharing guidance:
-  - if `publicUrl` exists, prefer `publicUrl` for external sharing
-  - if page is protected and `publicUrl` is null, share `rootUrl` + `pagecode` separately
-  - only share `accessUrl` (URL with `pagecode`) when user explicitly asks for one-click access
-- Return expiry info and protection status for both create/update
-- If this run sets `pagecode`, return the current code
-- On failure, return explicit cause and actionable fix
+- API semantics: `references/api-quickref.md`
+- Shared prompt contracts (output/localization/checks/errors): `references/prompt-contracts.md`
+- Publish entrypoint: `scripts/clawpages_publish.mjs`
