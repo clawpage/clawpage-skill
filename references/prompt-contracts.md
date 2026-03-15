@@ -28,6 +28,7 @@ For successful create/update runs, always return these fields in the JSON output
 | `pagecodeUpdated` | yes | no | whether protection changed this run |
 | `ttlMsApplied` | yes | yes | effective TTL after this run |
 | `expiresAt` | yes | yes | effective expiry ISO timestamp |
+| `warnings` | yes | no | array of strings for quota/limit warnings (may be empty if endpoint provides none) |
 | `htmlPath` | yes | no | local bundled html path |
 
 Failure output must include:

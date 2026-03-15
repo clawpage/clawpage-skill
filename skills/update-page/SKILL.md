@@ -17,6 +17,7 @@ description: Trigger when user wants to modify an existing page/project/pageId (
 - Publish script: `../../scripts/clawpages_publish.mjs`
 - API reference: `../../references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
 - Shared contracts: `../../references/prompt-contracts.md`
+- `page-name` must be kebab-case and cannot contain `/`
 
 ## Matching strategy (two-phase)
 

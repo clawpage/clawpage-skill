@@ -603,6 +603,7 @@ async function main() {
     currentVersion: page.currentVersion || data?.currentVersion,
     ttlMsApplied,
     expiresAt: finalExpiresAt,
+    warnings: Array.isArray(data?.warnings) ? data.warnings : [],
     // Backward-compatible aliases
     passwordUpdated: pagecodeUpdated,
     passwordProtected: pagecodeProtected,

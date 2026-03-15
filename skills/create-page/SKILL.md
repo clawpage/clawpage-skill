@@ -17,7 +17,7 @@ description: Trigger when user wants a brand-new page (keywords: create/new page
 - Publish script: `../../scripts/clawpages_publish.mjs`
 - API reference: `../../references/api-quickref.md`
 - Shared contracts: `../../references/prompt-contracts.md`
-- `page-name` must be kebab-case
+- `page-name` must be kebab-case and cannot contain `/`
 - Create default policy (unless user explicitly overrides):
   - private page by default (`pagecode` required)
   - TTL: 3h (`10800000`)
