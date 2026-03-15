@@ -504,6 +504,7 @@ async function main() {
     ? (isUpdate ? null : (returnedPagecode ? true : null))
     : (resolvedPagecode !== null && resolvedPagecode !== "");
   const rootUrl = page.rootUrl || data?.rootUrl || null;
+  const publicUrl = page.publicUrl || data?.publicUrl || null;
   const accessUrl = buildAccessUrl({
     rootUrl,
     accessUrl: data?.accessUrl || null,
@@ -518,10 +519,11 @@ async function main() {
     pageName: page.pageName || pageName || null,
     url: rootUrl,
     rootUrl,
+    publicUrl,
     accessUrl,
     pageUrlNoPagecode: rootUrl,
     pageUrlWithPagecode: accessUrl,
-    shareRecommendedUrl: rootUrl,
+    shareRecommendedUrl: publicUrl || rootUrl,
     pagecode: resolvedPagecode ?? null,
     pagecodeUpdated,
     pagecodeProtected,

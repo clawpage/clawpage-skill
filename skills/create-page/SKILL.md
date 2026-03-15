@@ -55,15 +55,18 @@ node ../scripts/clawpages_publish.mjs \
 Optional:
 - `--ttl-ms <number|null>` override expiry (`null` = permanent)
 - `--pagecode <text|null>` set/remove access protection
+- `--page-name <text>` set page slug source (`pagecode: null` + `page-name` helps get stable `publicUrl`)
 
 7. Return to user
 - 1-2 sentence summary
-- return two URLs:
-  - URL without `pagecode` (`rootUrl` / `pageUrlNoPagecode`)
-  - URL with `pagecode` (`accessUrl` / `pageUrlWithPagecode`) when protected
+- return URL fields with priority:
+  - `publicUrl` (best sharing URL when page is public/no-password)
+  - `rootUrl` / `pageUrlNoPagecode` (preview URL without `pagecode`)
+  - `accessUrl` / `pageUrlWithPagecode` when protected
 - add sharing caution:
-  - for cautious external sharing, prefer URL without `pagecode`
-  - share `pagecode` separately and only to intended recipients
+  - if `publicUrl` exists, prefer `publicUrl` for external sharing
+  - if page is protected and `publicUrl` is null, share `rootUrl` + `pagecode` separately
+  - only share `accessUrl` (URL with `pagecode`) when user explicitly asks for one-click access
 - expiry info (`ttlMsApplied`, `expiresAt`)
 - protection state
 

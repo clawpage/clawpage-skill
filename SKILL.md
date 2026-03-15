@@ -10,7 +10,7 @@ description: Clawpage router skill that dispatches to create page / update page 
 - User wants a new Clawpage web page
 - User wants to revise an existing page
 - User wants a new template or template update
-- User wants publish output with URL / pageId / expiry / access-code status
+- User wants publish output with `publicUrl` / `rootUrl` / `accessUrl` / pageId / expiry / access-code status
 
 ## Sub-skills
 
@@ -41,6 +41,7 @@ description: Clawpage router skill that dispatches to create page / update page 
 
 - API default: `https://api.clawpage.ai`
 - Preview URL pattern: `https://u-[username].clawpage.ai/pages/[pageId]`
+- Public URL pattern (no password): `https://[username].clawpage.ai/p/[page-name]`
 - Key file: `keys.local.json`
 - Page folder: `.pages/<page-name>`
 - Template folder: `templates/<template-name>`
@@ -103,16 +104,19 @@ node scripts/clawpages_publish.mjs \
 ```
 
 Create mode default TTL is 6h (`21600000`) unless `--ttl-ms` overrides it.
+Use `--page-name` with `--pagecode null` when user wants a stable public sharing URL (`publicUrl`).
 
 ## Output contract
 
 - Return a short 1-2 sentence summary
-- Return two page URLs:
-  - URL without `pagecode` (`rootUrl` / `pageUrlNoPagecode`)
-  - URL with `pagecode` (`accessUrl` / `pageUrlWithPagecode`) when protection is enabled
+- Return URL fields with priority:
+  - `publicUrl` (best sharing URL when page is public/no-password)
+  - `rootUrl` / `pageUrlNoPagecode` (preview URL without `pagecode`)
+  - `accessUrl` / `pageUrlWithPagecode` when protection is enabled
 - Always include sharing guidance:
-  - for cautious external sharing, prefer the URL without `pagecode`
-  - share `pagecode` only with intended recipients
+  - if `publicUrl` exists, prefer `publicUrl` for external sharing
+  - if page is protected and `publicUrl` is null, share `rootUrl` + `pagecode` separately
+  - only share `accessUrl` (URL with `pagecode`) when user explicitly asks for one-click access
 - Return expiry info and protection status for both create/update
 - If this run sets `pagecode`, return the current code
 - On failure, return explicit cause and actionable fix

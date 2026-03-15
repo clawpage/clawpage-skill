@@ -61,7 +61,7 @@ Requirements:
 1) extract 5 key conclusions
 2) include KPI cards and 7D/30D/90D trend switching
 3) mobile-first layout
-4) publish and return rootUrl, accessUrl, pageId, expiresAt
+4) publish and return publicUrl, rootUrl, accessUrl, pageId, expiresAt
 ```
 
 Typical workflow:
@@ -69,7 +69,7 @@ Typical workflow:
 - transform raw text into structured modules (summary, risks, observations)
 - generate page files under `.pages/<page-name>/`
 - publish via `scripts/clawpages_publish.mjs`
-- return URL, page protection state, and expiry info
+- return `publicUrl` (if available), preview/protected URLs, page protection state, and expiry info
 
 ## Template catalog
 
@@ -104,6 +104,7 @@ Common flags:
 - `--page-id <id>` update existing page
 - `--ttl-ms <number|null>` override TTL (`null` = permanent)
 - `--pagecode <text|null>` set/remove access code
+- `--page-name <text>` set page name (use with `--pagecode null` for stable `publicUrl`)
 - `--dry-run` bundle only
 
 ## Localization placeholders
