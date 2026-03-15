@@ -112,6 +112,27 @@ body {
   color: var(--muted) !important;
 }
 
+.hosted-footer {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--muted);
+  opacity: 0.78;
+}
+
+.hosted-footer a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(47, 143, 255, 0.35);
+  text-underline-offset: 2px;
+}
+
+.hosted-footer a:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .field,
   .chip {

@@ -32,10 +32,24 @@ __DEFAULT_CSS__
       </section>
 
       <section class="card content text-sm">__CONTENT_HTML__</section>
+
+      <footer id="clawpage-hosted-footer" class="hosted-footer" aria-label="Hosting attribution">Hosted by <a href="https://clawpage.ai" target="_blank" rel="noopener noreferrer">Clawpage.ai</a></footer>
     </main>
 
     <script>
 __DEFAULT_JS__
+
+(function () {
+  var footer = document.getElementById("clawpage-hosted-footer");
+  if (!footer) return;
+  var lang = String((navigator.language || navigator.userLanguage || "")).toLowerCase();
+  if (lang.indexOf("zh") !== 0) return;
+  var link = footer.querySelector("a");
+  if (!link) return;
+  footer.textContent = "由 ";
+  footer.appendChild(link);
+  footer.appendChild(document.createTextNode(" 托管"));
+})();
     </script>
   </body>
 </html>
