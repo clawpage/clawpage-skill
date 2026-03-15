@@ -55,6 +55,7 @@ Apply this priority order when intent is mixed:
 - Never remove required HTML placeholders: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`.
 - Do not fabricate `pageId` for updates.
 - Use API default `https://api.clawpage.ai` unless user overrides.
+- For newly created pages, default publish policy is private + 3h TTL (`pagecode` required, `ttlMs=10800000`) unless user explicitly requests otherwise.
 - Management page must be read-only (no destructive operations).
 
 ## References

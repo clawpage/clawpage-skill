@@ -72,6 +72,9 @@ Optional:
 
 - tell user the local page is not yet bound to a remote `pageId`
 - optionally create once, write back `pageId`, then continue update workflow
+- when this fallback create is used, apply create default policy unless user explicitly overrides:
+  - private page (`pagecode` required)
+  - `ttlMs=10800000` (3h)
 
 ## Failure handling (error code -> action)
 

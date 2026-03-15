@@ -18,7 +18,9 @@ description: Trigger when user wants a brand-new page (keywords: create/new page
 - API reference: `../../references/api-quickref.md`
 - Shared contracts: `../../references/prompt-contracts.md`
 - `page-name` must be kebab-case
-- Create default TTL: 6h (`21600000`) unless explicitly overridden
+- Create default policy (unless user explicitly overrides):
+  - private page by default (`pagecode` required)
+  - TTL: 3h (`10800000`)
 
 ## Workflow
 
@@ -47,16 +49,26 @@ cp -R ../../templates/genernal_template ../../.pages/<page-name>
 
 7. Publish page:
 
+- resolve `PAGECODE` before publish (never pass literal placeholder):
+
+```bash
+if [ -z "${PAGECODE}" ] || [ "${PAGECODE}" = "<PAGECODE>" ]; then
+  PAGECODE="$(node -e 'process.stdout.write(require("crypto").randomBytes(6).toString("base64url"))')"
+fi
+```
+
 ```bash
 node ../../scripts/clawpages_publish.mjs \
   --page-dir ../../.pages/<page-name> \
   --title "<TITLE_PLACEHOLDER>" \
-  --subtitle "<SUBTITLE_PLACEHOLDER>"
+  --subtitle "<SUBTITLE_PLACEHOLDER>" \
+  --ttl-ms 10800000 \
+  --pagecode "${PAGECODE}"
 ```
 
 Optional:
-- `--ttl-ms <number|null>` override expiry (`null` = permanent)
-- `--pagecode <text|null>` set/remove access protection
+- `--ttl-ms <number|null>` override expiry (`null` = permanent); default is `10800000`
+- `--pagecode <text|null>` set/remove access protection; default is generated non-empty value
 - `--page-name <text>` set page slug source (`pagecode: null` + `page-name` helps get stable `publicUrl`)
 
 8. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
