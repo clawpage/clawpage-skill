@@ -26,14 +26,16 @@ description: Trigger when user wants a brand-new page (keywords: create/new page
 
 1. Choose template (default `genernal_template`).
 2. Resolve target directory strategy before copy:
-- if `../../.pages/<page-name>` does not exist: copy directly.
-- if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new page-name`.
+- if `../../.pages/[PAGE_NAME]` does not exist: copy directly.
+- if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new [PAGE_NAME]`.
+
+**Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-cp -R ../../templates/genernal_template ../../.pages/<page-name>
+cp -R ../../templates/genernal_template ../../.pages/[PAGE_NAME]
 ```
 
-3. Update `../../.pages/<page-name>/index.md`:
+3. Update `../../.pages/[PAGE_NAME]/index.md`:
 - required metadata: `metadata.name`, `metadata.description`
 - add page purpose, audience, and scenario
 
@@ -45,35 +47,27 @@ cp -R ../../templates/genernal_template ../../.pages/<page-name>
 - metadata complete in `index.md`
 - required placeholders preserved in HTML
 - dry-run succeeds
-- no obvious unreplaced localization labels
 
 7. Publish page:
-
-- resolve `PAGECODE` before publish (never pass literal placeholder):
-
-```bash
-if [ -z "${PAGECODE}" ] || [ "${PAGECODE}" = "<PAGECODE>" ]; then
-  PAGECODE="$(node -e 'process.stdout.write(require("crypto").randomBytes(6).toString("base64url"))')"
-fi
-```
+- **Resolve PAGECODE**: If a private page is required, generate a 6-8 character random safe string (e.g., base64url or alphanumeric). Do not use fragile shell scripts for generation.
 
 ```bash
 node ../../scripts/clawpages_publish.mjs \
-  --page-dir ../../.pages/<page-name> \
-  --title "<TITLE_PLACEHOLDER>" \
-  --subtitle "<SUBTITLE_PLACEHOLDER>" \
+  --page-dir ../../.pages/[PAGE_NAME] \
+  --title "[TITLE]" \
+  --subtitle "[SUBTITLE]" \
   --ttl-ms 10800000 \
-  --pagecode "${PAGECODE}"
+  --pagecode "[GENERATED_PAGECODE]"
 ```
 
 Optional:
-- `--ttl-ms <number|null>` override expiry (`null` = permanent); default is `10800000`
-- `--pagecode <text|null>` set/remove access protection; default is generated non-empty value
-- `--page-name <text>` set page slug source (`pagecode: null` + `page-name` helps get stable `publicUrl`)
+- `--ttl-ms [MS_OR_NULL]` override expiry (`null` = permanent); default is `10800000`
+- `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
+- `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
 
 8. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
 
-9. Write returned `pageId` back to `../../.pages/<page-name>/index.md`:
+9. Write returned `pageId` back to `../../.pages/[PAGE_NAME]/index.md`:
 - prefer `metadata.page_id`
 - optional mirror field: `page-id`
 

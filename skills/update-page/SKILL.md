@@ -36,11 +36,7 @@ done
 
 1. Edit `index.html` first.
 2. Update `default.css` / `default.js` as required.
-3. Read `page-id` from `index.md` when available:
-
-```bash
-PAGE_ID=$(sed -n 's/^[[:space:]]*page_id:[[:space:]]*//p; s/^- page-id:[[:space:]]*//p' ../../.pages/<page-name>/index.md | head -n 1 | tr -d '"')
-```
+3. **Identify PAGE_ID**: Use `read_file` to read `../../.pages/[PAGE_NAME]/index.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell scripts for extraction.
 
 4. If semantics changed, sync `index.md` metadata and notes.
 
@@ -50,22 +46,22 @@ PAGE_ID=$(sed -n 's/^[[:space:]]*page_id:[[:space:]]*//p; s/^- page-id:[[:space:
 - metadata complete in `index.md`
 - required placeholders preserved in HTML
 - dry-run succeeds
-- no obvious unreplaced localization labels
 
-7. Publish update (PATCH when `page-id` exists):
+7. Publish update:
+**Note:** Always replace placeholders in the following commands with real values.
 
 ```bash
 node ../../scripts/clawpages_publish.mjs \
-  --page-dir ../../.pages/<page-name> \
-  --page-id "$PAGE_ID" \
-  --title "<TITLE_PLACEHOLDER>" \
-  --subtitle "<SUBTITLE_PLACEHOLDER>"
+  --page-dir ../../.pages/[PAGE_NAME] \
+  --page-id "[PAGE_ID]" \
+  --title "[TITLE]" \
+  --subtitle "[SUBTITLE]"
 ```
 
 Optional:
-- `--ttl-ms <number|null>` modify expiry (`null` = permanent, omitted = unchanged)
-- `--pagecode <text|null>` set/remove access protection
-- `--page-name <text>` rename page (`pagecode: null` + `page-name` helps get stable `publicUrl`)
+- `--ttl-ms [MS_OR_NULL]` modify expiry (`null` = permanent, omitted = unchanged)
+- `--pagecode [CODE_OR_NULL]` set/remove access protection
+- `--page-name [SLUG]` rename page
 
 8. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
 

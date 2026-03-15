@@ -24,120 +24,82 @@ description: Trigger when user asks for a management/admin page that lists all c
 
 ## Workflow
 
-1. Resolve `MANAGEMENT_PAGE_DIR` once, then use it for all later steps:
-- valid management-page project must satisfy both:
+1. Resolve `MANAGEMENT_PAGE_DIR` once:
+- A valid management-page project must satisfy both:
   - has `index.md`
   - `index.md` contains `metadata.management_page: true`
-- first choice: `../../.pages/page-management-center` only when it satisfies the rule above
-- otherwise scan `../../.pages/*/index.md` for projects satisfying the same rule and pick one deterministic path (lexicographically first)
-- if none found, initialize a new management project with an existing-dir guard:
-  - if `../../.pages/page-management-center` does not exist: use it directly
-  - if it exists but does not satisfy management marker rule: do not copy into it; use `../../.pages/page-management-center-v2` (or next available `-vN`) as `MANAGEMENT_PAGE_DIR`
+- Preferred path: `../../.pages/page-management-center`
+- If the preferred path does not exist or lacks the marker, scan `../../.pages/*/index.md` for projects satisfying the rule and pick one deterministic path.
+- If none found, initialize a new project:
+  - if `../../.pages/page-management-center` does not exist: use it.
+  - if it exists but lacks the marker: use `../../.pages/page-management-center-v2` (or next available `-vN`).
+
+**Note:** Always replace `[MANAGEMENT_PAGE_DIR]` in the following commands with the actual resolved path.
 
 ```bash
-cp -R ../../templates/genernal_template "${MANAGEMENT_PAGE_DIR}"
+cp -R ../../templates/genernal_template [MANAGEMENT_PAGE_DIR]
 ```
 
-2. Ensure metadata in `MANAGEMENT_PAGE_DIR/index.md` is explicit:
+2. Ensure metadata in `[MANAGEMENT_PAGE_DIR]/index.md` is explicit:
 - `metadata.name`
 - `metadata.description`
 - required marker: `metadata.management_page: true`
 
-3. Pull latest page list via API (`GET /api/pages?page=1&limit=20`, paginate if needed):
-- include key fields: `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, expiry/protection status when available
-- normalize empty values for stable rendering
-- capture data acquisition time as `dataFetchedAt` (ISO string + readable local time)
-- keep timezone context (for example `UTC+08:00` or browser locale timezone label)
+3. Pull latest page list via API. 
+- Use the token from `../../keys.local.json`.
+- Example command:
+```bash
+curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
+  -H "Authorization: Bearer [YOUR_TOKEN]"
+```
+- include key fields: `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, expiry/protection status.
+- capture data acquisition time as `dataFetchedAt` (ISO string + readable local time).
 
 4. Build a high-quality read-only UI:
-- emphasize clarity: search/filter/sort/read-only cards or table
-- no mutation controls (no delete/update API buttons)
-- expose share-relevant URLs and protection/expiry summaries
-- must clearly show data acquisition time in the header area, for example: `Data fetched at: <dataFetchedAt> (<timezone>)`
+- clarity: search/filter/sort/read-only cards or table.
+- no mutation controls (no delete/update API buttons).
+- expose share-relevant URLs and protection/expiry summaries.
+- show data acquisition time in the header: `Data fetched at: <dataFetchedAt> (<timezone>)`
 
 5. Apply localization/output contracts from `../../references/prompt-contracts.md`.
 
 6. Pre-publish hard checks (must pass):
-- `index.md` metadata complete
-- required placeholders preserved
-- dry-run succeeds
-- no obvious unreplaced localization tags
+- `index.md` metadata complete.
+- required placeholders preserved.
+- dry-run succeeds.
 
 7. Publish:
-- read update key only from frontmatter `metadata.page_id` in `MANAGEMENT_PAGE_DIR/index.md`:
+- **Identify PAGE_ID**: Use `read_file` to read `[MANAGEMENT_PAGE_DIR]/index.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell regex.
+- **Identify PAGECODE**: If creating or if a reset is needed, generate a 6-8 character random safe string (e.g., base64url or alphanumeric).
 
-```bash
-PAGE_ID="$(node -e 'const fs=require("fs");const s=fs.readFileSync(process.argv[1],"utf8");const fm=s.match(/^---\\n([\\s\\S]*?)\\n---/);if(!fm)process.exit(0);const meta=fm[1].match(/(?:^|\\n)metadata:\\n([\\s\\S]*?)(?=\\n\\S|$)/);if(!meta)process.exit(0);const pid=meta[1].match(/^\\s{2}page_id:\\s*"?([^"\\n]+)"?\\s*$/m);if(pid&&pid[1])process.stdout.write(pid[1].trim());' "${MANAGEMENT_PAGE_DIR}/index.md")"
-```
-
-- if `PAGE_ID` is empty -> create mode and then write back returned `pageId` to `metadata.page_id`
-- if `PAGE_ID` is non-empty -> update mode
-- publish target must always be `--page-dir "${MANAGEMENT_PAGE_DIR}"` (never hardcode another directory)
-- resolve `PAGECODE` only when needed:
-  - create mode: must have `PAGECODE` (generate if missing)
-  - update mode:
-    - if user explicitly requests rotate/reset password -> generate/use `PAGECODE` and pass `--pagecode`
-    - otherwise check current `pagecodeProtected` (via page detail API or latest known page metadata)
-    - if `pagecodeProtected` is `false` and user did not explicitly request public access -> generate/use `PAGECODE` and pass `--pagecode` (enforce secure default)
-    - if `pagecodeProtected` is `true` and user did not request reset -> do not pass `--pagecode` (avoid unnecessary password rotation)
-
-```bash
-if [ -z "${PAGECODE}" ] || [ "${PAGECODE}" = "<PAGECODE>" ]; then
-  PAGECODE="$(node -e 'process.stdout.write(require("crypto").randomBytes(6).toString("base64url"))')"
-fi
-```
-
-- create command:
-
+- **Create mode** (if `page_id` is missing):
 ```bash
 node ../../scripts/clawpages_publish.mjs \
-  --page-dir "${MANAGEMENT_PAGE_DIR}" \
-  --title "<TITLE_PLACEHOLDER>" \
-  --subtitle "<SUBTITLE_PLACEHOLDER>" \
+  --page-dir [MANAGEMENT_PAGE_DIR] \
+  --title "[TITLE]" \
+  --subtitle "[SUBTITLE]" \
   --ttl-ms 10800000 \
-  --pagecode "${PAGECODE}"
+  --pagecode "[GENERATED_PAGECODE]"
 ```
+- Write back the returned `pageId` to `metadata.page_id` in `[MANAGEMENT_PAGE_DIR]/index.md`.
 
-- update command:
-
+- **Update mode** (if `page_id` exists):
 ```bash
 node ../../scripts/clawpages_publish.mjs \
-  --page-dir "${MANAGEMENT_PAGE_DIR}" \
-  --page-id "${PAGE_ID}" \
-  --title "<TITLE_PLACEHOLDER>" \
-  --subtitle "<SUBTITLE_PLACEHOLDER>" \
+  --page-dir [MANAGEMENT_PAGE_DIR] \
+  --page-id "[PAGE_ID]" \
+  --title "[TITLE]" \
+  --subtitle "[SUBTITLE]" \
   --ttl-ms 10800000
 ```
-
-- update command when user explicitly requests pagecode reset:
-
-```bash
-node ../../scripts/clawpages_publish.mjs \
-  --page-dir "${MANAGEMENT_PAGE_DIR}" \
-  --page-id "${PAGE_ID}" \
-  --title "<TITLE_PLACEHOLDER>" \
-  --subtitle "<SUBTITLE_PLACEHOLDER>" \
-  --ttl-ms 10800000 \
-  --pagecode "${PAGECODE}"
-```
-
-Notes:
-- Create mode: if user does not provide `pagecode`, generate one and return it.
-- Update mode: if current page is already protected, default is keep existing password (do not pass `--pagecode`).
-- Update mode: if current page is public and user did not explicitly request public access, must set `--pagecode` to enforce password protection.
-- Update mode should pass `--pagecode` in exactly two cases: user explicitly requests reset/rotate, or current page is public and needs enforcement to meet secure default.
-- Do not publish management page with `--pagecode null` unless user explicitly requests public access.
+- *Note:* Add `--pagecode "[GENERATED_PAGECODE]"` only if rotating password or enforcing security on a previously public page.
 
 8. Return fixed output fields from `../../references/prompt-contracts.md`.
 
-9. Mandatory post-publish reminder (every create/update response):
-- clearly state: "This management page is valid for 3 hours by default and is password protected."
-- include actual values in same response:
-  - `ttlMsApplied`
-  - `expiresAt`
-  - `pagecodeProtected`
-  - `pagecode` (if set/returned)
-  - `dataFetchedAt` (the timestamp used in the management page)
+9. Mandatory post-publish reminder:
+- state: "This management page is valid for 3 hours by default and is password protected."
+- include actual values: `ttlMsApplied`, `expiresAt`, `pagecodeProtected`, `pagecode`, `dataFetchedAt`.
+
 
 ## Failure handling (error code -> action)
 
