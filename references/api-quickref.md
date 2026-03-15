@@ -49,7 +49,7 @@ Create API now supports:
 
 - `page_name?: string` (1-120)
 - `pagecode?: string | null`
-- `ttlMs?: number | null`
+- `ttlMs?: number | null` (must be a positive integer > 0, or `null` for permanent)
 
 Default behavior (when `pagecode` and `ttlMs` are omitted):
 

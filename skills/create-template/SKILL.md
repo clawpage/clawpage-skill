@@ -12,7 +12,7 @@ description: Create a new Clawpage template (index.html/default.css/default.js/i
 
 ## Template directory spec
 
-Create: `../templates/<template-name>/`
+Create: `../../templates/<template-name>/`
 
 Required files:
 - `index.html`
@@ -46,8 +46,8 @@ Required files:
 7. Validate with dry-run:
 
 ```bash
-node ../scripts/clawpages_publish.mjs \
-  --page-dir ../templates/<template-name> \
+node ../../scripts/clawpages_publish.mjs \
+  --page-dir ../../templates/<template-name> \
   --title "Template Preview" \
   --dry-run
 ```

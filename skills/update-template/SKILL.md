@@ -12,7 +12,7 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 
 ## Paths and conventions
 
-- Template directory: `../templates/<template-name>`
+- Template directory: `../../templates/<template-name>`
 - Files: `index.html`, `default.css`, `default.js`, `index.md`
 
 ## Template selection (two-phase)
@@ -34,8 +34,8 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 6. Validate with dry-run:
 
 ```bash
-node ../scripts/clawpages_publish.mjs \
-  --page-dir ../templates/<template-name> \
+node ../../scripts/clawpages_publish.mjs \
+  --page-dir ../../templates/<template-name> \
   --title "Template Preview" \
   --dry-run
 ```

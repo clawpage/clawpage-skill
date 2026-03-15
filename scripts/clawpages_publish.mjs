@@ -34,7 +34,7 @@ function parseTtlArg(value) {
     return { provided: true, ttlMs: null };
   }
   const num = Number(value);
-  if (!Number.isFinite(num) || num < 0) {
+  if (!Number.isFinite(num) || num <= 0) {
     throw new Error(`invalid --ttl-ms value: ${value}`);
   }
   return { provided: true, ttlMs: num };
@@ -562,9 +562,13 @@ async function main() {
   const page = data?.page || data || {};
   const returnedPagecode = typeof data?.pagecode === "string" ? data.pagecode : null;
   const resolvedPagecode = pagecode !== undefined ? pagecode : returnedPagecode;
-  const pagecodeProtected = resolvedPagecode === undefined
-    ? (isUpdate ? null : (returnedPagecode ? true : null))
-    : (resolvedPagecode !== null && resolvedPagecode !== "");
+
+  // SOT from backend response
+  const finalExpiresAt = page.expiresAt !== undefined ? page.expiresAt : expiresAt;
+  const pagecodeProtected = typeof page.passwordProtected === "boolean"
+    ? page.passwordProtected
+    : (pagecodeUpdated ? (pagecode !== null && pagecode !== "") : (isUpdate ? null : (returnedPagecode ? true : null)));
+
   const rootUrl = page.rootUrl || data?.rootUrl || null;
   const publicUrl = page.publicUrl || data?.publicUrl || null;
   const accessUrl = buildAccessUrl({
@@ -598,7 +602,7 @@ async function main() {
     pagecodeProtected,
     currentVersion: page.currentVersion || data?.currentVersion,
     ttlMsApplied,
-    expiresAt,
+    expiresAt: finalExpiresAt,
     // Backward-compatible aliases
     passwordUpdated: pagecodeUpdated,
     passwordProtected: pagecodeProtected,

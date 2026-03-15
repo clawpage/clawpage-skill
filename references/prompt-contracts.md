@@ -12,7 +12,7 @@ Use this file as the single source for shared prompt contracts across router/cre
 
 ## 2. Output Schema (Fixed Fields)
 
-For successful create/update runs, always return these fields (field names must stay stable):
+For successful create/update runs, always return these fields in the JSON output (field names must stay stable):
 
 | field | required | nullable | meaning |
 |---|---|---|---|
@@ -21,7 +21,7 @@ For successful create/update runs, always return these fields (field names must 
 | `pageId` | yes | no | remote page id |
 | `publicUrl` | yes | yes | public sharing URL when no password |
 | `rootUrl` | yes | yes | preview URL without `pagecode` |
-| `accessUrl` | yes | yes | URL with `pagecode` when protected |
+| `accessUrl` | yes | yes | URL with `pagecode` when protected (always in JSON, see Sharing Contract for human text) |
 | `shareRecommendedUrl` | yes | yes | prefer `publicUrl`, otherwise `rootUrl` |
 | `pagecode` | yes | yes | current pagecode if any |
 | `pagecodeProtected` | yes | yes | whether page is password protected |
@@ -41,11 +41,11 @@ Failure output must include:
 
 When calling `scripts/clawpages_publish.mjs`, this schema should be emitted as JSON even on failure (`ok: false` + non-zero exit code).
 
-## 3. Sharing Contract
+## 3. Sharing Contract (Human-readable responses)
 
 - If `publicUrl` exists, recommend sharing `publicUrl`.
 - If `publicUrl` is null and protection exists, share `rootUrl` and send `pagecode` separately.
-- Provide `accessUrl` only when user explicitly asks for one-click protected access.
+- **Provide `accessUrl` in human-readable text ONLY when user explicitly asks for one-click protected access.** (It must always be available in the JSON `accessUrl` field for tooling).
 
 ## 4. Pre-Publish Hard Checklist
 
