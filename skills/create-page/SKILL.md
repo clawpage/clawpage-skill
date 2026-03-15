@@ -38,8 +38,10 @@ cp -R ../../templates/genernal_template ../../.pages/[PAGE_NAME]
 3. Update `../../.pages/[PAGE_NAME]/index.md`:
 - required metadata: `metadata.name`, `metadata.description`
 - add page purpose, audience, and scenario
+- **Important:** `index.md` body is documentation only; it is **not** auto-rendered when publishing with `--page-dir`.
 
 4. Edit page project (`index.html` first, then `default.css` / `default.js` as needed).
+- **Important:** `index.html` contains `__CONTENT_HTML__` as the main content zone. You must replace it with real HTML content before publish. The publish script does **not** fill this placeholder — any unresolved `__CONTENT_HTML__` will be left as a literal string in the output.
 
 5. Apply localization and output contracts from `../../references/prompt-contracts.md`.
 

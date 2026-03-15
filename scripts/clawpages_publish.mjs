@@ -151,159 +151,7 @@ function escapeHtml(input) {
     .replace(/'/g, "&#39;");
 }
 
-function renderInline(text) {
-  const links = [];
-  let s = text;
 
-  // markdown links: [text](https://...)
-  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) => {
-    const idx = links.push({ label, url }) - 1;
-    return `__LINK_${idx}__`;
-  });
-
-  // plain links (strip common trailing punctuation)
-  s = s.replace(/(^|\s)(https?:\/\/[^\s<]+)/g, (_m, p1, rawUrl) => {
-    const url = rawUrl.replace(/[),.!?;:'",.!?;:,]+$/u, "");
-    const trailing = rawUrl.slice(url.length);
-    const idx = links.push({ label: url, url }) - 1;
-    return `${p1}__LINK_${idx}__${trailing}`;
-  });
-
-  s = escapeHtml(s);
-
-  // bold markdown (**text** / __text__)
-  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
-
-  s = s.replace(/__LINK_(\d+)__/g, (_m, n) => {
-    const link = links[Number(n)];
-    if (!link) return "";
-    const href = escapeHtml(link.url);
-    const label = escapeHtml(link.label);
-    return `<a href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`;
-  });
-
-  return s;
-}
-
-function markdownToHtml(md) {
-  const lines = md.replace(/\r\n/g, "\n").split("\n");
-  const out = [];
-  let inCode = false;
-  let codeLang = "";
-  let inUl = false;
-  let inOl = false;
-  let paragraph = [];
-
-  const closeParagraph = () => {
-    if (paragraph.length > 0) {
-      out.push(`<p>${paragraph.join(" ")}</p>`);
-      paragraph = [];
-    }
-  };
-
-  const closeLists = () => {
-    if (inUl) {
-      out.push("</ul>");
-      inUl = false;
-    }
-    if (inOl) {
-      out.push("</ol>");
-      inOl = false;
-    }
-  };
-
-  for (const rawLine of lines) {
-    const line = rawLine.trimEnd();
-
-    if (line.startsWith("```")) {
-      closeParagraph();
-      closeLists();
-      if (!inCode) {
-        inCode = true;
-        codeLang = line.replace(/^```/, "").trim().toLowerCase();
-        const languageClass = codeLang ? ` class="language-${escapeHtml(codeLang)}"` : "";
-        const dataLang = codeLang ? ` data-lang="${escapeHtml(codeLang)}"` : "";
-        out.push(`<pre${dataLang}><code${languageClass}>`);
-      } else {
-        inCode = false;
-        codeLang = "";
-        out.push("</code></pre>");
-      }
-      continue;
-    }
-
-    if (inCode) {
-      out.push(`${escapeHtml(rawLine)}\n`);
-      continue;
-    }
-
-    if (line.trim() === "") {
-      closeParagraph();
-      closeLists();
-      continue;
-    }
-
-    if (/^###\s+/.test(line)) {
-      closeParagraph();
-      closeLists();
-      out.push(`<h3>${escapeHtml(line.replace(/^###\s+/, ""))}</h3>`);
-      continue;
-    }
-
-    if (/^##\s+/.test(line)) {
-      closeParagraph();
-      closeLists();
-      out.push(`<h2>${escapeHtml(line.replace(/^##\s+/, ""))}</h2>`);
-      continue;
-    }
-
-    if (/^[-*]\s+/.test(line)) {
-      closeParagraph();
-      if (inOl) {
-        out.push("</ol>");
-        inOl = false;
-      }
-      if (!inUl) {
-        out.push("<ul>");
-        inUl = true;
-      }
-      out.push(`<li>${renderInline(line.replace(/^[-*]\s+/, ""))}</li>`);
-      continue;
-    }
-
-    if (/^\d+\.\s+/.test(line)) {
-      closeParagraph();
-      if (inUl) {
-        out.push("</ul>");
-        inUl = false;
-      }
-      if (!inOl) {
-        out.push("<ol>");
-        inOl = true;
-      }
-      out.push(`<li>${renderInline(line.replace(/^\d+\.\s+/, ""))}</li>`);
-      continue;
-    }
-
-    // Allow standalone raw HTML snippets so page toolkits can be used directly in content.
-    if (/^<[^>]+>/.test(line.trim())) {
-      closeParagraph();
-      closeLists();
-      out.push(rawLine);
-      continue;
-    }
-
-    closeLists();
-    paragraph.push(renderInline(line));
-  }
-
-  if (inCode) out.push("</code></pre>");
-  closeParagraph();
-  closeLists();
-
-  return out.join("\n");
-}
 
 function loadKeys(filePath) {
   if (!fs.existsSync(filePath)) {
@@ -333,27 +181,14 @@ function loadKeys(filePath) {
   return { token, apiHost };
 }
 
-function renderHtml({ template, title, subtitle, generatedAt, expiresAt, contentHtml }) {
+function renderHtml({ template, title, subtitle, generatedAt, expiresAt }) {
   return template
     .replaceAll("__PAGE_TITLE__", escapeHtml(title))
     .replaceAll("__PAGE_SUBTITLE__", escapeHtml(subtitle))
     .replaceAll("__GENERATED_AT__", escapeHtml(generatedAt))
-    .replaceAll("__EXPIRES_AT__", escapeHtml(expiresAt))
-    .replaceAll("__CONTENT_HTML__", contentHtml);
-}
-
-function bundleTemplate(templateDir) {
-  const indexPath = path.join(templateDir, "index.html");
-  const cssPath = path.join(templateDir, "default.css");
-  const jsPath = path.join(templateDir, "default.js");
-
-  const index = fs.readFileSync(indexPath, "utf8");
-  const css = fs.readFileSync(cssPath, "utf8");
-  const js = fs.readFileSync(jsPath, "utf8");
-
-  return index
-    .replaceAll("__DEFAULT_CSS__", css)
-    .replaceAll("__DEFAULT_JS__", js);
+    .replaceAll("__EXPIRES_AT__", escapeHtml(expiresAt));
+  // NOTE: __CONTENT_HTML__ is intentionally NOT replaced here.
+  // It must be filled by the agent directly in index.html before publish.
 }
 
 function bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt }) {
@@ -392,14 +227,9 @@ function bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt })
     html = html.replaceAll("__DEFAULT_JS__", "");
   }
 
-  return renderHtml({
-    template: html,
-    title,
-    subtitle,
-    generatedAt,
-    expiresAt,
-    contentHtml: "",
-  });
+  // __CONTENT_HTML__ is left as-is: the agent must have already replaced it in index.html.
+  // If it is still present here, the non-empty content gate in the publish checklist will catch it.
+  return renderHtml({ template: html, title, subtitle, generatedAt, expiresAt });
 }
 
 async function createPage({ apiHost, token, html, ttlMs, pageName, pagecode }) {
@@ -472,16 +302,14 @@ async function main() {
       [
         "Usage:",
         "  node scripts/clawpages_publish.mjs --page-dir <dir> [--title <title> --subtitle <text>]",
-        "  node scripts/clawpages_publish.mjs --title <title> --content-file <file>",
         "Options:",
-        "  --page-dir <path>          publish an existing page project directory",
+        "  --page-dir <path>          publish an existing page project directory (required)",
         "  --page-id <id>             update an existing page by pageId (PATCH)",
         "  --page-name <text>         page_name payload field",
         "  --pagecode <text|null>     set/remove URL access code (null = remove)",
         "  --password <text|null>     deprecated alias for --pagecode",
         "  --title <text>",
         "  --subtitle <text>",
-        "  --content <text>",
         "  --ttl-ms <number|null>     create default: 21600000 (6h)",
         "  --keys-file <path>",
         "  --api-host <url>",
@@ -493,8 +321,11 @@ async function main() {
   }
 
   const pageDirArg = args["page-dir"] ? String(args["page-dir"]) : "";
-  const pageDir = pageDirArg ? path.resolve(pageDirArg) : "";
-  const defaultTitle = pageDir ? path.basename(pageDir) : "[PAGE_TITLE]";
+  if (!pageDirArg) {
+    throw new Error("--page-dir is required");
+  }
+  const pageDir = path.resolve(pageDirArg);
+  const defaultTitle = path.basename(pageDir);
   const title = String(args.title || defaultTitle);
   const subtitle = String(args.subtitle || "[PAGE_SUBTITLE]");
   const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
@@ -509,24 +340,7 @@ async function main() {
   const expiresAt = computeExpiryIso(nowMs, ttlMsApplied);
   const expiresAtText = formatExpiryText({ isUpdate, ttlProvided: ttlArg.provided, ttlMsApplied, nowMs });
 
-  let html = "";
-  if (pageDir) {
-    html = bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt: expiresAtText });
-  } else {
-    let rawContent = "";
-    if (args["content-file"]) {
-      rawContent = fs.readFileSync(path.resolve(String(args["content-file"])), "utf8");
-    } else if (typeof args.content === "string") {
-      rawContent = args.content;
-    } else {
-      throw new Error("missing content: use --content-file or --content, or pass --page-dir");
-    }
-
-    const templateDir = path.join(skillRoot, "templates", "genernal_template");
-    const template = bundleTemplate(templateDir);
-    const contentHtml = markdownToHtml(rawContent);
-    html = renderHtml({ template, title, subtitle, generatedAt, expiresAt: expiresAtText, contentHtml });
-  }
+  const html = bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt: expiresAtText });
 
   const outputHtml = path.resolve(String(args["output-html"] || "/tmp/clawpages-preview.html"));
   fs.writeFileSync(outputHtml, html, "utf8");

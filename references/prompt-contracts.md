@@ -56,6 +56,9 @@ Run and pass all checks before publish:
 2. Required HTML placeholders are preserved: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`.
 3. Dry-run succeeds: `node scripts/clawpages_publish.mjs --page-dir <dir> --title "Preview" --dry-run`.
 4. No obvious unreplaced localization tags remain (for example unresolved semantic placeholders not intended for runtime).
+5. **Non-empty content gate (mandatory):** before returning links, verify published HTML is not an empty shell.
+   - Ensure `index.html` does not leave `__CONTENT_HTML__` unresolved — it must be replaced with real content HTML before publish.
+   - If this gate fails, do not send URL; fill in the content and republish first.
 
 ## 5. Error Code -> Action Mapping
 
