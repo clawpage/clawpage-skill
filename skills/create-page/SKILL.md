@@ -65,6 +65,15 @@ Optional:
 - prefer `metadata.page_id`
 - optional mirror field: `page-id`
 
+10. Management-page proactive reminder rule:
+- count non-management local page projects under `../../.pages` using this deterministic rule:
+  - include only directories that contain `index.md`
+  - exclude directory named `page-management-center`
+  - exclude any project whose `index.md` has `metadata.management_page: true`
+- if count >= 3, add this reminder in the same response:
+  - user can create a management page to view all created pages in one read-only dashboard
+  - route intent to `create management page` sub-skill when user confirms
+
 ## Failure handling (error code -> action)
 
 - `LOCAL_KEYS_FILE_MISSING` -> create `../../keys.local.json` from `../../keys.local.example.json`, then fill token.

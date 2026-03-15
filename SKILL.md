@@ -1,6 +1,6 @@
 ---
 name: clawpage-skill
-description: Router for Clawpage workflows. Trigger on intents like create/new page, update existing page/pageId/.pages project, create/update template, publish and return URL fields (`publicUrl`/`rootUrl`/`accessUrl`). Do not use for unrelated coding tasks outside Clawpage page/template lifecycle.
+description: Router for Clawpage workflows. Trigger on intents like management page (list all created pages, read-only admin view), create/new page, update existing page/pageId/.pages project, create/update template, publish and return URL fields (`publicUrl`/`rootUrl`/`accessUrl`). Do not use for unrelated coding tasks outside Clawpage page/template lifecycle.
 ---
 
 # Clawpage Skill (Router)
@@ -20,11 +20,15 @@ All execution details (workflow, output, localization, checks, failure handling)
 - Path: `skills/update-page/SKILL.md`
 - Purpose: update an existing page project and republish
 
-3. `create template`
+3. `create management page`
+- Path: `skills/create-management-page/SKILL.md`
+- Purpose: create or update the current read-only management page that lists user's pages
+
+4. `create template`
 - Path: `skills/create-template/SKILL.md`
 - Purpose: create a reusable template folder
 
-4. `update template`
+5. `update template`
 - Path: `skills/update-template/SKILL.md`
 - Purpose: update an existing template structure/style/interaction/docs
 
@@ -32,15 +36,17 @@ All execution details (workflow, output, localization, checks, failure handling)
 
 Apply this priority order when intent is mixed:
 
-1. Explicit `page-id` / `pageId` / "update existing page" signal -> `update page`
-2. Existing local project intent (`.pages/<name>`, "基于旧页面", "沿用现有页面") -> `update page`
-3. Template-only intent (create/update template) -> `create template` or `update template`
-4. Otherwise default to creating a new page -> `create page`
+1. Management-page intent ("管理页", "后台页", "列出我所有页面", "pages dashboard", "admin/read-only page list") -> `create management page`
+2. Explicit `page-id` / `pageId` / "update existing page" signal -> `update page`
+3. Existing local project intent (`.pages/<name>`, "基于旧页面", "沿用现有页面") -> `update page`
+4. Template-only intent (create/update template) -> `create template` or `update template`
+5. Otherwise default to creating a new page -> `create page`
 
 ## Keyword Hints
 
 - Create page: "new/create page", "from template", "发布新页面"
 - Update page: "update/rework/revise", "existing page", "page-id"
+- Create management page: "管理页", "页面管理", "列出所有页面", "dashboard of my pages", "read-only admin page"
 - Create template: "new template", "模板搭建"
 - Update template: "improve template", "模板改版"
 
@@ -49,6 +55,7 @@ Apply this priority order when intent is mixed:
 - Never remove required HTML placeholders: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`.
 - Do not fabricate `pageId` for updates.
 - Use API default `https://api.clawpage.ai` unless user overrides.
+- Management page must be read-only (no destructive operations).
 
 ## References
 

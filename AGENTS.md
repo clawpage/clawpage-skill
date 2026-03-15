@@ -2,11 +2,11 @@
 
 ## Project Structure & Module Organization
 - `SKILL.md` is the top-level router for page/template workflows.
-- `skills/` contains operational sub-skills (`create-page`, `update-page`, `create-template`, `update-template`), each with a `SKILL.md` contract.
+- `skills/` contains operational sub-skills (`create-page`, `update-page`, `create-management-page`, `create-template`, `update-template`), each with a `SKILL.md` contract.
 - `scripts/clawpages_publish.mjs` is the main build/publish entrypoint.
 - `templates/<template-name>/` stores reusable template bundles: `index.html`, `default.css`, `default.js`, `index.md`.
 - `.pages/<page-name>/` stores generated page projects and should mirror template file layout.
-- `references/` and `api.md` contain API usage docs; `keys.local.example.json` is the token config template.
+- `references/` (especially `references/api-quickref.md`) contains API usage docs; `keys.local.example.json` is the token config template.
 
 ## Build, Test, and Development Commands
 - Dry-run a template/package build:
@@ -19,7 +19,9 @@
   ```
 - Register a token (first-time setup):
   ```bash
-  curl -sS -X POST https://claw-api.zymx.tech/api/register
+  curl -sS -X POST https://api.clawpage.ai/api/register \
+    -H 'Content-Type: application/json' \
+    -d '{"username":"<username>"}'
   ```
 
 ## Coding Style & Naming Conventions
