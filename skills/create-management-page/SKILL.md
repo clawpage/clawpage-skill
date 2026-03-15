@@ -26,10 +26,10 @@ description: Trigger when user asks for a management/admin page that lists all c
 
 1. Resolve `MANAGEMENT_PAGE_DIR` once:
 - A valid management-page project must satisfy both:
-  - has `index.md`
-  - `index.md` contains `metadata.management_page: true`
+  - has `meta.md`
+  - `meta.md` contains `metadata.management_page: true`
 - Preferred path: `../../.pages/page-management-center`
-- If the preferred path does not exist or lacks the marker, scan `../../.pages/*/index.md` for projects satisfying the rule and pick one deterministic path.
+- If the preferred path does not exist or lacks the marker, scan `../../.pages/*/meta.md` for projects satisfying the rule and pick one deterministic path.
 - If none found, initialize a new project:
   - if `../../.pages/page-management-center` does not exist: use it.
   - if it exists but lacks the marker: use `../../.pages/page-management-center-v2` (or next available `-vN`).
@@ -40,7 +40,7 @@ description: Trigger when user asks for a management/admin page that lists all c
 cp -R ../../templates/genernal_template [MANAGEMENT_PAGE_DIR]
 ```
 
-2. Ensure metadata in `[MANAGEMENT_PAGE_DIR]/index.md` is explicit:
+2. Ensure metadata in `[MANAGEMENT_PAGE_DIR]/meta.md` is explicit:
 - `metadata.name`
 - `metadata.description`
 - required marker: `metadata.management_page: true`
@@ -64,12 +64,12 @@ curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
 5. Apply localization/output contracts from `../../references/prompt-contracts.md`.
 
 6. Pre-publish hard checks (must pass):
-- `index.md` metadata complete.
+- `meta.md` metadata complete.
 - required placeholders preserved.
 - dry-run succeeds.
 
 7. Publish:
-- **Identify PAGE_ID**: Use `read_file` to read `[MANAGEMENT_PAGE_DIR]/index.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell regex.
+- **Identify PAGE_ID**: Use `read_file` to read `[MANAGEMENT_PAGE_DIR]/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell regex.
 - **Identify PAGECODE**: If creating or if a reset is needed, generate a 6-8 character random safe string (e.g., base64url or alphanumeric).
 
 - **Create mode** (if `page_id` is missing):
@@ -81,7 +81,7 @@ node ../../scripts/clawpages_publish.mjs \
   --ttl-ms 10800000 \
   --pagecode "[GENERATED_PAGECODE]"
 ```
-- Write back the returned `pageId` to `metadata.page_id` in `[MANAGEMENT_PAGE_DIR]/index.md`.
+- Write back the returned `pageId` to `metadata.page_id` in `[MANAGEMENT_PAGE_DIR]/meta.md`.
 
 - **Update mode** (if `page_id` exists):
 ```bash

@@ -13,7 +13,7 @@ description: Trigger when user wants to modify an existing page/project/pageId (
 ## Paths and conventions
 
 - Page directory: `../../.pages/<page-name>`
-- Page files: `index.md`, `index.html`, `default.css`, `default.js`
+- Page files: `meta.md`, `index.html`, `default.css`, `default.js`
 - Publish script: `../../scripts/clawpages_publish.mjs`
 - API reference: `../../references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
 - Shared contracts: `../../references/prompt-contracts.md`
@@ -24,26 +24,26 @@ description: Trigger when user wants to modify an existing page/project/pageId (
 1. Read metadata only first:
 
 ```bash
-find ../../.pages -mindepth 2 -maxdepth 2 -name index.md | while read -r f; do
+find ../../.pages -mindepth 2 -maxdepth 2 -name meta.md | while read -r f; do
   echo "== $f ==";
   sed -n '1,24p' "$f";
 done
 ```
 
-2. Read full `index.md` only for shortlisted candidates.
+2. Read full `meta.md` only for shortlisted candidates.
 
 ## Update workflow
 
 1. Edit `index.html` first.
 2. Update `default.css` / `default.js` as required.
-3. **Identify PAGE_ID**: Use `read_file` to read `../../.pages/[PAGE_NAME]/index.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell scripts for extraction.
+3. **Identify PAGE_ID**: Use `read_file` to read `../../.pages/[PAGE_NAME]/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell scripts for extraction.
 
-4. If semantics changed, sync `index.md` metadata and notes.
+4. If semantics changed, sync `meta.md` metadata and notes.
 
 5. Apply localization and output contracts from `../../references/prompt-contracts.md`.
 
 6. Run pre-publish hard checklist (must pass all):
-- metadata complete in `index.md`
+- metadata complete in `meta.md`
 - required placeholders preserved in HTML
 - dry-run succeeds
 

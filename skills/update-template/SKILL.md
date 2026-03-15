@@ -13,19 +13,19 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 ## Paths and conventions
 
 - Template directory: `../../templates/[TEMPLATE_NAME]`
-- Files: `index.html`, `default.css`, `default.js`, `index.md`
+- Files: `index.html`, `default.css`, `default.js`, `meta.md`
 
 ## Template selection (two-phase)
 
-1. Read metadata from `index.md` first (`metadata.name`, `metadata.description`)
-2. Read full `index.md` only for shortlisted candidates
+1. Read metadata from `meta.md` first (`metadata.name`, `metadata.description`)
+2. Read full `meta.md` only for shortlisted candidates
 
 ## Update workflow
 
 1. Update `index.html` structure (do not drop required placeholders)
 2. Update `default.css` visual system
 3. Update `default.js` interaction/render logic
-4. Sync `index.md` metadata and usage notes
+4. Sync `meta.md` metadata and usage notes
 5. Fill/normalize localization placeholders for user-visible text
 - use semantic placeholders (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`)
 - do not use numeric key placeholders

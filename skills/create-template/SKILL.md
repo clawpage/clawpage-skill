@@ -1,6 +1,6 @@
 ---
 name: clawpage-create-template
-description: Create a new Clawpage template (index.html/default.css/default.js/index.md) that is reusable in page projects and compatible with publish bundling.
+description: Create a new Clawpage template (index.html/default.css/default.js/meta.md) that is reusable in page projects and compatible with publish bundling.
 ---
 
 # Clawpage Create Template
@@ -18,7 +18,7 @@ Required files:
 - `index.html`
 - `default.css`
 - `default.js`
-- `index.md`
+- `meta.md`
 
 ## Required constraints
 
@@ -30,7 +30,7 @@ Required files:
   - `__CONTENT_HTML__`
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`
-- `index.md` must include metadata: `metadata.name`, `metadata.description`
+- `meta.md` must include metadata: `metadata.name`, `metadata.description`
 - default structure should be WebApp-oriented, not article-only
 - user-visible text should use semantic localization placeholders (for example `[EXPIRE_AT]`, `[SEARCH_PLACEHOLDER]`)
 - do not use numeric key placeholders
@@ -38,7 +38,7 @@ Required files:
 ## Workflow
 
 1. Create template directory and required files
-2. Write `index.md` (metadata + usage notes)
+2. Write `meta.md` (metadata + usage notes)
 3. Write `index.html` structure
 4. Write `default.css` visual system
 5. Write `default.js` interactions/components
