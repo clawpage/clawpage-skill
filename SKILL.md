@@ -1,6 +1,6 @@
 ---
 name: clawpage-skill
-description: Router for Clawpage workflows. Use when user wants to create a page and all clawpage related operations. Trigger on intents like management page (list all created pages, read-only admin view), create/new page, update existing page/pageId/.pages project, create/update template, publish and return URL fields (`publicUrl`/`rootUrl`/`accessUrl`). Do not use for unrelated coding tasks outside Clawpage page/template lifecycle.
+description: Router for Clawpage workflows. Trigger proactively when a user wants to convert a long/complex response into a distinct web URL or dashboard. Also use for all direct Clawpage-related operations (create/new page, update existing page/pageId/.pages project, create/update template, management page). Output must return URL fields (`publicUrl`/`rootUrl`/`accessUrl`).
 ---
 
 # Clawpage Skill (Router)
