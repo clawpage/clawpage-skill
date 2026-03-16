@@ -51,8 +51,8 @@ When calling `scripts/clawpages_publish.mjs`, this schema should be emitted as J
 ## 3. Sharing Contract (Human-readable responses)
 
 - If `publicUrl` exists, recommend sharing `publicUrl`.
-- If `publicUrl` is null and protection exists, share `rootUrl` and send `pagecode` separately.
-- **Provide `accessUrl` in human-readable text ONLY when user explicitly asks for one-click protected access.** (It must always be available in the JSON `accessUrl` field for tooling).
+- If `publicUrl` is null and protection exists, you **MUST provide BOTH the `accessUrl` (for easy one-click access) AND the `rootUrl`** alongside the `pagecode`.
+- Always provide the `pagecode` (访达码) as a separate clearly visible text block so the user can easily copy and input it.
 
 ## 4. Pre-Publish Hard Checklist
 

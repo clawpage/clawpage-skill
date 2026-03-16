@@ -54,7 +54,7 @@ cp -R ./templates/genernal_template ./.pages/[PAGE_NAME]
 - dry-run succeeds
 
 8. Publish page:
-- **Resolve PAGECODE**: If a private page is required, generate a 6-8 character random safe string (e.g., base64url or alphanumeric). Do not use fragile shell scripts for generation.
+- **Resolve PAGECODE**: If a private page is required, generate a random 6-digit number (e.g., "123456"). Do not use fragile shell scripts for generation.
 
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
@@ -112,5 +112,5 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 - **Preloaded Toolchain**: The default template includes TailwindCSS, Mermaid.js, and jQuery (`index.html` `<head>`). **You MUST heavily utilize them**.
 - **Modern Layout with Tailwind**: Never generate bare HTML tags like `<p>` and `<ul>`. Use Tailwind utility classes for structure (e.g., responsive grids, flexbox), modern aesthetics (e.g., `bg-white/10` glassmorphism, `rounded-xl`, `shadow-lg`, gradients), and proper layout spacing.
 - **Rich Components over Long Text**: Break down long information into Data Cards, Dashboards, Accordions, Interactive Tabs, or collapsible sections.
-- **Data Visualization**: Whenever explaining complex logic, structures, workflows, or data, **use Mermaid.js** (mindmaps, pie charts, flowcharts) embedded directly in the page instead of writing lengthy text.
+- **Data Visualization**: Whenever explaining complex logic, structures, workflows, or data, **use Mermaid.js** (mindmaps, pie charts, flowcharts) embedded directly in the page instead of writing lengthy text. **Important:** Ensure Mermaid diagrams are rendered at an appropriate size (e.g., setting `width: 100%` or avoiding overly constrained containers) and explicitly configure their theme for high contrast (especially considering dark mode backgrounds) so the nodes and text are legible.
 - **Animations & Micro-interactions**: Actively write CSS in `default.css` to add CSS animations (e.g., fade-in keyframes, slide-up entries) and interactive hover states (`transition-all`, `hover:-translate-y-1`, hover styles, etc.) to make the interface feel alive and premium.
