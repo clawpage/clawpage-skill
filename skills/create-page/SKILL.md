@@ -12,11 +12,11 @@ description: Trigger when user wants a brand-new page (keywords: create/new page
 
 ## Inputs and conventions
 
-- Page directory: `../../.pages/<page-name>`
-- Template directory: `../../templates/<template-name>`
-- Publish script: `../../scripts/clawpages_publish.mjs`
-- API reference: `../../references/api-quickref.md`
-- Shared contracts: `../../references/prompt-contracts.md`
+- Page directory: `./.pages/<page-name>`
+- Template directory: `./templates/<template-name>`
+- Publish script: `./scripts/clawpages_publish.mjs`
+- API reference: `./references/api-quickref.md`
+- Shared contracts: `./references/prompt-contracts.md`
 - `page-name` must be kebab-case and cannot contain `/`
 - Create default policy (unless user explicitly overrides):
   - private page by default (`pagecode` required)
@@ -26,16 +26,16 @@ description: Trigger when user wants a brand-new page (keywords: create/new page
 
 1. Choose template (default `genernal_template`).
 2. Resolve target directory strategy before copy:
-- if `../../.pages/[PAGE_NAME]` does not exist: copy directly.
+- if `./.pages/[PAGE_NAME]` does not exist: copy directly.
 - if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new [PAGE_NAME]`.
 
 **Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-cp -R ../../templates/genernal_template ../../.pages/[PAGE_NAME]
+cp -R ./templates/genernal_template ./.pages/[PAGE_NAME]
 ```
 
-3. Update `../../.pages/[PAGE_NAME]/meta.md`:
+3. Update `./.pages/[PAGE_NAME]/meta.md`:
 - required metadata: `metadata.name`, `metadata.description`
 - add page purpose, audience, and scenario
 - **Important:** `meta.md` body is documentation only; it is **not** auto-rendered when publishing with `--page-dir`.
@@ -46,7 +46,7 @@ cp -R ../../templates/genernal_template ../../.pages/[PAGE_NAME]
 
 5. **Placeholder Instantiation Pass (Mandatory)**: Before proceeding, scan your `index.html`, `default.css`, and `default.js` for any AI-Managed Semantic Placeholders (e.g., `[GENERATED_AT]`, `[EXPIRE_AT]`, `[SEARCH]`) and translate them into their literal localized strings based on the user's language.
 
-6. Apply localization and output contracts from `../../references/prompt-contracts.md`.
+6. Apply localization and output contracts from `./references/prompt-contracts.md`.
 
 7. Run pre-publish hard checklist (must pass all):
 - metadata complete in `meta.md`
@@ -57,8 +57,9 @@ cp -R ../../templates/genernal_template ../../.pages/[PAGE_NAME]
 - **Resolve PAGECODE**: If a private page is required, generate a 6-8 character random safe string (e.g., base64url or alphanumeric). Do not use fragile shell scripts for generation.
 
 ```bash
-node ../../scripts/clawpages_publish.mjs \
-  --page-dir ../../.pages/[PAGE_NAME] \
+# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
+node ./scripts/clawpages_publish.mjs \
+  --page-dir ./.pages/[PAGE_NAME] \
   --title "[TITLE]" \
   --subtitle "[SUBTITLE]" \
   --ttl-ms 10800000 \
@@ -70,14 +71,14 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
 - `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
 
-9. Return fixed output fields exactly as defined in `../../references/prompt-contracts.md`.
+9. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
 
-10. Write returned `pageId` back to `../../.pages/[PAGE_NAME]/meta.md`:
+10. Write returned `pageId` back to `./.pages/[PAGE_NAME]/meta.md`:
 - prefer `metadata.page_id`
 - optional mirror field: `page-id`
 
 11. Management-page proactive reminder rule:
-- count non-management local page projects under `../../.pages` using this deterministic rule:
+- count non-management local page projects under `./.pages` using this deterministic rule:
   - include only directories that contain `meta.md`
   - exclude directory named `page-management-center`
   - exclude any project whose `meta.md` has `metadata.management_page: true`
@@ -87,16 +88,23 @@ Optional:
 
 ## Failure handling (error code -> action)
 
-- `LOCAL_KEYS_FILE_MISSING` -> create `../../keys.local.json` from `../../keys.local.example.json`, then fill token.
-- `LOCAL_TOKEN_MISSING` -> add valid token to `../../keys.local.json` (`clawpage.token`), then retry.
-- if user has no token: register first via API reference (`../../references/api-quickref.md`), then write token to `../../keys.local.json`.
-- `UNAUTHORIZED` -> verify token in `../../keys.local.json`, then retry.
+- `LOCAL_KEYS_FILE_MISSING` -> create `./keys.local.json` from `./keys.local.example.json`, then fill token.
+- `LOCAL_TOKEN_MISSING` -> add valid token to `./keys.local.json` (`clawpage.token`), then retry.
+- if user has no token: register first via API reference (`./references/api-quickref.md`), then write token to `./keys.local.json`.
+- `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> check wrong endpoint/owner context; confirm create path and retry.
 - `409 USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.
 - `429 IP_DAILY_REGISTRATION_LIMIT_REACHED` -> stop and ask user to retry next day or use existing account.
 - `429 OWNER_DAILY_PAGE_CREATE_LIMIT_REACHED` -> stop create attempts and retry later.
 - `429 OWNER_MONTHLY_PERMANENT_PAGE_LIMIT_REACHED` -> suggest shorter TTL or cleanup of permanent pages.
 - network/5xx -> report status/body and retry with `--api-host` verification.
+
+**Idempotency Guard (Crucial for error recovery):**
+If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
+- **DO NOT** wipe out, revert, or delete the local `./.pages/[PAGE_NAME]` directory.
+- Check `./.pages/[PAGE_NAME]/meta.md`:
+  - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. Retry the publish command exactly as you did in the Creation flow.
+  - If `metadata.page_id` EXISTS: It means the remote page *was* created before the failure. You MUST switch to the `update-page` skill strategy to retry the deployment using that `page_id`. DO NOT create a duplicate page.
 
 ## Quality Bar & UI Expectations (Crucial)
 

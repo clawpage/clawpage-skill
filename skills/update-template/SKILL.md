@@ -12,7 +12,7 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 
 ## Paths and conventions
 
-- Template directory: `../../templates/[TEMPLATE_NAME]`
+- Template directory: `./templates/[TEMPLATE_NAME]`
 - Files: `index.html`, `default.css`, `default.js`, `meta.md`
 
 ## Template selection (two-phase)
@@ -36,8 +36,8 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 **Note:** Always replace `[TEMPLATE_NAME]` with the actual kebab-case name.
 
 ```bash
-node ../../scripts/clawpages_publish.mjs \
-  --page-dir ../../templates/[TEMPLATE_NAME] \
+node ./scripts/clawpages_publish.mjs \
+  --page-dir ./templates/[TEMPLATE_NAME] \
   --title "Template Preview" \
   --dry-run
 ```

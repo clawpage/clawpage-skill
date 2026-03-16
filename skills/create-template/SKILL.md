@@ -12,7 +12,7 @@ description: Create a new Clawpage template (index.html/default.css/default.js/m
 
 ## Template directory spec
 
-Create: `../../templates/[TEMPLATE_NAME]/`
+Create: `./templates/[TEMPLATE_NAME]/`
 
 Required files:
 - `index.html`
@@ -48,8 +48,8 @@ Required files:
 **Note:** Always replace `[TEMPLATE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-node ../../scripts/clawpages_publish.mjs \
-  --page-dir ../../templates/[TEMPLATE_NAME] \
+node ./scripts/clawpages_publish.mjs \
+  --page-dir ./templates/[TEMPLATE_NAME] \
   --title "Template Preview" \
   --dry-run
 ```
