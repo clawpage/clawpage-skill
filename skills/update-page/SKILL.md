@@ -100,7 +100,7 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 **Treat the updated page as a modern Web App, not a plain text document.** Always apply these principles:
 - **Keep WebApp behavior**, do not regress an interactive page into an article-only page.
 - **Preloaded Toolchain**: Rely heavily on the preloaded TailwindCSS, Mermaid.js, and jQuery.
-- **Modern Layout**: Use Tailwind utility classes for modern aesthetics (e.g., responsive grids, flexbox, glassmorphism `bg-white/10`, `rounded-xl`, `shadow-lg`). Do not output bare HTML tags without styling.
+- **Modern Layout**: Use Tailwind utility classes for modern aesthetics (e.g., responsive grids, flexbox, glassmorphism `bg-white/60 backdrop-blur-md`, `rounded-xl`, `shadow-lg`). Do not output bare HTML tags without styling.
 - **Rich Components**: Prioritize modular panels, data cards, state areas, accordions, and interaction blocks over raw text paragraphs.
-- **Data Visualization**: Use Mermaid.js (mindmaps, pie charts, flowcharts) for complex logic/structure instead of long text explanations. **Important:** Ensure Mermaid diagrams are rendered at an appropriate size (e.g., setting `width: 100%` or avoiding overly constrained containers) and explicitly configure their theme for high contrast (especially considering dark mode backgrounds) so the nodes and text are legible.
+- **Data Visualization**: Use Mermaid.js (mindmaps, pie charts, flowcharts) for complex logic/structure instead of long text explanations. **Important:** Ensure Mermaid diagrams are rendered at an appropriate size (e.g., setting `width: 100%` or avoiding overly constrained containers) and explicitly configure their theme for high contrast (especially considering light backgrounds) so the nodes and text are legible.
 - **Animations & Micro-interactions**: Add engaging CSS animations (fade-in, slide-up keyframes) and interactive hover states in `default.css` to make the page feel premium.
