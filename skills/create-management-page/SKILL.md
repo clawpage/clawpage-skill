@@ -60,6 +60,7 @@ curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
 - no mutation controls (no delete/update API buttons).
 - expose share-relevant URLs and protection/expiry summaries.
 - show data acquisition time in the header: `Data fetched at: <dataFetchedAt> (<timezone>)`
+- **UI Styling Convention**: Dark background colors (e.g., `bg-gray-800`, `bg-slate-900`, `bg-black`) are strictly forbidden in generated pages as they clash with the default light-blue template themes.
 
 5. Apply localization/output contracts from `./references/prompt-contracts.md`.
 
