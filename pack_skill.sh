@@ -28,6 +28,7 @@ git ls-files -z --cached --others --exclude-standard | while IFS= read -r -d '' 
   [[ "${f}" == ".gitignore" ]] && continue
   [[ "${f}" == "pack_skill.sh" ]] && continue
   [[ "${f}" == "README.md" ]] && continue
+  [[ "${f}" == "LICENSE" ]] && continue
   [[ "${f}" == docs/* ]] && continue
   [[ "${f}" == dist/* ]] && continue
   [[ "${base}" == ".gitkeep" ]] && continue
