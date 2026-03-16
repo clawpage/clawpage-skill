@@ -251,3 +251,17 @@ body {
     padding: 24px 20px 44px;
   }
 }
+
+.mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background-color: var(--surface);
+}

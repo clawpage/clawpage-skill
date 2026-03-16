@@ -68,8 +68,8 @@ Run and pass all checks before publish:
 
 ## 5. Error Code -> Action Mapping
 
-- `LOCAL_KEYS_FILE_MISSING`: create `keys.local.json` from `keys.local.example.json`, then fill token.
-- `LOCAL_TOKEN_MISSING`: add `clawpage.token` into `keys.local.json`, then retry.
+- `LOCAL_KEYS_FILE_MISSING`: create `keys.local.json` from `keys.local.example.json`. If there is no token, auto-register a new account with a creative, AI-generated username (e.g., based on the user's prompt or persona), write it to the file, and gently inform the user that a default account was created for them and they can request to register a specific username if they prefer. **DO NOT create a Clawpage intro page; execute the user's original request immediately.**
+- `LOCAL_TOKEN_MISSING`: auto-register a new account with a creative, AI-generated username, add `clawpage.token` into `keys.local.json`, and inform the user they can request a custom username. **DO NOT create a Clawpage intro page; execute the user's original request immediately.**
 - `UNAUTHORIZED` (HTTP 401): verify `keys.local.json` token, then retry publish.
 - `PAGE_NOT_FOUND` (HTTP 404): verify `pageId` ownership/existence; if local page has no binding, create first and write back `pageId`.
 - `409 USERNAME_TAKEN`: for register flow, propose 3 alternatives and retry with user choice.

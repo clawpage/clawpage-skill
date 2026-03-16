@@ -1,7 +1,7 @@
 (function bootClawpagesTemplate() {
   function renderMermaidBlocks() {
     if (!window.mermaid) return;
-    mermaid.initialize({ startOnLoad: false, theme: "dark", securityLevel: "loose" });
+    mermaid.initialize({ startOnLoad: false, theme: "default", securityLevel: "loose" });
     var blocks = document.querySelectorAll("pre[data-lang='mermaid'] code");
     blocks.forEach(function (codeEl) {
       var source = codeEl.textContent || "";
