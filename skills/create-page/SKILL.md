@@ -120,7 +120,7 @@ Commit to the chosen direction and execute it with precision.
 
 ### Toolchain & Layout
 
-- **Preloaded Toolchain**: The default template includes TailwindCSS, Mermaid.js, and jQuery (`index.html` `<head>`). **You MUST heavily utilize them**.
+- **Preloaded Toolchain**: The default `genernal_template` includes TailwindCSS, Mermaid.js, and jQuery (`index.html` `<head>`). Other templates may include TailwindCSS with different specific libraries (e.g., ECharts, GSAP). **You MUST heavily utilize the available toolchain in the chosen template**.
 - **Modern Layout with Tailwind**: Never generate bare HTML tags like `<p>` and `<ul>`. Use Tailwind utility classes for structure (e.g., responsive grids, flexbox), modern aesthetics (e.g., `bg-white/60 backdrop-blur-md` glassmorphism, `rounded-xl`, `shadow-lg`, gradients), and proper layout spacing. **Color Warning:** The base template uses a light theme. DO NOT randomly generate dark background classes (e.g., `bg-gray-800`, `bg-slate-900`, `bg-black`) which cause severe text contrast issues. Stick to light, harmonious cards and panels unless specifically directed otherwise.
 - **Spatial Composition**: Go beyond predictable symmetric grids — consider asymmetric layouts, overlapping elements, generous negative space, or full-bleed hero sections contrasting with contained content.
 
