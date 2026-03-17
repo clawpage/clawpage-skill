@@ -22,6 +22,7 @@ Required files:
 
 ## Required constraints
 
+- **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
 - `index.html` must include placeholders:
   - `__PAGE_TITLE__`
   - `__PAGE_SUBTITLE__`
@@ -32,6 +33,7 @@ Required files:
   - `__DEFAULT_JS__`
 - `meta.md` must include metadata: `metadata.name`, `metadata.description`
 - default structure should be WebApp-oriented, not article-only
+- **Design system flexibility**: templates must provide CSS variable slots (`--font-display`, `--font-body`, `--primary`, `--accent`) so that page projects can customize fonts and colors without modifying template structure.
 - user-visible text should use semantic localization placeholders (for example `[EXPIRE_AT]`, `[SEARCH_PLACEHOLDER]`)
 - do not use numeric key placeholders
 

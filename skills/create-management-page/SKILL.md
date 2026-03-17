@@ -55,11 +55,14 @@ curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
 - include key fields: `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, expiry/protection status.
 - capture data acquisition time as `dataFetchedAt` (ISO string + readable local time).
 
-4. Build a high-quality read-only UI:
+4. Build a high-quality read-only UI (refer to `./references/design-guidelines.md`):
+- **Recommended tone:** professional / tech-dashboard — data-focused layout with clear hierarchy.
 - clarity: search/filter/sort/read-only cards or table.
 - no mutation controls (no delete/update API buttons).
 - expose share-relevant URLs and protection/expiry summaries.
 - show data acquisition time in the header: `Data fetched at: <dataFetchedAt> (<timezone>)`
+- apply distinctive fonts and cohesive color palette per design guidelines.
+- add page-load stagger animations for the page card list.
 
 5. Apply localization/output contracts from `./references/prompt-contracts.md`.
 

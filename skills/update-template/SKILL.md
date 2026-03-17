@@ -44,6 +44,7 @@ node ./scripts/clawpages_publish.mjs \
 
 ## Must preserve
 
+- **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
 - `index.html` placeholders:
   - `__PAGE_TITLE__`
   - `__PAGE_SUBTITLE__`
@@ -53,3 +54,4 @@ node ./scripts/clawpages_publish.mjs \
   - `__DEFAULT_JS__`
   - `__CONTENT_HTML__`
 - Keep template suitable for WebApp scenarios, not article-only pages
+- Preserve CSS variable slots (`--font-display`, `--font-body`, `--primary`, `--accent`) for page-level customization

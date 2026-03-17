@@ -97,10 +97,40 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 
 ## Quality Bar & UI Expectations (Crucial)
 
+> **Full design reference:** `./references/design-guidelines.md` — read it before generating any UI.
+
 **Treat the updated page as a modern Web App, not a plain text document.** Always apply these principles:
+
+### Update-Specific: Design Consistency
+
+- **Preserve existing design language** — maintain the current page's font choices, color palette, layout patterns, and animation style unless the user explicitly requests a style change.
+- If the user requests a visual overhaul, run the full Design Thinking phase from `design-guidelines.md §1`.
+
+### Toolchain & Layout
+
 - **Keep WebApp behavior**, do not regress an interactive page into an article-only page.
 - **Preloaded Toolchain**: Rely heavily on the preloaded TailwindCSS, Mermaid.js, and jQuery.
 - **Modern Layout**: Use Tailwind utility classes for modern aesthetics (e.g., responsive grids, flexbox, glassmorphism `bg-white/60 backdrop-blur-md`, `rounded-xl`, `shadow-lg`). Do not output bare HTML tags without styling. **Color Warning:** The base template uses a light theme. DO NOT randomly generate dark background classes (e.g., `bg-gray-800`, `bg-slate-900`, `bg-black`) which cause severe text contrast issues. Stick to light, harmonious cards and panels unless specifically directed otherwise.
+- **Spatial Composition**: Maintain or enhance the page's spatial structure — asymmetric layouts, negative space, full-bleed sections where appropriate.
+
+### Typography & Color
+
+- **Distinctive Fonts**: When adding new sections, match the page's existing font choices. If fonts are generic defaults, consider upgrading them per `design-guidelines.md §2`.
+- **Cohesive Palette**: Extend the existing color scheme consistently. Use CSS variables for new colors. See `design-guidelines.md §3`.
+
+### Rich Components & Data Visualization
+
 - **Rich Components**: Prioritize modular panels, data cards, state areas, accordions, and interaction blocks over raw text paragraphs.
 - **Data Visualization**: Use Mermaid.js (mindmaps, pie charts, flowcharts) for complex logic/structure instead of long text explanations. **Important:** Ensure Mermaid diagrams are rendered at an appropriate size (e.g., setting `width: 100%` or avoiding overly constrained containers) and explicitly configure their theme for high contrast (especially considering light backgrounds) so the nodes and text are legible.
-- **Animations & Micro-interactions**: Add engaging CSS animations (fade-in, slide-up keyframes) and interactive hover states in `default.css` to make the page feel premium.
+
+### Motion & Backgrounds
+
+- **Animations & Micro-interactions**: Add engaging CSS animations (fade-in, slide-up keyframes) and interactive hover states in `default.css` to make the page feel premium. Prioritize page-load stagger and scroll-triggered entrances. Include `prefers-reduced-motion` for accessibility.
+- **Backgrounds & Texture**: Enhance atmosphere with depth techniques (gradient meshes, noise, geometric patterns) — see `design-guidelines.md §6`.
+
+### Anti-Generic-AI Checklist
+
+- ❌ Regressing an interactive page to plain text
+- ❌ Adding new sections with mismatched fonts or colors
+- ❌ Flat solid-color backgrounds with no depth
+- ❌ Dark classes on light template without updating text colors

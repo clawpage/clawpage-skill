@@ -107,9 +107,44 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 
 ## Quality Bar & UI Expectations (Crucial)
 
+> **Full design reference:** `./references/design-guidelines.md` — read it before generating any UI.
+
 **Treat the generated page as a modern Web App, not a plain text document.** Always apply these principles:
+
+### Design Thinking (Mandatory Pre-Code Phase)
+
+Before writing any HTML/CSS/JS, decide:
+1. **Purpose & Audience** — who uses this page and why?
+2. **Aesthetic Tone** — pick a bold direction (minimalist, editorial, dashboard, playful, luxury, brutalist, etc.)
+3. **Differentiation** — what single detail makes this page _unforgettable_?
+
+Commit to the chosen direction and execute it with precision.
+
+### Toolchain & Layout
+
 - **Preloaded Toolchain**: The default template includes TailwindCSS, Mermaid.js, and jQuery (`index.html` `<head>`). **You MUST heavily utilize them**.
 - **Modern Layout with Tailwind**: Never generate bare HTML tags like `<p>` and `<ul>`. Use Tailwind utility classes for structure (e.g., responsive grids, flexbox), modern aesthetics (e.g., `bg-white/60 backdrop-blur-md` glassmorphism, `rounded-xl`, `shadow-lg`, gradients), and proper layout spacing. **Color Warning:** The base template uses a light theme. DO NOT randomly generate dark background classes (e.g., `bg-gray-800`, `bg-slate-900`, `bg-black`) which cause severe text contrast issues. Stick to light, harmonious cards and panels unless specifically directed otherwise.
+- **Spatial Composition**: Go beyond predictable symmetric grids — consider asymmetric layouts, overlapping elements, generous negative space, or full-bleed hero sections contrasting with contained content.
+
+### Typography & Color
+
+- **Distinctive Fonts**: Choose Google Fonts that match the page's tone. Update the `<link>` tag and CSS variables (`--font-display`, `--font-body`) in the page project. **NEVER** default to the same font every time (e.g., always Space Grotesk or Inter). See `design-guidelines.md §2` for pairing examples.
+- **Cohesive Palette**: Build a dominant + accent color scheme using CSS variables. Avoid generic AI palettes (purple-on-white, plain blue cards). See `design-guidelines.md §3`.
+
+### Rich Components & Data Visualization
+
 - **Rich Components over Long Text**: Break down long information into Data Cards, Dashboards, Accordions, Interactive Tabs, or collapsible sections.
 - **Data Visualization**: Whenever explaining complex logic, structures, workflows, or data, **use Mermaid.js** (mindmaps, pie charts, flowcharts) embedded directly in the page instead of writing lengthy text. **Important:** Ensure Mermaid diagrams are rendered at an appropriate size (e.g., setting `width: 100%` or avoiding overly constrained containers) and explicitly configure their theme for high contrast (especially considering light backgrounds) so the nodes and text are legible.
-- **Animations & Micro-interactions**: Actively write CSS in `default.css` to add CSS animations (e.g., fade-in keyframes, slide-up entries) and interactive hover states (`transition-all`, `hover:-translate-y-1`, hover styles, etc.) to make the interface feel alive and premium.
+
+### Motion & Backgrounds
+
+- **Animations & Micro-interactions**: Prioritize high-impact moments — page-load stagger reveals with `animation-delay`, scroll-triggered entrances, surprising hover states. Prefer CSS-only solutions. One well-orchestrated load animation beats many scattered micro-effects. Add `prefers-reduced-motion` for accessibility.
+- **Backgrounds & Texture**: Create atmosphere and depth — gradient meshes, noise overlays, geometric patterns, layered transparencies. Don't default to flat solid colors. See `design-guidelines.md §6`.
+
+### Anti-Generic-AI Checklist
+
+- ❌ Same font on every page
+- ❌ Cookie-cutter identical layout across pages
+- ❌ Flat solid-color backgrounds with no depth
+- ❌ Uncoordinated micro-animations
+- ❌ Dark classes on light template without updating text colors

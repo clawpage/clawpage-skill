@@ -1,4 +1,11 @@
 :root {
+  /* Font slots — override these in page projects per design-guidelines.md §2 */
+  --font-display: "Space Grotesk", "Noto Sans SC", sans-serif;
+  --font-body: "Space Grotesk", "Noto Sans SC", sans-serif;
+
+  /* Color palette — override these per design-guidelines.md §3 */
+  --primary: #1e84ec;
+  --accent: #3b82f6;
   --bg-0: #f8fbff;
   --bg-1: #eef4ff;
   --surface: #ffffff;
@@ -7,7 +14,7 @@
   --line-strong: #8bb7ef;
   --text: #0f2238;
   --muted: #516b89;
-  --link: #1e84ec;
+  --link: var(--primary);
   --shadow: 0 8px 20px rgba(23, 49, 82, 0.12);
 }
 
@@ -23,7 +30,7 @@ body {
 body {
   margin: 0;
   color: var(--text);
-  font-family: "Space Grotesk", "Noto Sans SC", sans-serif;
+  font-family: var(--font-body);
   background:
     radial-gradient(circle at 18% -16%, rgba(121, 187, 255, 0.28), transparent 45%),
     radial-gradient(circle at 84% -16%, rgba(100, 160, 255, 0.2), transparent 42%),
@@ -99,6 +106,7 @@ body {
 
 .hero-panel h1 {
   margin: 12px 0 8px;
+  font-family: var(--font-display);
   font-size: clamp(24px, 6vw, 34px);
   line-height: 1.2;
   color: #0f2a47;
