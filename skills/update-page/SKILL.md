@@ -40,25 +40,22 @@ done
 
 4. If semantics changed, sync `meta.md` metadata and notes.
 
-5. **Placeholder Instantiation Pass (Mandatory)**: Before proceeding, scan your `index.html`, `default.css`, and `default.js` for any AI-Managed Semantic Placeholders (e.g., `[GENERATED_AT]`, `[EXPIRE_AT]`, `[SEARCH]`) and translate them into their literal localized strings based on the user's language.
+5. Apply localization and output contracts from `./references/prompt-contracts.md`.
 
-6. Apply localization and output contracts from `./references/prompt-contracts.md`.
+6. Run pre-publish hard checklist (must pass all):
+   - metadata complete in `meta.md`
+   - required `__SYSTEM__` placeholders preserved in HTML (`__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`)
+   - dry-run succeeds
 
-7. Run pre-publish hard checklist (must pass all):
-- metadata complete in `meta.md`
-- required `__SYSTEM__` placeholders preserved in HTML, while `[AI_SEMANTIC]` placeholders are fully translated
-- dry-run succeeds
-
-8. Publish update:
-**Note:** Always replace placeholders in the following commands with real values.
+7. Publish update:
+   **Note:** Always replace placeholders in the following commands with real values.
 
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
 node ./scripts/clawpages_publish.mjs \
   --page-dir ./.pages/[PAGE_NAME] \
   --page-id "[PAGE_ID]" \
-  --title "[TITLE]" \
-  --subtitle "[SUBTITLE]"
+  --title "[TITLE]"
 ```
 
 Optional:
@@ -66,7 +63,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection
 - `--page-name [SLUG]` rename page
 
-9. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
 
 ## If `page-id` is missing
 

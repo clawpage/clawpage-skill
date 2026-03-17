@@ -24,18 +24,13 @@ Required files:
 
 - **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
 - `index.html` must include placeholders:
-  - `__PAGE_TITLE__`
-  - `__PAGE_SUBTITLE__`
-  - `__GENERATED_AT__`
-  - `__EXPIRES_AT__`
   - `__CONTENT_HTML__`
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`
+- The LLM renders all visible content (title, subtitle, timestamps, etc.) directly within `__CONTENT_HTML__`; the publish script only inlines CSS/JS.
 - `meta.md` must include metadata: `metadata.name`, `metadata.description`
 - default structure should be WebApp-oriented, not article-only
 - **Design system flexibility**: templates must provide CSS variable slots (`--font-display`, `--font-body`, `--primary`, `--accent`) so that page projects can customize fonts and colors without modifying template structure.
-- user-visible text should use semantic localization placeholders (for example `[EXPIRE_AT]`, `[SEARCH_PLACEHOLDER]`)
-- do not use numeric key placeholders
 
 ## Workflow
 

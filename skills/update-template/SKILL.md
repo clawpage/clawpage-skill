@@ -26,10 +26,7 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 2. Update `default.css` visual system
 3. Update `default.js` interaction/render logic
 4. Sync `meta.md` metadata and usage notes
-5. Fill/normalize localization placeholders for user-visible text
-- use semantic placeholders (for example `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`)
-- do not use numeric key placeholders
-- do not maintain key-mapping tables; fill directly with user-preferred language text
+5. All visible text (title, subtitle, timestamps, etc.) is rendered by the LLM directly; do not rely on script-managed placeholders.
 
 6. Validate with dry-run:
 
@@ -46,12 +43,9 @@ node ./scripts/clawpages_publish.mjs \
 
 - **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
 - `index.html` placeholders:
-  - `__PAGE_TITLE__`
-  - `__PAGE_SUBTITLE__`
-  - `__GENERATED_AT__`
-  - `__EXPIRES_AT__`
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`
   - `__CONTENT_HTML__`
+- The LLM renders all visible content (title, subtitle, timestamps, etc.) directly within `__CONTENT_HTML__`
 - Keep template suitable for WebApp scenarios, not article-only pages
 - Preserve CSS variable slots (`--font-display`, `--font-body`, `--primary`, `--accent`) for page-level customization

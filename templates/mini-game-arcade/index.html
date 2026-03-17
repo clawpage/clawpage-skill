@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>__PAGE_TITLE__</title>
+    <title>Clawpage</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
 __DEFAULT_CSS__
@@ -11,29 +11,9 @@ __DEFAULT_CSS__
   </head>
   <body>
     <main class="mx-auto min-h-screen w-full max-w-md p-4">
-      <header class="card mb-3">
-        <p class="text-xs opacity-70">Mini Game</p>
-        <h1 class="text-xl font-semibold">__PAGE_TITLE__</h1>
-        <p class="text-sm opacity-80">__PAGE_SUBTITLE__</p>
-        <p class="mt-2 text-xs opacity-60">[GENERATED_AT]: __GENERATED_AT__</p>
-        <p class="mt-1 text-xs opacity-60">[EXPIRE_AT]: __EXPIRES_AT__</p>
-      </header>
+__CONTENT_HTML__
 
-      <section class="card mb-3">
-        <div class="flex items-center justify-between text-sm">
-          <span>[SCORE_LABEL]: <strong id="score">0</strong></span>
-          <span>[TIME_LABEL]: <strong id="time">20</strong>s</span>
-        </div>
-        <button id="tap-btn" class="tap-btn mt-4 w-full" type="button" disabled>Tap</button>
-        <div class="mt-3 flex gap-2">
-          <button id="start-btn" class="action-btn flex-1" type="button">[START_BUTTON]</button>
-          <button id="reset-btn" class="action-btn flex-1" type="button">[RESET_BUTTON]</button>
-        </div>
-      </section>
-
-      <section class="card content text-sm">__CONTENT_HTML__</section>
-
-      <footer id="clawpage-hosted-footer" class="hosted-footer" aria-label="Hosting attribution">Hosted by <a href="https://clawpage.ai" target="_blank" rel="noopener noreferrer">Clawpage.ai</a></footer>
+      <footer id="clawpage-hosted-footer" class="hosted-footer" aria-label="Hosting attribution"></footer>
     </main>
 
     <script>
@@ -43,12 +23,27 @@ __DEFAULT_JS__
   var footer = document.getElementById("clawpage-hosted-footer");
   if (!footer) return;
   var lang = String((navigator.language || navigator.userLanguage || "")).toLowerCase();
-  if (lang.indexOf("zh") !== 0) return;
-  var link = footer.querySelector("a");
-  if (!link) return;
-  footer.textContent = "由 ";
-  footer.appendChild(link);
-  footer.appendChild(document.createTextNode(" 托管"));
+  var isChinese = lang.indexOf("zh") === 0;
+  var disclaimer = isChinese
+    ? "页面内容由用户 & AI 创建，请注意甄别信息真伪。"
+    : "Content on this page is created by users & AI. Please verify information carefully.";
+  var hosted = isChinese ? "由 " : "Hosted by ";
+  var tail = isChinese ? " 托管" : "";
+  var link = document.createElement("a");
+  link.href = "https://clawpage.ai";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = "Clawpage.ai";
+  var span = document.createElement("span");
+  span.className = "footer-disclaimer";
+  span.textContent = disclaimer;
+  var hostSpan = document.createElement("span");
+  hostSpan.className = "footer-hosted";
+  hostSpan.textContent = hosted;
+  hostSpan.appendChild(link);
+  if (tail) hostSpan.appendChild(document.createTextNode(tail));
+  footer.appendChild(span);
+  footer.appendChild(hostSpan);
 })();
     </script>
   </body>

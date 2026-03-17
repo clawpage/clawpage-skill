@@ -40,12 +40,7 @@ function parseTtlArg(value) {
   return { provided: true, ttlMs: num };
 }
 
-function computeExpiryIso(nowMs, ttlMs) {
-  if (typeof ttlMs === "number" && Number.isFinite(ttlMs)) {
-    return new Date(nowMs + ttlMs).toISOString();
-  }
-  return null;
-}
+
 
 function buildAccessUrl({ rootUrl, accessUrl, pagecode }) {
   if (typeof accessUrl === "string" && accessUrl.trim() !== "") {
@@ -67,18 +62,7 @@ function buildAccessUrl({ rootUrl, accessUrl, pagecode }) {
   }
 }
 
-function formatExpiryText({ isUpdate, ttlProvided, ttlMsApplied, nowMs }) {
-  if (isUpdate && !ttlProvided) {
-    return "[EXPIRE_AT_UNCHANGED]";
-  }
-  if (ttlMsApplied === null) {
-    return "[NEVER_EXPIRES]";
-  }
-  if (typeof ttlMsApplied === "number" && Number.isFinite(ttlMsApplied)) {
-    return new Date(nowMs + ttlMsApplied).toLocaleString("zh-CN", { hour12: false });
-  }
-  return "[EXPIRE_AT_UNKNOWN]";
-}
+
 
 function extractApiErrorCode(message) {
   const match = message.match(/"(?:error|code)"\s*:\s*"([A-Z0-9_]+)"/);
@@ -142,15 +126,6 @@ function buildSuccessSummary({ mode, pageId, publicUrl, rootUrl, accessUrl }) {
   return `${mode} page ${pageId} successfully. Share: ${primaryUrl}`;
 }
 
-function escapeHtml(input) {
-  return input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 
 
 function loadKeys(filePath) {
@@ -181,17 +156,7 @@ function loadKeys(filePath) {
   return { token, apiHost };
 }
 
-function renderHtml({ template, title, subtitle, generatedAt, expiresAt }) {
-  return template
-    .replaceAll("__PAGE_TITLE__", escapeHtml(title))
-    .replaceAll("__PAGE_SUBTITLE__", escapeHtml(subtitle))
-    .replaceAll("__GENERATED_AT__", escapeHtml(generatedAt))
-    .replaceAll("__EXPIRES_AT__", escapeHtml(expiresAt));
-  // NOTE: __CONTENT_HTML__ is intentionally NOT replaced here.
-  // It must be filled by the agent directly in index.html before publish.
-}
-
-function bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt }) {
+function bundlePageProject({ pageDir }) {
   const indexPath = path.join(pageDir, "index.html");
   const cssPath = path.join(pageDir, "default.css");
   const jsPath = path.join(pageDir, "default.js");
@@ -229,7 +194,7 @@ function bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt })
 
   // __CONTENT_HTML__ is left as-is: the agent must have already replaced it in index.html.
   // If it is still present here, the non-empty content gate in the publish checklist will catch it.
-  return renderHtml({ template: html, title, subtitle, generatedAt, expiresAt });
+  return html;
 }
 
 async function createPage({ apiHost, token, html, ttlMs, pageName, pagecode }) {
@@ -301,15 +266,14 @@ async function main() {
     console.log(
       [
         "Usage:",
-        "  node scripts/clawpages_publish.mjs --page-dir <dir> [--title <title> --subtitle <text>]",
+        "  node scripts/clawpages_publish.mjs --page-dir <dir> [options]",
         "Options:",
         "  --page-dir <path>          publish an existing page project directory (required)",
         "  --page-id <id>             update an existing page by pageId (PATCH)",
         "  --page-name <text>         page_name payload field",
+        "  --title <text>             fallback for --page-name if not provided",
         "  --pagecode <text|null>     set/remove URL access code (null = remove)",
         "  --password <text|null>     deprecated alias for --pagecode",
-        "  --title <text>",
-        "  --subtitle <text>",
         "  --ttl-ms <number|null>     create default: 21600000 (6h)",
         "  --keys-file <path>",
         "  --api-host <url>",
@@ -327,8 +291,6 @@ async function main() {
   const pageDir = path.resolve(pageDirArg);
   const defaultTitle = path.basename(pageDir);
   const title = String(args.title || defaultTitle);
-  const subtitle = String(args.subtitle || "[PAGE_SUBTITLE]");
-  const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
   const pageId = args["page-id"] ? String(args["page-id"]) : "";
   const isUpdate = Boolean(pageId);
   const ttlArg = parseTtlArg(args["ttl-ms"]);
@@ -337,10 +299,8 @@ async function main() {
     : (ttlArg.provided ? ttlArg.ttlMs : DEFAULT_CREATE_TTL_MS);
   const nowMs = Date.now();
   const ttlMsApplied = isUpdate ? (ttlArg.provided ? ttlMs : null) : ttlMs;
-  const expiresAt = computeExpiryIso(nowMs, ttlMsApplied);
-  const expiresAtText = formatExpiryText({ isUpdate, ttlProvided: ttlArg.provided, ttlMsApplied, nowMs });
 
-  const html = bundlePageProject({ pageDir, title, subtitle, generatedAt, expiresAt: expiresAtText });
+  const html = bundlePageProject({ pageDir });
 
   const outputHtml = path.resolve(String(args["output-html"] || "/tmp/clawpages-preview.html"));
   fs.writeFileSync(outputHtml, html, "utf8");
@@ -378,7 +338,7 @@ async function main() {
   const resolvedPagecode = pagecode !== undefined ? pagecode : returnedPagecode;
 
   // SOT from backend response
-  const finalExpiresAt = page.expiresAt !== undefined ? page.expiresAt : expiresAt;
+  const finalExpiresAt = page.expiresAt !== undefined ? page.expiresAt : null;
   const pagecodeProtected = typeof page.passwordProtected === "boolean"
     ? page.passwordProtected
     : (pagecodeUpdated ? (pagecode !== null && pagecode !== "") : (isUpdate ? null : (returnedPagecode ? true : null)));

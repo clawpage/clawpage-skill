@@ -42,18 +42,17 @@ cp -R ./templates/genernal_template ./.pages/[PAGE_NAME]
 
 4. Edit page project (`index.html` first, then `default.css` / `default.js` as needed).
 - **Important:** `index.html` contains `__CONTENT_HTML__` as the main content zone. You must replace it with real HTML content before publish. The publish script does **not** fill this placeholder — any unresolved `__CONTENT_HTML__` will be left as a literal string in the output.
+- **The LLM renders everything visible**: page title (including the `<title>` tag), subtitle, timestamps, expiry info, and all UI content. The publish script only inlines CSS/JS — it does not inject any metadata.
 - **Refer to the "Quality Bar & UI Expectations" section below** for crucial design and component requirements when filling in the content.
 
-5. **Placeholder Instantiation Pass (Mandatory)**: Before proceeding, scan your `index.html`, `default.css`, and `default.js` for any AI-Managed Semantic Placeholders (e.g., `[GENERATED_AT]`, `[EXPIRE_AT]`, `[SEARCH]`) and translate them into their literal localized strings based on the user's language.
+5. Apply localization and output contracts from `./references/prompt-contracts.md`.
 
-6. Apply localization and output contracts from `./references/prompt-contracts.md`.
-
-7. Run pre-publish hard checklist (must pass all):
+6. Run pre-publish hard checklist (must pass all):
 - metadata complete in `meta.md`
-- required `__SYSTEM__` placeholders preserved in HTML, while `[AI_SEMANTIC]` placeholders are fully translated
+- required `__SYSTEM__` placeholders preserved in HTML (`__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`)
 - dry-run succeeds
 
-8. Publish page:
+7. Publish page:
 - **Resolve PAGECODE**: If a private page is required, generate a random 6-digit number (e.g., "123456"). Do not use fragile shell scripts for generation.
 
 ```bash
@@ -61,7 +60,6 @@ cp -R ./templates/genernal_template ./.pages/[PAGE_NAME]
 node ./scripts/clawpages_publish.mjs \
   --page-dir ./.pages/[PAGE_NAME] \
   --title "[TITLE]" \
-  --subtitle "[SUBTITLE]" \
   --ttl-ms 10800000 \
   --pagecode "[GENERATED_PAGECODE]"
 ```
@@ -71,13 +69,13 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
 - `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
 
-9. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
 
-10. Write returned `pageId` back to `./.pages/[PAGE_NAME]/meta.md`:
+9. Write returned `pageId` back to `./.pages/[PAGE_NAME]/meta.md`:
 - prefer `metadata.page_id`
 - optional mirror field: `page-id`
 
-11. Management-page proactive reminder rule:
+10. Management-page proactive reminder rule:
 - count non-management local page projects under `./.pages` using this deterministic rule:
   - include only directories that contain `meta.md`
   - exclude directory named `page-management-center`

@@ -5,16 +5,15 @@ Use this file as the single source for shared prompt contracts across router/cre
 ## 1. Placeholder Ownership & Localization Contract
 
 **A. System-Managed Placeholders (DO NOT REPLACE)**
-- Format: `__UPPERCASE__` (e.g., `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__GENERATED_AT__`, `__EXPIRES_AT__`).
+- Format: `__UPPERCASE__` (e.g., `__DEFAULT_CSS__`, `__DEFAULT_JS__`).
 - Rule: The Agent **must leave these untouched** in the HTML. The publish script will compute and replace them automatically.
-- *Exception*: `__CONTENT_HTML__` MUST be replaced by the Agent with rich UI components.
+- *Exception*: `__CONTENT_HTML__` MUST be replaced by the Agent with rich UI components (including page title, subtitle, timestamps, and any metadata the page needs).
 
-**B. AI-Managed Semantic Placeholders (MUST REPLACE)**
-- Format: `[UPPERCASE]` (e.g., `[EXPIRE_AT]`, `[GENERATED_AT]`, `[SEARCH_PLACEHOLDER]`).
-- Rule: The Agent **must instantiate** these placeholders into natural, goal-language strings (e.g. translate `[GENERATED_AT]` to "生成时间" or "Generated At").
-- Do not use numeric key placeholders.
-- Do not maintain key-mapping tables.
-- Infer user language from prompt; ask only when unclear.
+**B. LLM-Rendered Content**
+- The Agent renders **everything visible** on the page: title, subtitle, and all UI content.
+- The Agent should write the page `<title>` tag directly with the actual title.
+- **Do NOT show expiry time on the page.** Expiry is a hosting detail, not page content — communicate it to the user in the post-publish chat message using `expiresAt` from the JSON result.
+- User-visible text must be localized to the user's language; infer language from prompt and ask only when unclear.
 
 ## 2. Output Schema (Fixed Fields)
 
@@ -59,10 +58,9 @@ When calling `scripts/clawpages_publish.mjs`, this schema should be emitted as J
 Run and pass all checks before publish:
 
 1. `meta.md` metadata is complete (`metadata.name`, `metadata.description`; keep/update `metadata.page_id` when available).
-2. Required HTML placeholders are preserved: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`, `__PAGE_TITLE__`, `__PAGE_SUBTITLE__`, `__GENERATED_AT__`, `__EXPIRES_AT__`.
-3. Dry-run succeeds: `node scripts/clawpages_publish.mjs --page-dir <dir> --title "Preview" --dry-run`.
-4. **Smart Zero-Tolerance for AI Placeholders:** Final HTML outputs must strictly NOT contain any uninstantiated semantic placeholders like `[GENERATED_AT]` or `[SEARCH_PLACEHOLDER]`. They must be translated and replaced before publishing. *(Note: Do not blindly strip all `[...]` to avoid breaking valid JavaScript arrays, Markdown links, or literal UI text like `Press [Enter]`).*
-5. **Non-empty content gate (mandatory):** before returning links, verify published HTML is not an empty shell.
+2. Required HTML placeholders are preserved: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`.
+3. Dry-run succeeds: `node scripts/clawpages_publish.mjs --page-dir <dir> --dry-run`.
+4. **Non-empty content gate (mandatory):** before returning links, verify published HTML is not an empty shell.
    - Ensure `index.html` does not leave `__CONTENT_HTML__` unresolved — it must be replaced with real content HTML before publish.
    - If this gate fails, do not send URL; fill in the content and republish first.
 
