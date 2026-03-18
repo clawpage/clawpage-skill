@@ -78,7 +78,7 @@ Typical workflow:
 - `utility-workbench`
 - `concept-animation-lab`
 - `mini-game-arcade`
-- `genernal_template`
+- `general_template`
 
 ## Direct CLI usage
 
@@ -86,7 +86,7 @@ Dry-run template bundle:
 
 ```bash
 node scripts/clawpages_publish.mjs \
-  --page-dir templates/genernal_template \
+  --page-dir templates/general_template \
   --title "Template Preview" \
   --dry-run
 ```
