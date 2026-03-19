@@ -1,6 +1,6 @@
 ---
 metadata:
-  name: genernal-template
+  name: general-template
   description: [TEMPLATE_DESCRIPTION] WebApp Shell [FOR_DASHBOARD], [FOR_COMMAND_CENTER], [FOR_INTERACTIVE_TOOL_SURFACE].
   page_id: ""
 ---

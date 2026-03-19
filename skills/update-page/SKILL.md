@@ -109,7 +109,7 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 ### Toolchain & Layout
 
 - **Keep WebApp behavior**, do not regress an interactive page into an article-only page.
-- **Preloaded Toolchain**: Rely heavily on the available preloaded toolchain. `genernal_template` provides TailwindCSS, Mermaid.js, and jQuery. Other templates provide TailwindCSS and possibly specific libraries (e.g., GSAP, ECharts). Check the `<head>` of `index.html` to see what is available.
+- **Preloaded Toolchain**: Rely heavily on the available preloaded toolchain. `general_template` provides TailwindCSS, Mermaid.js, and jQuery. Other templates provide TailwindCSS and possibly specific libraries (e.g., GSAP, ECharts). Check the `<head>` of `index.html` to see what is available.
 - **Modern Layout**: Use Tailwind utility classes for modern aesthetics (e.g., responsive grids, flexbox, glassmorphism `bg-white/60 backdrop-blur-md`, `rounded-xl`, `shadow-lg`). Do not output bare HTML tags without styling. **Color Warning:** The base template uses a light theme. DO NOT randomly generate dark background classes (e.g., `bg-gray-800`, `bg-slate-900`, `bg-black`) which cause severe text contrast issues. Stick to light, harmonious cards and panels unless specifically directed otherwise.
 - **Spatial Composition**: Maintain or enhance the page's spatial structure — asymmetric layouts, negative space, full-bleed sections where appropriate.
 
