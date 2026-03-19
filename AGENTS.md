@@ -11,7 +11,7 @@
 ## Build, Test, and Development Commands
 - Dry-run a template/package build:
   ```bash
-  node scripts/clawpages_publish.mjs --page-dir templates/genernal_template --title "Template Preview" --dry-run
+  node scripts/clawpages_publish.mjs --page-dir templates/general_template --title "Template Preview" --dry-run
   ```
 - Publish a page project:
   ```bash

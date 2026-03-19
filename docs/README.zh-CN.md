@@ -75,7 +75,7 @@ curl -sS -X POST https://api.clawpage.ai/api/register \
 
 ```bash
 node scripts/clawpages_publish.mjs \
-  --page-dir templates/genernal_template \
+  --page-dir templates/general_template \
   --title "Template Preview" \
   --dry-run
 ```

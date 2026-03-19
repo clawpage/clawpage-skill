@@ -24,7 +24,7 @@ description: Trigger when user wants a brand-new page (keywords: create/new page
 
 ## Workflow
 
-1. Choose template (default `genernal_template`).
+1. Choose template (default `general_template`).
 2. Resolve target directory strategy before copy:
 - if `./.pages/[PAGE_NAME]` does not exist: copy directly.
 - if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new [PAGE_NAME]`.
@@ -32,7 +32,7 @@ description: Trigger when user wants a brand-new page (keywords: create/new page
 **Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-cp -R ./templates/genernal_template ./.pages/[PAGE_NAME]
+cp -R ./templates/general_template ./.pages/[PAGE_NAME]
 ```
 
 3. Update `./.pages/[PAGE_NAME]/meta.md`:

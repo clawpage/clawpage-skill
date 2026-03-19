@@ -14,7 +14,7 @@ description: Trigger when user asks for a management/admin page that lists all c
 ## Inputs and conventions
 
 - Management page directory (preferred fixed path): `./.pages/page-management-center`
-- Management page bootstrap template (default): `./templates/genernal_template`
+- Management page bootstrap template (default): `./templates/general_template`
 - Publish script: `./scripts/clawpages_publish.mjs`
 - API reference: `./references/api-quickref.md`
 - Shared contracts: `./references/prompt-contracts.md`
@@ -37,7 +37,7 @@ description: Trigger when user asks for a management/admin page that lists all c
 **Note:** Always replace `[MANAGEMENT_PAGE_DIR]` in the following commands with the actual resolved path.
 
 ```bash
-cp -R ./templates/genernal_template [MANAGEMENT_PAGE_DIR]
+cp -R ./templates/general_template [MANAGEMENT_PAGE_DIR]
 ```
 
 2. Ensure metadata in `[MANAGEMENT_PAGE_DIR]/meta.md` is explicit:
