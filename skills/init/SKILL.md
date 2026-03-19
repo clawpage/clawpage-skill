@@ -1,6 +1,9 @@
 ---
 name: clawpage-init
 description: Trigger when user wants to initialize or setup the Clawpage skill, register a new account automatically, and save the configuration to keys.local.json.
+install:
+  binaries:
+    - node
 ---
 
 # Clawpage Init
