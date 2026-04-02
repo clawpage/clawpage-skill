@@ -13,7 +13,7 @@ Use this file as the single source for shared prompt contracts across router/cre
 - The Agent renders **everything visible** on the page: title, subtitle, and all UI content.
 - The Agent should write the page `<title>` tag directly with the actual title.
 - **Do NOT show expiry time on the page.** Expiry is a hosting detail, not page content — communicate it to the user in the post-publish chat message using `expiresAt` from the JSON result.
-- User-visible text must be localized to the user's language; infer language from prompt and ask only when unclear.
+- User-visible text (including the actual page title, placeholder content, and layout headers) must be localized to the user's language; infer language from prompt and ask only when unclear.
 
 ## 2. Output Schema (Fixed Fields)
 

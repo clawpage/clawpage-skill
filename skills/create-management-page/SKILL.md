@@ -76,7 +76,7 @@ curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
 
 7. Publish:
 - **Identify PAGE_ID**: Use `read_file` to read `[MANAGEMENT_PAGE_DIR]/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell regex.
-- **Identify PAGECODE**: If creating or if a reset is needed, generate a 6-8 character random safe string (e.g., base64url or alphanumeric).
+- **Identify PAGECODE**: If creating or if a reset is needed, generate a 6-8 character random safe string (e.g., base64url or alphanumeric) to use as the `pagecode`.
 
 - **Create mode** (if `page_id` is missing):
 ```bash

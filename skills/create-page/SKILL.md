@@ -56,7 +56,7 @@ cp -R ./templates/general_template ./.pages/[PAGE_NAME]
 - dry-run succeeds
 
 7. Publish page:
-- **Resolve PAGECODE**: If a private page is required, generate a random 6-digit number (e.g., "123456"). Do not use fragile shell scripts for generation.
+- **Resolve PAGECODE**: If a private page is required, generate a random 6-digit number (e.g., "123456") to use as the `pagecode`. Do not use fragile shell scripts for generation.
 
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.

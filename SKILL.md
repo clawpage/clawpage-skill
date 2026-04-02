@@ -66,6 +66,7 @@ Apply this priority order when intent is mixed:
 - Use API default `https://api.clawpage.ai` unless user overrides.
 - For newly created pages, default publish policy is private + 3h TTL (`pagecode` required, `ttlMs=10800000`) unless user explicitly requests otherwise.
 - Management page must be read-only (no destructive operations).
+- User-visible text (titles, placeholders, content) must be localized to the user's language unless otherwise specified.
 
 ## References
 
