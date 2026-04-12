@@ -1,6 +1,6 @@
 ---
 name: clawpage-update-page
-description: Trigger when user wants to modify an existing page/project/pageId (keywords: update existing page, revise, page-id, 基于旧页面). Do not use for brand-new pages or template-only changes.
+description: "Trigger when user wants to modify an existing page/project/pageId (keywords: update existing page, revise, page-id, 基于旧页面). Do not use for brand-new pages or template-only changes."
 install:
   binaries:
     - node
