@@ -277,11 +277,60 @@ body {
   justify-content: center;
   margin: 1.5rem 0;
   overflow-x: auto;
+  cursor: zoom-in;
 }
 
 .mermaid svg {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
-  background-color: var(--surface);
+  background-color: var(--surface-soft);
+}
+
+.claw-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 16px;
+  animation: claw-fade-in 0.18s ease-out;
+}
+
+.claw-zoom-overlay svg {
+  max-width: 95vw;
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.claw-zoom-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 20px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.claw-zoom-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes claw-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
