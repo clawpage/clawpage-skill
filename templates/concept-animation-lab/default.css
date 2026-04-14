@@ -64,13 +64,14 @@ body {
 .stage {
   position: relative;
   height: 180px;
-  border: 1px dashed #9fbee1;
+  border: 1px dashed var(--line);
   border-radius: 12px;
   overflow: hidden;
+  cursor: zoom-in;
   background:
     radial-gradient(circle at 18% 24%, rgba(78, 166, 244, 0.15), transparent 32%),
     radial-gradient(circle at 84% 74%, rgba(126, 196, 255, 0.15), transparent 34%),
-    #fbfdff;
+    var(--surface-soft);
 }
 
 .node {
@@ -170,6 +171,61 @@ body {
 .hosted-footer a:hover {
   color: var(--accent);
   text-decoration-color: currentColor;
+}
+
+.claw-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 16px;
+  animation: claw-fade-in 0.18s ease-out;
+}
+
+.claw-zoom-overlay .stage-clone {
+  position: relative;
+  width: 90vw;
+  height: 60vh;
+  border-radius: 12px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(78, 166, 244, 0.15), transparent 32%),
+    radial-gradient(circle at 84% 74%, rgba(126, 196, 255, 0.15), transparent 34%),
+    var(--surface-soft);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.claw-zoom-overlay .stage-clone .node {
+  transform: scale(1.6);
+}
+
+.claw-zoom-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 20px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.claw-zoom-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes claw-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

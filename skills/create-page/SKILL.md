@@ -135,7 +135,7 @@ Commit to the chosen direction and execute it with precision.
 ### Rich Components & Data Visualization
 
 - **Rich Components over Long Text**: Break down long information into Data Cards, Dashboards, Accordions, Interactive Tabs, or collapsible sections.
-- **Data Visualization**: Whenever explaining complex logic, structures, workflows, or data, **use Mermaid.js** (mindmaps, pie charts, flowcharts) embedded directly in the page instead of writing lengthy text. **Important:** Ensure Mermaid diagrams are rendered at an appropriate size (e.g., setting `width: 100%` or avoiding overly constrained containers) and explicitly configure their theme for high contrast (especially considering light backgrounds) so the nodes and text are legible.
+- **Data Visualization**: Whenever explaining complex logic, structures, workflows, or data, **use Mermaid.js** (mindmaps, pie charts, flowcharts) embedded directly in the page instead of writing lengthy text. **Important:** Ensure Mermaid diagrams are rendered at an appropriate size (e.g., setting `width: 100%` or avoiding overly constrained containers) and explicitly configure their theme for high contrast (especially considering light backgrounds) so the nodes and text are legible. **Zoom:** Chart containers (`.mermaid`, `.chart`, `.stage`) have built-in click-to-zoom — users can tap any chart on mobile to see it fullscreen. No extra markup needed; the template JS handles it automatically.
 
 ### Motion & Backgrounds
 

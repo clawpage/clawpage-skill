@@ -68,9 +68,10 @@ body {
 .chart {
   height: 240px;
   width: 100%;
-  border: 1px solid #9fbee1;
+  border: 1px solid var(--line);
   border-radius: 10px;
-  background: #fbfdff;
+  background: var(--surface-soft);
+  cursor: zoom-in;
 }
 
 .chip {
@@ -130,6 +131,52 @@ body {
 .hosted-footer a:hover {
   color: var(--accent);
   text-decoration-color: currentColor;
+}
+
+.claw-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 16px;
+  animation: claw-fade-in 0.18s ease-out;
+}
+
+.claw-zoom-overlay img {
+  max-width: 95vw;
+  max-height: 88vh;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  background: var(--surface);
+}
+
+.claw-zoom-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 20px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.claw-zoom-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes claw-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

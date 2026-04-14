@@ -48,4 +48,36 @@
 
   render(7);
   window.addEventListener("resize", function() { chart.resize(); });
+
+  /* ── click-to-zoom ── */
+  function closeZoomOverlay() {
+    var overlay = document.querySelector(".claw-zoom-overlay");
+    if (overlay) overlay.remove();
+  }
+
+  chartNode.addEventListener("click", function () {
+    var dataUrl = chart.getDataURL({ type: "png", pixelRatio: 2, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--surface-soft").trim() || "#f6faff" });
+    var overlay = document.createElement("div");
+    overlay.className = "claw-zoom-overlay";
+
+    var img = document.createElement("img");
+    img.src = dataUrl;
+    img.alt = "Chart zoom";
+    overlay.appendChild(img);
+
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "claw-zoom-close";
+    closeBtn.setAttribute("aria-label", "Close");
+    closeBtn.textContent = "\u00d7";
+    overlay.appendChild(closeBtn);
+
+    overlay.addEventListener("click", function (ev) {
+      if (ev.target === overlay || ev.target === closeBtn) closeZoomOverlay();
+    });
+    document.body.appendChild(overlay);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeZoomOverlay();
+  });
 })();

@@ -42,4 +42,39 @@
   });
 
   render();
+
+  /* ── click-to-zoom ── */
+  function closeZoomOverlay() {
+    var overlay = document.querySelector(".claw-zoom-overlay");
+    if (overlay) overlay.remove();
+  }
+
+  var stageEl = document.querySelector(".stage");
+  if (stageEl) {
+    stageEl.addEventListener("click", function (e) {
+      if (e.target.closest("button")) return;
+      var overlay = document.createElement("div");
+      overlay.className = "claw-zoom-overlay";
+
+      var clone = stageEl.cloneNode(true);
+      clone.className = "stage-clone";
+      clone.style.cursor = "default";
+      overlay.appendChild(clone);
+
+      var closeBtn = document.createElement("button");
+      closeBtn.className = "claw-zoom-close";
+      closeBtn.setAttribute("aria-label", "Close");
+      closeBtn.textContent = "\u00d7";
+      overlay.appendChild(closeBtn);
+
+      overlay.addEventListener("click", function (ev) {
+        if (ev.target === overlay || ev.target === closeBtn) closeZoomOverlay();
+      });
+      document.body.appendChild(overlay);
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeZoomOverlay();
+  });
 })();
