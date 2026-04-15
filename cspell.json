@@ -1,0 +1,33 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "clawpage",
+    "clawpages",
+    "frontmatter",
+    "glassmorphism",
+    "kebab-case",
+    "pagecode",
+    "mindmaps",
+    "ECharts",
+    "TailwindCSS",
+    "quickref",
+    "maximalism",
+    "Grotesk",
+    "Playfair",
+    "Baloo",
+    "Nunito",
+    "Lato",
+    "Orbitron",
+    "WCAG",
+    "inlines",
+    "GSAP",
+    "flexbox"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    ".pages/**",
+    "dist/**",
+    "coverage/**"
+  ]
+}
