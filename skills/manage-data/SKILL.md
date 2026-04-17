@@ -5,7 +5,9 @@ description: Manage a Clawpage data table (KV storage with permission levels). U
 
 # manage-data
 
-Clawpage provides a shared KV data API under `/api/data/:username/:table/:key`. Use this skill to manage a user's tables and records.
+Clawpage provides a per-user KV data API under `https://<username>.clawpage.ai/api/data/<table>/<key>`. Use this skill to manage a user's tables and records.
+
+> **CLI 会自动通过 /api/me 发现并缓存你的 username；首次使用后会写入 keys.local.json。**
 
 ## Permission levels
 
@@ -49,22 +51,26 @@ node scripts/clawpages_data.mjs --delete-table guestbook
 
 ### Read / write records
 ```bash
-node scripts/clawpages_data.mjs --put alice01/posts/hello --value '{"title":"Hello","body":"..."}'
-node scripts/clawpages_data.mjs --get alice01/posts/hello
-node scripts/clawpages_data.mjs --list alice01/posts --limit 50
-node scripts/clawpages_data.mjs --delete-record alice01/posts/hello
+# username is auto-discovered from /api/me on first use
+node scripts/clawpages_data.mjs --put posts/hello --value '{"title":"Hello","body":"..."}'
+node scripts/clawpages_data.mjs --get posts/hello
+node scripts/clawpages_data.mjs --list posts --limit 50
+node scripts/clawpages_data.mjs --delete-record posts/hello
+
+# Override auto-discovered username
+node scripts/clawpages_data.mjs --user alice01 --list posts
 ```
 
 ## HTML-side examples (no token required, for public / read-public tables)
 
 ```html
 <script>
-  // Read all comments from a public table
-  const r = await fetch("https://api.clawpage.ai/api/data/alice01/guestbook");
+  // Read all comments from a public table (user subdomain)
+  const r = await fetch("https://alice01.clawpage.ai/api/data/guestbook");
   const { records } = await r.json();
 
   // Post a new comment (public table → no auth)
-  await fetch("https://api.clawpage.ai/api/data/alice01/guestbook", {
+  await fetch("https://alice01.clawpage.ai/api/data/guestbook", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ value: { text: "hi", at: Date.now() } }),
