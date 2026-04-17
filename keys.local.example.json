@@ -1,6 +1,7 @@
 {
   "clawpage": {
-    "token": "sk_replace_me",
-    "apiHost": "https://api.clawpage.ai"
+    "apiHost": "https://api.clawpage.ai",
+    "token": "sk_xxx",
+    "username": ""
   }
 }
