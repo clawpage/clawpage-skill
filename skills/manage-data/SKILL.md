@@ -1,96 +1,331 @@
 ---
 name: manage-data
-description: Manage a Clawpage data table (KV storage with permission levels). Use when the user wants to create/update/delete a table, change its permission, or upsert/list records.
+description: Manage a user's Clawpage KV data tables — create/permission/delete tables, CRUD records, deep-merge updates, auto-keyed appends, export/import. Use whenever a page needs server-side persisted data (comments, reactions, likes, visitor state, configs, content CMS, simple counters). The data lives under the user's own subdomain; the sk_ owner token is NEVER allowed to ship in browser HTML.
 ---
 
 # manage-data
 
-Clawpage provides a per-user KV data API under `https://<username>.clawpage.ai/api/data/<table>/<key>`. Use this skill to manage a user's tables and records.
+Clawpage ships a per-user KV data API at `https://<username>.clawpage.ai/api/data/<table>/<key>`.
+It is the **only** legitimate way to persist structured data for a Clawpage HTML page.
 
-> **CLI 会自动通过 /api/me 发现并缓存你的 username；首次使用后会写入 keys.local.json。**
+> **The CLI script `scripts/clawpages_data.mjs` auto-discovers the user's username via `/api/me` on first call and caches it in `keys.local.json`. Just run a command; auth + URL resolution is handled for you.**
 
-## Permission levels
+---
 
-| Level | Read | Write |
+## 1. When to use this skill
+
+**Trigger words/intents (invoke the skill):**
+- "build a comment / guestbook / feedback box"
+- "track likes / reactions / votes / counters"
+- "show visit counts / view stats"
+- "add config / settings / theme state persisted"
+- "build a mini CMS for posts / announcements"
+- "save form submissions / contact requests"
+- "content that multiple sessions share"
+- any request that needs state surviving page reloads
+
+**Do NOT use this skill for:**
+- files > 64 KB (images, PDFs, long markdown) — **not supported**, there's no blob storage
+- data that must be transactional across records — no multi-record atomicity
+- data needing SQL-like queries / joins — KV only, no secondary indexes
+- per-second atomic counters with strong consistency — PATCH is read-modify-write, small races possible
+
+---
+
+## 2. Permission decision tree
+
+Pick ONE level per table. You cannot change permission atomically with writes, so decide up-front:
+
+```
+Who reads?                 Who writes (directly from the browser)?
+─────────────              ──────────────────────────────────────
+Everyone  ─── yes ───►     Everyone with rate limit?  ── yes ──► public
+                           Only the page owner?       ── yes ──► read-public
+Only the owner ────────────────────────────────────────────────► private
+```
+
+### Canonical choices
+
+| Scenario | Permission | Why |
 |---|---|---|
-| `private` | owner token only | owner token only |
-| `read-public` | anyone | owner token only |
-| `public` | anyone | anyone (IP rate-limited) |
+| Public guestbook / comments / shout-box | `public` | Anonymous writes expected; IP rate limit (60/min/table) is enough to deter spam |
+| Visitor counter (each client increments) | `public` | Anyone can increment; counter value readable |
+| Likes / reactions (anonymous click) | `public` | Same reasoning |
+| Blog posts / articles | `read-public` | Anyone reads; only you (from CLI) publishes |
+| Announcement banner the page fetches | `read-public` | Same pattern as blog |
+| Personal bookmarks / drafts / notes | `private` | Only you read + write; data hidden even by listing (private tables return TABLE_NOT_FOUND to strangers) |
+| Config accessed by your own private automation | `private` | |
 
-## 🚨 Security: never put the owner sk_ token in browser HTML
+**Anti-patterns**:
+- Never put a `private` or `read-public` **write** behind a front-end form, because you'd have to expose `sk_` token in the HTML (which steals the whole account). Use public for browser writes; do owner-only writes from the CLI or your own backend.
 
-The owner sk_ token controls everything in the account. If it appears in HTML/JS that end-users see, anyone can steal it.
+---
 
-**Correct pattern:** read/write public tables from HTML without a token. If the user needs to write to a read-public or private table, do it via this skill (CLI) or from their own backend — never inline in HTML.
+## 3. Quick recipes (most common tasks)
 
-## Usage
+All commands run from `clawpage-skill/` directory and require a populated `keys.local.json` (token + apiHost).
 
-All commands below run from `clawpage-skill/` and require a valid `keys.local.json` with `clawpage.token`.
+### 3.1 Build a comment board (anonymous append + list)
 
-### List the user's tables
 ```bash
-node scripts/clawpages_data.mjs --list-tables
+# one-time: create the table
+node scripts/clawpages_data.mjs --create-table comments --permission public
 ```
 
-### Create a table
-```bash
-node scripts/clawpages_data.mjs --create-table guestbook --permission public
-node scripts/clawpages_data.mjs --create-table posts     --permission read-public
-node scripts/clawpages_data.mjs --create-table diary     --permission private
-```
-
-### Change a table's permission
-```bash
-node scripts/clawpages_data.mjs --update-permission guestbook --permission read-public
-```
-
-### Delete a table (and all its records)
-```bash
-node scripts/clawpages_data.mjs --delete-table guestbook
-```
-
-### Read / write records
-```bash
-# username is auto-discovered from /api/me on first use
-node scripts/clawpages_data.mjs --put posts/hello --value '{"title":"Hello","body":"..."}'
-node scripts/clawpages_data.mjs --get posts/hello
-node scripts/clawpages_data.mjs --list posts --limit 50
-node scripts/clawpages_data.mjs --delete-record posts/hello
-
-# Override auto-discovered username
-node scripts/clawpages_data.mjs --user alice01 --list posts
-```
-
-## HTML-side examples (no token required, for public / read-public tables)
-
+In HTML:
 ```html
 <script>
-  // Read all comments from a public table (user subdomain)
-  const r = await fetch("https://alice01.clawpage.ai/api/data/guestbook");
-  const { records } = await r.json();
+const API = "https://<USERNAME>.clawpage.ai/api/data";
 
-  // Post a new comment (public table → no auth)
-  await fetch("https://alice01.clawpage.ai/api/data/guestbook", {
+// Post a comment — key is server-generated (rec_xxxx)
+async function postComment(text) {
+  const r = await fetch(`${API}/comments`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ value: { text: "hi", at: Date.now() } }),
+    body: JSON.stringify({ value: { text, at: Date.now() } }),
   });
+  return r.json();
+}
+
+// Read newest 20
+async function listComments() {
+  const r = await fetch(`${API}/comments?limit=20`);
+  return (await r.json()).records;  // [{key, value, createdAt, updatedAt, sizeBytes}]
+}
 </script>
 ```
 
-## Quotas (per user)
+### 3.2 Build a reactions counter (👍❤️🔥 click counts)
 
-- Max 50 tables
-- Max 10 000 records per table
-- Max 64 KB per value
-- Max 50 MB total storage
+```bash
+# single record in a public table, key="global"
+node scripts/clawpages_data.mjs --create-table reactions --permission public
+node scripts/clawpages_data.mjs --put reactions/global --value '{"like":0,"heart":0,"fire":0}'
+```
 
-Exceeding any of these returns HTTP 413.
+In HTML (use PATCH for single-field updates — deep merge):
+```html
+<script>
+const API = "https://<USERNAME>.clawpage.ai/api/data";
 
-## Rate limits (public-write tables, per IP)
+async function react(kind) {
+  // Read current, increment, patch back (small race possible under bursts)
+  const r = await fetch(`${API}/reactions/global`);
+  const { value } = await r.json();
+  await fetch(`${API}/reactions/global`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ value: { [kind]: (value[kind] ?? 0) + 1 } }),
+  });
+}
+</script>
+```
 
-- 60 writes / minute / table
-- 600 writes / minute total across all public tables
-- 600 reads / minute / table
+### 3.3 Publish content from the CLI (read-public CMS)
 
-Exceeding returns HTTP 429.
+```bash
+node scripts/clawpages_data.mjs --create-table posts --permission read-public
+
+# Publish a post (from your machine, using CLI)
+node scripts/clawpages_data.mjs --put posts/hello \
+  --value '{"title":"Hello","body":"my first post","at":"2026-04-17"}'
+
+# Update via deep merge (only changes `body`)
+node scripts/clawpages_data.mjs --patch posts/hello --value '{"body":"updated body"}'
+```
+
+In HTML (anonymous read, no token):
+```html
+<script>
+const API = "https://<USERNAME>.clawpage.ai/api/data";
+const r = await fetch(`${API}/posts/hello`);
+const post = (await r.json()).value;
+</script>
+```
+
+### 3.4 Private bookmarks you alone can see
+
+```bash
+node scripts/clawpages_data.mjs --create-table bookmarks --permission private
+node scripts/clawpages_data.mjs --post bookmarks --value '{"url":"https://...","title":"..."}'
+node scripts/clawpages_data.mjs --list bookmarks --all   # fetches all records
+```
+
+### 3.5 Backup a table before a risky edit
+
+```bash
+node scripts/clawpages_data.mjs --export posts --out posts-backup-2026-04-17.json
+# later, restore:
+node scripts/clawpages_data.mjs --import posts --in posts-backup-2026-04-17.json
+```
+
+The export file looks like `{table, permission, records: {key1: value, key2: value, ...}}`. `--import` accepts either that shape or a bare `{key: value}` map.
+
+---
+
+## 4. Full command reference
+
+### Table management (always needs owner Bearer token)
+
+```
+--list-tables                                              # list my tables
+--create-table <name> --permission <LEVEL>                 # create (levels: private | read-public | public)
+--update-permission <name> --permission <LEVEL>            # change a table's permission
+--delete-table <name>                                      # delete table + all its records
+--export <table> --out <file.json>                         # download the full table
+--import <table> --in <file.json>                          # bulk upsert records from file
+```
+
+### Record CRUD (permission-aware)
+
+```
+--get <table>/<key>                                        # read one record
+--put <table>/<key>    (--value '<json>' | --value-file <path>)   # full upsert
+--patch <table>/<key>  (--value '<json>' | --value-file <path>)   # deep-merge objects
+--post <table>         (--value '<json>' | --value-file <path>)   # auto-gen key
+--delete-record <table>/<key>                              # delete one record
+--list <table> [--limit N] [--after <key>] [--all]         # list; --all follows cursors
+```
+
+### Options
+
+```
+--user <username>        # override auto-discovered username (rare)
+--value-file <path>      # read the JSON value from a file (useful for long values)
+```
+
+### `--put` vs `--patch` vs `--post`
+
+| Method | Body shape | Does what |
+|---|---|---|
+| `PUT /:table/:key` | `{value: <JSON>}` | Creates or **fully replaces** the record |
+| `PATCH /:table/:key` | `{value: <partial JSON>}` | Deep-merges the partial JSON into the existing object record; scalar/array values are replaced wholesale. Both existing and new value **must** be objects, else 400 `PATCH_NOT_OBJECT` |
+| `POST /:table` | `{value: <JSON>}` | Server generates a fresh key (like `rec_xxxxxx`). Use for append-only logs, comments, events |
+
+---
+
+## 5. Quotas and rate limits
+
+If a request hits a limit, the API returns HTTP **413** or **429** with an error code.
+
+### Per-user quotas (hard, enforced at write time)
+
+| Limit | Value | Error if exceeded |
+|---|---|---|
+| Tables per user | 50 | `TOO_MANY_TABLES` (413) |
+| Records per table | 10 000 | `TABLE_FULL` (413) |
+| Serialized JSON size per record | 64 KB | `VALUE_TOO_LARGE` (413) |
+| Total bytes across all user tables | 50 MB | `USER_QUOTA_EXCEEDED` (413) |
+
+### Rate limits (public tables only, per client IP)
+
+| Limit | Scope | Error |
+|---|---|---|
+| Writes per minute, per table | 60 | `RATE_LIMITED` (429) |
+| Writes per minute, all public tables combined | 600 | `RATE_LIMITED` (429) |
+| Reads per minute, per table | 600 | `RATE_LIMITED` (429) |
+
+`read-public` reads and any operation on `private` tables are **not IP-rate-limited** (they require a token, which is already a bottleneck).
+
+---
+
+## 6. Error code → action mapping
+
+When the user reports an error (or you see one while debugging), look here first.
+
+| Error code | HTTP | Root cause | What to do |
+|---|---|---|---|
+| `TABLE_NOT_FOUND` | 404 | Table doesn't exist **or** caller has no right to see it (private table + non-owner) | Owner: run `--list-tables`. If missing, `--create-table`. Non-owner: this always means "nothing to see here". |
+| `RECORD_NOT_FOUND` | 404 | Key doesn't exist in that table | Run `--list <table>` to see what keys are there |
+| `TABLE_EXISTS` | 409 | `--create-table` name collides | Pick a different name or `--update-permission` on the existing one |
+| `PERMISSION_DENIED` | 403 | Token's owner doesn't match the subdomain host; or writing to a `read-public` table without a valid owner token | If using CLI: someone else's `sk_` is cached — fix `keys.local.json`. If in browser: use a `public` table for the endpoint. |
+| `UNAUTHORIZED` | 401 | Missing/invalid Bearer token on an endpoint that needs one | Check `keys.local.json` token is correct |
+| `INVALID_TABLE_NAME` | 400 | Name fails regex `[a-z0-9][a-z0-9_-]{0,62}[a-z0-9]`, or is reserved (`tables`) | Rename. Lowercase, hyphen/underscore OK, no leading/trailing symbol, 2-64 chars |
+| `INVALID_KEY` | 400 | Key fails regex `[A-Za-z0-9][A-Za-z0-9._-]{0,126}[A-Za-z0-9]` (or single char) | Use URL-safe chars, 1-128 length, no slashes |
+| `INVALID_VALUE` | 400 | Value is not JSON-serializable, or nests > 16 deep | Remove `undefined`/functions, flatten structure |
+| `INVALID_PERMISSION` | 400 | Not one of `private | read-public | public` | Fix the `--permission` value |
+| `INVALID_BODY` | 400 | Missing `name` or `value` in body | Re-check payload |
+| `INVALID_QUERY` | 400 | `limit` isn't a positive integer | Fix `--limit` value |
+| `VALUE_TOO_LARGE` | 413 | Record > 64 KB | Split across multiple records (one "parent" + N "children" keys), or move large content to a Clawpage HTML page and store only the URL |
+| `TABLE_FULL` | 413 | Hit 10 000 records | Create a sharded table (e.g., `comments-2026`, `comments-2027`), or archive old records via `--export` + delete |
+| `TOO_MANY_TABLES` | 413 | Hit 50 tables | Consolidate or delete unused tables |
+| `USER_QUOTA_EXCEEDED` | 413 | Hit 50 MB total | Same — delete or archive |
+| `RATE_LIMITED` | 429 | Too many public writes/reads from one IP | Back off + retry; in browser, debounce the user action (throttle to 1/sec) |
+| `PATCH_NOT_OBJECT` | 400 | PATCH used but existing value or patch payload isn't a plain object | Use `--put` for full replace; only `--patch` object-shaped values |
+
+---
+
+## 7. Schema design rules (follow these to stay within quotas and scale gracefully)
+
+1. **One record per "thing"**, not one record per entity collection. ❌ Don't: `{key: "all-comments", value: [100 comments]}` → will hit 64 KB fast and can't be concurrently appended. ✅ Do: `{key: "rec_abc", value: {comment}}`, one record per comment; use `--post` for auto-keying.
+2. **Keys should be slugs or short IDs.** Prefer `rec_xxx` (auto-generated via POST) or URL-safe slugs like `2026-04-17-hello`. The API rejects slashes, spaces, and most punctuation.
+3. **Denormalize freely.** Storage is cheap (50 MB is huge for KV). Want to show author name with each comment? Copy it into the comment value, don't "join".
+4. **Group by write frequency.** High-churn data (likes, visit counts) should be in separate tables from low-churn data (posts, config). This isolates rate-limit blast radius.
+5. **Pre-compute aggregates.** No query filtering is available. If you want "top 10 posts", either list all (fine up to ~1000 rows) or maintain a single `leaderboard` record that the writers update via PATCH.
+6. **Avoid unbounded growth within a single record.** `--patch` works on objects, but if a field is an array you keep appending to, the record will eventually hit 64 KB. Switch to one-record-per-item instead.
+7. **Plan for pagination.** Lists return `{records, nextCursor}`; default limit 100, cap 500. Use `--list --all` only when you know the table is < ~2000 records.
+8. **Keep values shallow.** Max nesting 16 levels. If you have to go deeper, you're probably modeling it wrong.
+
+---
+
+## 8. Evolving data shape (multi-round iteration)
+
+When you add a field to existing records, there are three clean options:
+
+1. **Tolerant readers**: have the HTML side treat missing fields as `undefined`/default. No migration needed. (Best default.)
+2. **Lazy migration**: on each write, re-put with the new field. Old records keep the old shape until touched.
+3. **Eager migration** (for small tables): CLI script `export` → edit JSON locally → `import`. Example:
+   ```bash
+   node scripts/clawpages_data.mjs --export posts --out posts.json
+   # edit posts.json — add fields, reshape, etc.
+   node scripts/clawpages_data.mjs --import posts --in posts.json  # bulk upsert
+   ```
+
+For removing a field, nothing is required — old data carries the extra key harmlessly until overwritten.
+
+For **renaming** a field, always do `export → rewrite → import` as one atomic-feeling step.
+
+---
+
+## 9. Security playbook
+
+| Rule | Why |
+|---|---|
+| **Never write `sk_` token in HTML/JS that ships to the browser** | Anyone who opens DevTools gets full account control |
+| `public` tables are genuinely public for writes — use them only where spam isn't fatal | Rate limit is IP-based, 60/min/IP; a determined attacker from 100 IPs can still pump 6000/min |
+| For any "only I should write" endpoint, keep writes in the CLI or in a server you control | There is no "write token" scoped to a single table (not yet in spec) |
+| Don't leak secrets in `value` payloads | All `public` and `read-public` records are readable by anyone who knows the username and table name |
+| Treat `private` tables as **owner-only, semi-private** | They're hidden from strangers (returns `TABLE_NOT_FOUND`) but anyone with a valid `sk_` token for that account sees them |
+
+---
+
+## 10. Prompt-level checklist for AI
+
+When the user asks for a feature that implies data, work through this in order:
+
+1. **Can you solve it without data?** (If it's static content → just a Clawpage HTML page, not this skill.)
+2. **Who reads and who writes from the browser?** → pick permission level via §2.
+3. **Pick a table name** that fits §7.1 regex (lowercase, 2-64 chars, `-` `_` OK, not `tables`).
+4. **Decide record shape**. Follow §7: one record per thing; denormalize; small JSON.
+5. **Pick write method**:
+   - New thing with server-generated key → `POST` / `--post`
+   - Creating or replacing by known key → `PUT` / `--put`
+   - Incrementing / patching a few fields of an existing object → `PATCH` / `--patch`
+6. **Write the HTML** so that:
+   - Reads use `fetch(...)` to `https://<USERNAME>.clawpage.ai/api/data/<table>[/<key>]`
+   - Writes use the same URL with appropriate method + `{value: ...}` body
+   - NO `sk_` token in page JS — if a write needs a token, it must happen via CLI or your own backend
+7. **Publish the HTML via the standard Clawpage page publish flow** (the `manage-page` skill, not this one).
+8. **Before handing the page to the user**, test each interaction end-to-end (create table, post, read back).
+9. If the user later wants to evolve the data shape, revisit §8 for the migration path.
+
+---
+
+## 11. Not-supported (route around these)
+
+- **File uploads** (images, PDFs) — store outside Clawpage (e.g., a CDN URL) and save the URL in the record
+- **Full-text search** — fetch full table client-side and filter in JS for small tables
+- **Relational queries** — denormalize; accept duplication
+- **Real-time subscriptions** — poll with `setInterval`; or build a WebSocket elsewhere
+- **Per-record TTL / expiry** — not available; either clean up via CLI cron, or encode an `expireAt` in the value and filter client-side
+- **Transactions across multiple records** — the API only guarantees atomicity for a single PUT/PATCH on one record
