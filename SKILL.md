@@ -39,16 +39,21 @@ All execution details (workflow, output, localization, checks, failure handling)
 - Path: `skills/update-template/SKILL.md`
 - Purpose: update an existing template structure/style/interaction/docs
 
+7. `manage data`
+- Path: `skills/manage-data/SKILL.md`
+- Purpose: manage a user's KV data tables, comments, reactions, likes, and server-side state
+
 ## Routing Priority (Conflict Resolution)
 
 Apply this priority order when intent is mixed:
 
 1. Initialization intent ("init", "setup", "初始化", "完成注册") -> `init`
 2. Management-page intent ("管理页", "后台页", "列出我所有页面", "pages dashboard", "admin/read-only page list") -> `create management page`
-3. Explicit `page-id` / `pageId` / "update existing page" signal -> `update page`
-4. Existing local project intent (`.pages/<name>`, "基于旧页面", "沿用现有页面") -> `update page`
-5. Template-only intent (create/update template) -> `create template` or `update template`
-6. Otherwise default to creating a new page -> `create page`
+3. Data management intent ("comments", "reactions", "likes", "server-side state", "KV") -> `manage-data`
+4. Explicit `page-id` / `pageId` / "update existing page" signal -> `update page`
+5. Existing local project intent (`.pages/<name>`, "基于旧页面", "沿用现有页面") -> `update page`
+6. Template-only intent (create/update template) -> `create template` or `update template`
+7. Otherwise default to creating a new page -> `create page`
 
 ## Keyword Hints
 
@@ -58,6 +63,7 @@ Apply this priority order when intent is mixed:
 - Create management page: "管理页", "页面管理", "列出所有页面", "dashboard of my pages", "read-only admin page"
 - Create template: "new template", "模板搭建"
 - Update template: "improve template", "模板改版"
+- Manage data: "manage data", "comments", "reactions", "KV", "guestbook"
 
 ## Global Non-Negotiable Constraints
 
