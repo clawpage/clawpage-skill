@@ -1,0 +1,27 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "clawpage",
+    "clawpages",
+    "quickref",
+    "maximalism",
+    "Grotesk",
+    "Playfair",
+    "Baloo",
+    "Nunito",
+    "Lato",
+    "Orbitron",
+    "WCAG",
+    "glassmorphism",
+    "frontmatter",
+    "inlines",
+    "GSAP",
+    "flexbox",
+    "mindmaps"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "keys.local.json"
+  ]
+}
