@@ -28,7 +28,7 @@ It is the **only** legitimate way to persist structured data for a Clawpage HTML
 - files > 64 KB (images, PDFs, long markdown) — **not supported**, there's no blob storage
 - data that must be transactional across records — no multi-record atomicity
 - data needing SQL-like queries / joins — KV only, no secondary indexes
-- per-second atomic counters with strong consistency — PATCH is read-modify-write, small races possible
+- per-second atomic counters with strong consistency — use `--incr` (atomic); avoid PATCH which is read-modify-write and loses concurrent updates
 
 ---
 
@@ -103,19 +103,17 @@ node scripts/clawpages_data.mjs --create-table reactions --permission public
 node scripts/clawpages_data.mjs --put reactions/global --value '{"like":0,"heart":0,"fire":0}'
 ```
 
-In HTML (use PATCH for single-field updates — deep merge):
+In HTML (use `/incr` for atomic field increments — safe under concurrency):
 ```html
 <script>
 const API = "https://<USERNAME>.clawpage.ai/api/data";
 
+// Atomic increment — safe under concurrency
 async function react(kind) {
-  // Read current, increment, patch back (small race possible under bursts)
-  const r = await fetch(`${API}/reactions/global`);
-  const { value } = await r.json();
-  await fetch(`${API}/reactions/global`, {
-    method: "PATCH",
+  await fetch(`${API}/reactions/global/incr`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ value: { [kind]: (value[kind] ?? 0) + 1 } }),
+    body: JSON.stringify({ field: kind, by: 1 }),
   });
 }
 </script>
@@ -182,6 +180,7 @@ The export file looks like `{table, permission, records: {key1: value, key2: val
 --get <table>/<key>                                        # read one record
 --put <table>/<key>    (--value '<json>' | --value-file <path>)   # full upsert
 --patch <table>/<key>  (--value '<json>' | --value-file <path>)   # deep-merge objects
+--incr <table>/<key> --field <name> [--by <N>]             # atomic field increment (counters); --by defaults to 1, negative OK
 --post <table>         (--value '<json>' | --value-file <path>)   # auto-gen key
 --delete-record <table>/<key>                              # delete one record
 --list <table> [--limit N] [--after <key>] [--all]         # list; --all follows cursors
@@ -201,6 +200,8 @@ The export file looks like `{table, permission, records: {key1: value, key2: val
 | `PUT /:table/:key` | `{value: <JSON>}` | Creates or **fully replaces** the record |
 | `PATCH /:table/:key` | `{value: <partial JSON>}` | Deep-merges the partial JSON into the existing object record; scalar/array values are replaced wholesale. Both existing and new value **must** be objects, else 400 `PATCH_NOT_OBJECT` |
 | `POST /:table` | `{value: <JSON>}` | Server generates a fresh key (like `rec_xxxxxx`). Use for append-only logs, comments, events |
+
+> **For counters / reactions: use `--incr` (HTTP `POST /:table/:key/incr`), not `--patch`.** PATCH is read-modify-write and can lose concurrent updates. `incr` is atomic (Redis-backed).
 
 ---
 
@@ -252,6 +253,8 @@ When the user reports an error (or you see one while debugging), look here first
 | `USER_QUOTA_EXCEEDED` | 413 | Hit 50 MB total | Same — delete or archive |
 | `RATE_LIMITED` | 429 | Too many public writes/reads from one IP | Back off + retry; in browser, debounce the user action (throttle to 1/sec) |
 | `PATCH_NOT_OBJECT` | 400 | PATCH used but existing value or patch payload isn't a plain object | Use `--put` for full replace; only `--patch` object-shaped values |
+| `INCR_NOT_OBJECT` | 400 | `--incr` called on a record whose value is not a JSON object (e.g., array or scalar) | Use PUT first to set value to an object, or pick a different record |
+| `INCR_FIELD_NOT_NUMBER` | 400 | The target field already exists but is not a number | Rename the field, or PUT a new shape |
 
 ---
 
@@ -310,7 +313,8 @@ When the user asks for a feature that implies data, work through this in order:
 5. **Pick write method**:
    - New thing with server-generated key → `POST` / `--post`
    - Creating or replacing by known key → `PUT` / `--put`
-   - Incrementing / patching a few fields of an existing object → `PATCH` / `--patch`
+   - Atomically incrementing a numeric field (counters, reactions) → `POST /:table/:key/incr` / `--incr`
+   - Patching a few fields of an existing object (non-counter) → `PATCH` / `--patch`
 6. **Write the HTML** so that:
    - Reads use `fetch(...)` to `https://<USERNAME>.clawpage.ai/api/data/<table>[/<key>]`
    - Writes use the same URL with appropriate method + `{value: ...}` body

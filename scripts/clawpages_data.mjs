@@ -142,6 +142,7 @@ function usage() {
   --get <table>/<key>
   --put <table>/<key>    (--value '<json>' | --value-file <path>)
   --patch <table>/<key>  (--value '<json>' | --value-file <path>)   # deep merge objects
+  --incr <table>/<key> --field <name> [--by <N>]   # atomic increment (default by=1; negative OK)
   --post <table>         (--value '<json>' | --value-file <path>)   # auto-generated key
   --delete-record <table>/<key>
   --list <table> [--limit 100] [--after <key>] [--all]
@@ -269,6 +270,21 @@ async function main() {
         method: "PATCH",
         token: keys.token,
         body: { value },
+      });
+      console.log(JSON.stringify(r, null, 2));
+      return;
+    }
+
+    if (typeof args.incr === "string") {
+      const { table, key } = splitTableKey(args.incr);
+      if (typeof args.field !== "string" || args.field.length === 0) {
+        throw new Error("--incr requires --field <name>");
+      }
+      const by = args.by === undefined ? 1 : Number(args.by);
+      if (!Number.isFinite(by)) throw new Error("--by must be a finite number");
+      const r = await call(`${base}/${encodeURIComponent(table)}/${encodeURIComponent(key)}/incr`, {
+        method: "POST",
+        body: { field: args.field, by },
       });
       console.log(JSON.stringify(r, null, 2));
       return;
