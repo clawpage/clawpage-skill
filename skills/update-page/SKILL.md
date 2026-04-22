@@ -15,19 +15,32 @@ install:
 
 ## Paths and conventions
 
-- Page directory: `./.pages/<page-name>`
-- Page files: `meta.md`, `index.html`, `default.css`, `default.js`
-- Publish script: `./scripts/clawpages_publish.mjs`
-- API reference: `./references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
-- Shared contracts: `./references/prompt-contracts.md`
+### Paths (resolve before any file op)
+
+- `$SKILL_DIR` — absolute path to this skill's install directory (holds `templates/`, `scripts/`, `references/`, `keys.local.json`). Reference every skill asset as `$SKILL_DIR/<asset>`.
+- `$PAGES_DIR` — where page projects live. **Default: `$PWD/.pages`** (user's current working directory — NOT `$SKILL_DIR`). User may override per request, e.g. `/tmp/clawpage-pages` or any absolute path. When updating, use the same `$PAGES_DIR` the page was originally written to.
+- `$PAGE_DIR` = `$PAGES_DIR/<page-name>`
+- **Never** create, copy into, or modify anything inside `$SKILL_DIR`.
+
+### Resources
+
+- Page files under `$PAGE_DIR`: `meta.md`, `index.html`, `default.css`, `default.js`
+- Publish script: `$SKILL_DIR/scripts/clawpages_publish.mjs`
+- API reference: `$SKILL_DIR/references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
+- Shared contracts: `$SKILL_DIR/references/prompt-contracts.md`
 - `page-name` must be kebab-case and cannot contain `/`
 
 ## Matching strategy (two-phase)
 
-1. Read metadata only first:
+1. Resolve `$PAGES_DIR`:
+   - default `$PWD/.pages`
+   - if the user specified a different location in this or the preceding turn (e.g. `/tmp/clawpage-pages`), use it
+   - if `$PAGES_DIR` does not exist or contains no matching project, ask the user where the page lives rather than scanning other directories (e.g. `/tmp`) on your own — cross-project scans can match the wrong page.
+
+Then read metadata only first:
 
 ```bash
-find ./.pages -mindepth 2 -maxdepth 2 -name meta.md | while read -r f; do
+find "$PAGES_DIR" -mindepth 2 -maxdepth 2 -name meta.md | while read -r f; do
   echo "== $f ==";
   sed -n '1,24p' "$f";
 done
@@ -39,11 +52,11 @@ done
 
 1. Edit `index.html` first.
 2. Update `default.css` / `default.js` as required.
-3. **Identify PAGE_ID**: Use `read_file` to read `./.pages/[PAGE_NAME]/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell scripts for extraction.
+3. **Identify PAGE_ID**: Use `read_file` to read `$PAGE_DIR/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell scripts for extraction.
 
 4. If semantics changed, sync `meta.md` metadata and notes.
 
-5. Apply localization and output contracts from `./references/prompt-contracts.md`.
+5. Apply localization and output contracts from `$SKILL_DIR/references/prompt-contracts.md`.
 
 6. Run pre-publish hard checklist (must pass all):
    - metadata complete in `meta.md`
@@ -51,12 +64,12 @@ done
    - dry-run succeeds
 
 7. Publish update:
-   **Note:** Always replace placeholders in the following commands with real values.
+   **Note:** Always expand `$SKILL_DIR` / `$PAGE_DIR` to absolute paths and replace `[...]` placeholders with real values.
 
 ```bash
-# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
-node ./scripts/clawpages_publish.mjs \
-  --page-dir ./.pages/[PAGE_NAME] \
+# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script auto-loads `$SKILL_DIR/keys.local.json`.
+node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
+  --page-dir "$PAGE_DIR" \
   --page-id "[PAGE_ID]" \
   --title "[TITLE]"
 ```
@@ -66,7 +79,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection
 - `--page-name [SLUG]` rename page
 
-8. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `$SKILL_DIR/references/prompt-contracts.md`.
 
 ## If `page-id` is missing
 
@@ -78,9 +91,9 @@ Optional:
 
 ## Failure handling (error code -> action)
 
-- `LOCAL_KEYS_FILE_MISSING` -> create `./keys.local.json` from `./keys.local.example.json`.
-- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`./references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `./keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed with the original user request.**
-- `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
+- `LOCAL_KEYS_FILE_MISSING` -> create `$SKILL_DIR/keys.local.json` from `$SKILL_DIR/keys.local.example.json`.
+- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`$SKILL_DIR/references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `$SKILL_DIR/keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed with the original user request.**
+- `UNAUTHORIZED` -> verify token in `$SKILL_DIR/keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> verify `pageId` ownership/existence; if unbound, create first and write back `pageId`.
 - `409 USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.
 - `429 IP_DAILY_REGISTRATION_LIMIT_REACHED` -> stop and ask user to retry next day or use existing account.
@@ -90,14 +103,15 @@ Optional:
 
 **Idempotency Guard (Crucial for error recovery):**
 If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
-- **DO NOT** wipe out, revert, or delete the local `./.pages/[PAGE_NAME]` directory.
-- Check `./.pages/[PAGE_NAME]/meta.md`:
+- **DO NOT** wipe out, revert, or delete the local `$PAGE_DIR` directory.
+- Re-check that `$PAGES_DIR` is the same value used in the failing attempt. A mismatched `$PAGES_DIR` (e.g., retry from a different CWD, or user overrode to `/tmp` only on the first try) will make `$PAGE_DIR` look empty even though the project exists elsewhere. If `$PAGE_DIR/meta.md` is missing, ask the user to confirm the correct `$PAGES_DIR` rather than switching to `create-page` — creating a duplicate remote page is worse than asking.
+- Check `$PAGE_DIR/meta.md` only after the `$PAGES_DIR` is confirmed:
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. You MUST switch to the `create-page` skill strategy to retry the deployment.
   - If `metadata.page_id` EXISTS: It means the remote page *was* created before or you are updating successfully. Retry the `update-page` publish command exactly as before.
 
 ## Quality Bar & UI Expectations (Crucial)
 
-> **Full design reference:** `./references/design-guidelines.md` — read it before generating any UI.
+> **Full design reference:** `$SKILL_DIR/references/design-guidelines.md` — read it before generating any UI.
 
 **Treat the updated page as a modern Web App, not a plain text document.** Always apply these principles:
 

@@ -22,27 +22,27 @@ Short links shorten any `*.clawpage.ai` URL to `https://clawpage.ai/s/<7-char sl
 
 ## CLI usage
 
-All commands run from `clawpage-skill/` and need `keys.local.json` with a valid `clawpage.token`.
+Expand `$SKILL_DIR` to the skill install directory (per the root `SKILL.md` path conventions). The script auto-loads `$SKILL_DIR/keys.local.json` and needs a valid `clawpage.token` there.
 
 ### Create a short link
 ```bash
-node scripts/clawpages_links.mjs --create https://alice.clawpage.ai/p/some-long-name
+node "$SKILL_DIR/scripts/clawpages_links.mjs" --create https://alice.clawpage.ai/p/some-long-name
 # → prints JSON with { slug, shortUrl, target, createdAt, updatedAt }
 ```
 
 ### List my short links
 ```bash
-node scripts/clawpages_links.mjs --list
+node "$SKILL_DIR/scripts/clawpages_links.mjs" --list
 ```
 
 ### Update a link's target
 ```bash
-node scripts/clawpages_links.mjs --update-slug aB3kFq9 --target https://alice.clawpage.ai/p/new-destination
+node "$SKILL_DIR/scripts/clawpages_links.mjs" --update-slug aB3kFq9 --target https://alice.clawpage.ai/p/new-destination
 ```
 
 ### Delete
 ```bash
-node scripts/clawpages_links.mjs --delete aB3kFq9
+node "$SKILL_DIR/scripts/clawpages_links.mjs" --delete aB3kFq9
 ```
 
 ## Quotas
@@ -65,9 +65,9 @@ node scripts/clawpages_links.mjs --delete aB3kFq9
 Typical usage after publishing a page with a long name:
 
 ```bash
-# publish
-node scripts/clawpages_publish.mjs --page-dir .pages/my-article
+# publish (expand $SKILL_DIR / $PAGES_DIR to absolute paths; see router SKILL.md)
+node "$SKILL_DIR/scripts/clawpages_publish.mjs" --page-dir "$PAGES_DIR/my-article"
 
 # shorten its URL
-node scripts/clawpages_links.mjs --create https://<user>.clawpage.ai/p/my-long-article-name-that-is-ugly
+node "$SKILL_DIR/scripts/clawpages_links.mjs" --create https://<user>.clawpage.ai/p/my-long-article-name-that-is-ugly
 ```

@@ -67,9 +67,11 @@ Requirements:
 Typical workflow:
 - choose `stock-analysis-terminal` template
 - transform raw text into structured modules (summary, risks, observations)
-- generate page files under `.pages/<page-name>/`
-- publish via `scripts/clawpages_publish.mjs`
+- generate page files under `$PAGES_DIR/<page-name>/` — `$PAGES_DIR` defaults to `$PWD/.pages` (your current project's working directory, **not** the skill install dir). Override to `/tmp/clawpage-pages` or any absolute path if you prefer ephemeral storage.
+- publish via `$SKILL_DIR/scripts/clawpages_publish.mjs`
 - return `publicUrl` (if available), preview/protected URLs, page protection state, and expiry info
+
+> The skill install tree (`$SKILL_DIR`) is treated as read-only. Generated pages never go there.
 
 ## Template catalog
 
@@ -82,20 +84,20 @@ Typical workflow:
 
 ## Direct CLI usage
 
-Dry-run template bundle:
+Dry-run template bundle (expand `$SKILL_DIR` to the skill install dir):
 
 ```bash
-node scripts/clawpages_publish.mjs \
-  --page-dir templates/general_template \
+node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
+  --page-dir "$SKILL_DIR/templates/general_template" \
   --title "Template Preview" \
   --dry-run
 ```
 
-Publish a page project:
+Publish a page project (expand `$PAGES_DIR` per the convention above — default `$PWD/.pages`):
 
 ```bash
-node scripts/clawpages_publish.mjs \
-  --page-dir .pages/<page-name> \
+node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
+  --page-dir "$PAGES_DIR/<page-name>" \
   --title "My Page" \
   --subtitle "Optional"
 ```

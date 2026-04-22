@@ -66,25 +66,27 @@ curl -sS -X POST https://api.clawpage.ai/api/register \
 常见处理流程：
 - 自动选模板（如 `stock-analysis-terminal`）
 - 把长文结构化为摘要、风险、观察模块
-- 写入 `.pages/<page-name>/`
+- 写入 `$PAGES_DIR/<page-name>/`。`$PAGES_DIR` 默认是 `$PWD/.pages`（用户项目目录，**不是**技能安装目录），也可以改为 `/tmp/clawpage-pages` 或任意绝对路径
 - 调用发布脚本并返回链接和有效期
+
+> 技能安装目录 `$SKILL_DIR` 视为只读，不会在里面生成页面内容。
 
 ## 常用命令
 
-模板 dry-run：
+模板 dry-run（`$SKILL_DIR` 展开为技能安装目录）：
 
 ```bash
-node scripts/clawpages_publish.mjs \
-  --page-dir templates/general_template \
+node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
+  --page-dir "$SKILL_DIR/templates/general_template" \
   --title "Template Preview" \
   --dry-run
 ```
 
-发布页面：
+发布页面（`$PAGES_DIR` 默认 `$PWD/.pages`，可按需要改为 `/tmp/clawpage-pages` 等）：
 
 ```bash
-node scripts/clawpages_publish.mjs \
-  --page-dir .pages/<page-name> \
+node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
+  --page-dir "$PAGES_DIR/<page-name>" \
   --title "My Page" \
   --subtitle "Optional"
 ```

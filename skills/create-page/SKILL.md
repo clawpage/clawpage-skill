@@ -15,11 +15,22 @@ install:
 
 ## Inputs and conventions
 
-- Page directory: `./.pages/<page-name>`
-- Template directory: `./templates/<template-name>`
-- Publish script: `./scripts/clawpages_publish.mjs`
-- API reference: `./references/api-quickref.md`
-- Shared contracts: `./references/prompt-contracts.md`
+### Paths (resolve before any file op)
+
+- `$SKILL_DIR` — absolute path to this skill's install directory (holds `templates/`, `scripts/`, `references/`, `keys.local.json`). Reference every skill asset as `$SKILL_DIR/<asset>`.
+- `$PAGES_DIR` — where generated page projects are written. **Default: `$PWD/.pages`** (the user's current working directory — NOT `$SKILL_DIR`). User may override per request, e.g. `/tmp/clawpage-pages` or any absolute path they specify.
+- `$PAGE_DIR` = `$PAGES_DIR/<page-name>`
+- **Never** create, copy into, or modify anything inside `$SKILL_DIR`. Writing there triggers extra permission prompts and pollutes the skill install. All generated page projects belong under `$PAGES_DIR`.
+
+### Resources
+
+- Template directory: `$SKILL_DIR/templates/<template-name>`
+- Publish script: `$SKILL_DIR/scripts/clawpages_publish.mjs`
+- API reference: `$SKILL_DIR/references/api-quickref.md`
+- Shared contracts: `$SKILL_DIR/references/prompt-contracts.md`
+
+### Naming + policy
+
 - `page-name` must be kebab-case and cannot contain `/`
 - Create default policy (unless user explicitly overrides):
   - private page by default (`pagecode` required)
@@ -27,18 +38,20 @@ install:
 
 ## Workflow
 
+0. **Resolve `$PAGES_DIR` first.** Default `$PWD/.pages`. If the user asked for `/tmp` or any other location, honor that. Create `$PAGES_DIR` if it doesn't exist (`mkdir -p "$PAGES_DIR"`). `$PAGE_DIR = $PAGES_DIR/[PAGE_NAME]`.
+
 1. Choose template (default `general_template`).
 2. Resolve target directory strategy before copy:
-- if `./.pages/[PAGE_NAME]` does not exist: copy directly.
+- if `$PAGE_DIR` does not exist: copy directly.
 - if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new [PAGE_NAME]`.
 
-**Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name.
+**Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name, and expand `$SKILL_DIR` / `$PAGE_DIR` to the absolute paths resolved above.
 
 ```bash
-cp -R ./templates/general_template ./.pages/[PAGE_NAME]
+cp -R "$SKILL_DIR/templates/general_template" "$PAGE_DIR"
 ```
 
-3. Update `./.pages/[PAGE_NAME]/meta.md`:
+3. Update `$PAGE_DIR/meta.md`:
 - required metadata: `metadata.name`, `metadata.description`
 - add page purpose, audience, and scenario
 - **Important:** `meta.md` body is documentation only; it is **not** auto-rendered when publishing with `--page-dir`.
@@ -48,7 +61,7 @@ cp -R ./templates/general_template ./.pages/[PAGE_NAME]
 - **The LLM renders everything visible**: page title (including the `<title>` tag), subtitle, timestamps, expiry info, and all UI content. The publish script only inlines CSS/JS — it does not inject any metadata.
 - **Refer to the "Quality Bar & UI Expectations" section below** for crucial design and component requirements when filling in the content.
 
-5. Apply localization and output contracts from `./references/prompt-contracts.md`.
+5. Apply localization and output contracts from `$SKILL_DIR/references/prompt-contracts.md`.
 
 6. Run pre-publish hard checklist (must pass all):
 - metadata complete in `meta.md`
@@ -59,9 +72,9 @@ cp -R ./templates/general_template ./.pages/[PAGE_NAME]
 - **Resolve PAGECODE**: If a private page is required, generate a random 6-digit number (e.g., "123456"). Do not use fragile shell scripts for generation.
 
 ```bash
-# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
-node ./scripts/clawpages_publish.mjs \
-  --page-dir ./.pages/[PAGE_NAME] \
+# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script auto-loads `$SKILL_DIR/keys.local.json`.
+node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
+  --page-dir "$PAGE_DIR" \
   --title "[TITLE]" \
   --ttl-ms 10800000 \
   --pagecode "[GENERATED_PAGECODE]"
@@ -72,14 +85,14 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
 - `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
 
-8. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `$SKILL_DIR/references/prompt-contracts.md`.
 
-9. Write returned `pageId` back to `./.pages/[PAGE_NAME]/meta.md`:
+9. Write returned `pageId` back to `$PAGE_DIR/meta.md`:
 - prefer `metadata.page_id`
 - optional mirror field: `page-id`
 
 10. Management-page proactive reminder rule:
-- count non-management local page projects under `./.pages` using this deterministic rule:
+- count non-management local page projects under `$PAGES_DIR` using this deterministic rule:
   - include only directories that contain `meta.md`
   - exclude directory named `page-management-center`
   - exclude any project whose `meta.md` has `metadata.management_page: true`
@@ -89,9 +102,9 @@ Optional:
 
 ## Failure handling (error code -> action)
 
-- `LOCAL_KEYS_FILE_MISSING` -> create `./keys.local.json` from `./keys.local.example.json`.
-- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`./references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `./keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed to create the EXACT page the user originally requested.**
-- `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
+- `LOCAL_KEYS_FILE_MISSING` -> create `$SKILL_DIR/keys.local.json` from `$SKILL_DIR/keys.local.example.json`.
+- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`$SKILL_DIR/references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `$SKILL_DIR/keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed to create the EXACT page the user originally requested.**
+- `UNAUTHORIZED` -> verify token in `$SKILL_DIR/keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> check wrong endpoint/owner context; confirm create path and retry.
 - `409 USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.
 - `429 IP_DAILY_REGISTRATION_LIMIT_REACHED` -> stop and ask user to retry next day or use existing account.
@@ -101,14 +114,16 @@ Optional:
 
 **Idempotency Guard (Crucial for error recovery):**
 If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
-- **DO NOT** wipe out, revert, or delete the local `./.pages/[PAGE_NAME]` directory.
-- Check `./.pages/[PAGE_NAME]/meta.md`:
+- **DO NOT** wipe out, revert, or delete the local `$PAGE_DIR` directory.
+- Re-check that `$PAGES_DIR` is the same value used in the failing attempt. A mismatched `$PAGES_DIR` (e.g., retry from a different CWD, or user overrode to `/tmp` only on the first try) will make `$PAGE_DIR` look empty even though the project exists elsewhere. If unsure, ask the user which `$PAGES_DIR` to use; do not silently treat "missing" as "never created".
+- Check `$PAGE_DIR/meta.md`:
+  - If `$PAGE_DIR/meta.md` does not exist at the resolved `$PAGES_DIR`: confirm the resolution with the user before proceeding — **do not** assume the remote page was never created.
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. Retry the publish command exactly as you did in the Creation flow.
   - If `metadata.page_id` EXISTS: It means the remote page *was* created before the failure. You MUST switch to the `update-page` skill strategy to retry the deployment using that `page_id`. DO NOT create a duplicate page.
 
 ## Quality Bar & UI Expectations (Crucial)
 
-> **Full design reference:** `./references/design-guidelines.md` — read it before generating any UI.
+> **Full design reference:** `$SKILL_DIR/references/design-guidelines.md` — read it before generating any UI.
 
 **Treat the generated page as a modern Web App, not a plain text document.** Always apply these principles:
 
