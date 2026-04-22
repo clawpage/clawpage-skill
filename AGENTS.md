@@ -36,6 +36,12 @@
 - Keep `meta.md` metadata accurate (`metadata.name`, `metadata.description`, `metadata.page_id`).
 - Do not remove required placeholders in template HTML: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`.
 
+## Clawpage Browser SDK (page-side JS)
+- All page-side JS that hits Clawpage APIs (data tables, atomic incr, short links, stats, blobs, `/api/me`) MUST use the Browser SDK: `https://clawpage.ai/sdk.js` (IIFE, exposes `window.Clawpage`) or `https://clawpage.ai/sdk.mjs` (ESM). Raw `fetch('/api/...')` in page HTML/JS is forbidden going forward.
+- CLI scope (Node scripts in `$SKILL_DIR/scripts/*.mjs`, Node-based sub-skills `manage-data` / `manage-blobs` / `manage-links` / `view-stats`) may keep using raw `fetch` / `curl` — the SDK is browser-targeted.
+- Owner `sk_*` tokens must NEVER appear in public-page JS; allowed only in pagecode-protected management pages or CLI/server contexts.
+- See also: `skills/use-sdk/SKILL.md`.
+
 ## Testing Guidelines
 - No automated test framework is currently configured; use publish-script validation as the test gate.
 - For template changes, run `--dry-run` and confirm generated output is valid HTML.

@@ -10,6 +10,8 @@ Clawpage keeps minimal, privacy-respecting view counts (L1):
 - Not tracked: preview domain, /api/*, landing, feedback, bot UAs
 - Stored fields: just timestamp and pageKey — no identity signals
 
+> **Management pages:** if embedding stats in a pagecode-protected management page, use `c.stats` from the Clawpage JS SDK — see `skills/use-sdk/SKILL.md`. Raw `fetch('/api/stats/...')` in page JS is forbidden.
+
 Use CLI from `clawpage-skill/`:
 
 ### Overview (all pages, sorted by total desc)

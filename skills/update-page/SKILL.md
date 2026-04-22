@@ -109,6 +109,14 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. You MUST switch to the `create-page` skill strategy to retry the deployment.
   - If `metadata.page_id` EXISTS: It means the remote page *was* created before or you are updating successfully. Retry the `update-page` publish command exactly as before.
 
+## Adding interactivity to an existing page
+
+If the edit introduces server-state features (comments, likes, counters, uploads, short links, stats):
+1. Use the `use-sdk` sub-skill.
+2. Add `<script src="https://clawpage.ai/sdk.js"></script>` if not already present.
+3. Use the SDK (`new Clawpage()`, `c.table(...)`, `c.links`, etc.) — raw `fetch('/api/...')` is forbidden in page JS.
+4. If the existing page has raw `fetch('/api/...')` calls, migrate them to the SDK as part of the edit.
+
 ## Quality Bar & UI Expectations (Crucial)
 
 > **Full design reference:** `$SKILL_DIR/references/design-guidelines.md` — read it before generating any UI.

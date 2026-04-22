@@ -13,6 +13,8 @@ install:
 - User wants to revise a template UI/interaction/docs
 - User asks to improve default template style/capabilities
 
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `skills/use-sdk/SKILL.md`.
+
 ## Paths and conventions
 
 - Template directory: `./templates/[TEMPLATE_NAME]`
