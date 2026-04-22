@@ -22,7 +22,29 @@ install:
 >
 > **Owner `sk_*` tokens are only acceptable in this management page because it is pagecode-protected.** Never paste an owner token into a public (non-pagecode) page. CLI/server-side owner token usage (e.g. `curl` from a terminal, the publish script) is fine.
 >
-> **Coverage gap:** the SDK currently wraps `table` / `links` / `stats` / `blobs` / `me`. `/api/pages` is **not** in the SDK yet — stick to the inline-at-publish-time pattern for listing pages. If you need live page listing, raise an SDK-extension task before adding it.
+> **SDK coverage:** the SDK wraps `table` / `links` / `stats` / `blobs` / `me` / `pages`. For live page listing / refresh / edit actions in the browser, use `c.pages` — see the "Live-refresh recipe" below.
+
+### Live-refresh recipe (optional)
+
+If the user asks for a "refresh now" button or live filtering, embed the SDK and use `c.pages.listAll()` — owner token is fine here because the page is pagecode-protected:
+
+```html
+<script src="https://clawpage.ai/sdk.js"></script>
+<script>
+  const c = new Clawpage({ token: "__OWNER_TOKEN__" });  // inlined from keys.local.json at publish time
+
+  async function refresh() {
+    const items = await c.pages.listAll({ maxItems: 500 });
+    renderPages(items);       // your DOM update
+    document.getElementById("data-fetched-at").textContent = new Date().toLocaleString();
+  }
+
+  // Initial paint from inlined data; refresh button calls refresh().
+  document.getElementById("refresh-btn")?.addEventListener("click", refresh);
+</script>
+```
+
+Keep `renderPages` ≤ 50 lines and don't swallow errors — let `ClawpageError` bubble to a toast. If live refresh is not requested, skip this entirely and stick with the publish-time-inlined static flow below.
 
 ## Inputs and conventions
 
