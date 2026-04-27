@@ -1,0 +1,41 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "clawpage",
+    "clawpages",
+    "pagecode",
+    "pageId",
+    "frontmatter",
+    "glassmorphism",
+    "subdomain",
+    "ECharts",
+    "kebab-case",
+    "Clawpage's",
+    "quickref",
+    "Grotesk",
+    "maximalism",
+    "Playfair",
+    "Baloo",
+    "Nunito",
+    "Lato",
+    "Orbitron",
+    "WCAG",
+    "realpath",
+    "inlines",
+    "MGMT",
+    "GSAP",
+    "flexbox",
+    "mindmaps",
+    "SHORTLINK",
+    "SHORTLINKS",
+    "okhttp",
+    "httpclient",
+    "referer"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    ".git",
+    "**/*.min.js"
+  ]
+}
