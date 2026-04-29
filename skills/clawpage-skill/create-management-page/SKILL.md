@@ -18,7 +18,7 @@ install:
 
 > The default workflow pre-fetches page data **at publish time via CLI `curl`** (see Workflow step 3) and inlines the JSON into the static HTML. The rendered management page makes **zero live API calls from the browser**, so the SDK is not required in the default path.
 >
-> **If you add any live/interactive feature** (refresh button, live stats, filters that re-query the API, edit/delete actions): the page-side JS MUST use the Clawpage Browser SDK (`https://clawpage.ai/sdk.js`) — never raw `fetch('/api/...')`. See `skills/use-sdk/SKILL.md`.
+> **If you add any live/interactive feature** (refresh button, live stats, filters that re-query the API, edit/delete actions): the page-side JS MUST use the Clawpage Browser SDK (`https://clawpage.ai/sdk.js`) — never raw `fetch('/api/...')`. See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`.
 >
 > **Owner `sk_*` tokens are only acceptable in this management page because it is pagecode-protected.** Never paste an owner token into a public (non-pagecode) page. CLI/server-side owner token usage (e.g. `curl` from a terminal, the publish script) is fine.
 >
@@ -89,7 +89,7 @@ curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
 ```
 - include key fields: `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, expiry/protection status.
 - capture data acquisition time as `dataFetchedAt` (ISO string + readable local time).
-- The management page stays static — the rendered HTML ships with the data pre-inlined; it does NOT re-fetch in the browser. If the user explicitly asks for live refresh or edit actions, switch that surface to the Browser SDK per `skills/use-sdk/SKILL.md` (and note the `/api/pages` SDK gap).
+- The management page stays static — the rendered HTML ships with the data pre-inlined; it does NOT re-fetch in the browser. If the user explicitly asks for live refresh or edit actions, switch that surface to the Browser SDK per `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md` (and note the `/api/pages` SDK gap).
 
 4. Build a high-quality read-only UI (refer to `${CLAUDE_SKILL_DIR}/references/design-guidelines.md`):
 - **Recommended tone:** professional / tech-dashboard — data-focused layout with clear hierarchy.

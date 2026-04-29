@@ -317,7 +317,7 @@ When the user asks for a feature that implies data, work through this in order:
    - Creating or replacing by known key → `PUT` / `--put`
    - Atomically incrementing a numeric field (counters, reactions) → `POST /:table/:key/incr` / `--incr`
    - Patching a few fields of an existing object (non-counter) → `PATCH` / `--patch`
-6. **Write the HTML using the Browser SDK** (`skills/use-sdk/SKILL.md`):
+6. **Write the HTML using the Browser SDK** (`${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`):
    - Embed `<script src="https://clawpage.ai/sdk.js"></script>` in `<head>`.
    - Reads/writes go through `new Clawpage().table("<name>")` (`.get`, `.put`, `.patch`, `.post`, `.incr`, `.list`).
    - Raw `fetch('/api/data/...')` in page JS is forbidden.
