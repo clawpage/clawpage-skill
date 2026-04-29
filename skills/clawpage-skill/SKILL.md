@@ -77,4 +77,5 @@ Apply this priority order when intent is mixed:
 
 - **Bash commands** — invoke runtime via `npx -y @clawpage.ai/cli <subcommand>`. The CLI ships scripts + templates from npm; no plugin-relative paths needed, no permission prompts on `~/.claude/...`.
 - **Read-only references** — `${CLAUDE_SKILL_DIR}/references/...` for plugin-bundled docs (api / contracts / design guidelines). Read by Claude, not executed.
-- **User CWD** — `./.pages/<name>/` (page workspace) and `./keys.local.json` (user's API token; auto-created by `npx -y @clawpage.ai/cli init`).
+- **Pages** — `[PAGE_DIR]` resolved once per task. Default `~/.clawpage/pages/<name>/` (global workspace, since `@clawpage.ai/cli` 0.2.0). User may opt into project-scoped paths like `./.pages/<name>/` to check pages into a specific repo.
+- **Auth** — `~/.clawpage/keys.local.json` (auto-created by `npx -y @clawpage.ai/cli init`). Project-scoped `./keys.local.json` in cwd takes precedence if present.

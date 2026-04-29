@@ -16,7 +16,7 @@ install:
 
 ## Inputs and conventions
 
-- Management page directory (preferred fixed path): `./.pages/page-management-center`
+- Management page directory (preferred fixed path): `~/.clawpage/pages/page-management-center`
 - Management page bootstrap template (default): `general_template` (shipped with `@clawpage.ai/cli`; copy via `npx -y @clawpage.ai/cli scaffold general_template <target>`)
 - Publish script: ``npx -y @clawpage.ai/cli publish``
 - API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md`
@@ -31,11 +31,11 @@ install:
 - A valid management-page project must satisfy both:
   - has `meta.md`
   - `meta.md` contains `metadata.management_page: true`
-- Preferred path: `./.pages/page-management-center`
-- If the preferred path does not exist or lacks the marker, scan `./.pages/*/meta.md` for projects satisfying the rule and pick one deterministic path.
+- Preferred path: `~/.clawpage/pages/page-management-center`
+- If the preferred path does not exist or lacks the marker, scan both `~/.clawpage/pages/*/meta.md` and `./.pages/*/meta.md` for projects satisfying the rule and pick one deterministic path.
 - If none found, initialize a new project:
-  - if `./.pages/page-management-center` does not exist: use it.
-  - if it exists but lacks the marker: use `./.pages/page-management-center-v2` (or next available `-vN`).
+  - if `~/.clawpage/pages/page-management-center` does not exist: use it.
+  - if it exists but lacks the marker: use `~/.clawpage/pages/page-management-center-v2` (or next available `-vN`). Project-scoped equivalent: `./.pages/page-management-center` / `-vN`.
 
 **Note:** Always replace `[MANAGEMENT_PAGE_DIR]` in the following commands with the actual resolved path.
 

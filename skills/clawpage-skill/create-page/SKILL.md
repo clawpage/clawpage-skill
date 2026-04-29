@@ -15,12 +15,15 @@ install:
 
 ## Inputs and conventions
 
-- Page directory: `./.pages/<page-name>`
+- Page directory: `[PAGE_DIR]` — resolve **once** at the start of the task and use everywhere:
+  - Default (global workspace): `~/.clawpage/pages/[PAGE_NAME]`
+  - Project-scoped (only if user explicitly wants the page checked into a specific repo): `./.pages/[PAGE_NAME]`
+  - The CLI's `--page-dir` accepts either form; bare `[PAGE_NAME]` (no slash) also resolves to `~/.clawpage/pages/[PAGE_NAME]`
 - Templates: shipped with `@clawpage.ai/cli`. List names: `npx -y @clawpage.ai/cli scaffold --list`. Copy: `npx -y @clawpage.ai/cli scaffold <template-name> <target-dir>`
-- Publish script: ``npx -y @clawpage.ai/cli publish``
+- Publish: ``npx -y @clawpage.ai/cli publish``
 - API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md`
 - Shared contracts: `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
-- `page-name` must be kebab-case and cannot contain `/`
+- `[PAGE_NAME]` must be kebab-case and cannot contain `/`
 - Create default policy (unless user explicitly overrides):
   - private page by default (`pagecode` required)
   - TTL: 3h (`10800000`)
@@ -29,16 +32,16 @@ install:
 
 1. Choose template (default `general_template`).
 2. Resolve target directory strategy before copy:
-- if `./.pages/[PAGE_NAME]` does not exist: copy directly.
+- if `[PAGE_DIR]` does not exist: copy directly.
 - if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new [PAGE_NAME]`.
 
 **Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-npx -y @clawpage.ai/cli scaffold general_template ./.pages/[PAGE_NAME]
+npx -y @clawpage.ai/cli scaffold general_template [PAGE_DIR]
 ```
 
-3. Update `./.pages/[PAGE_NAME]/meta.md`:
+3. Update `[PAGE_DIR]/meta.md`:
 - required metadata: `metadata.name`, `metadata.description`
 - add page purpose, audience, and scenario
 - **Important:** `meta.md` body is documentation only; it is **not** auto-rendered when publishing with `--page-dir`.
@@ -61,7 +64,7 @@ npx -y @clawpage.ai/cli scaffold general_template ./.pages/[PAGE_NAME]
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
 npx -y @clawpage.ai/cli publish \
-  --page-dir ./.pages/[PAGE_NAME] \
+  --page-dir [PAGE_DIR] \
   --title "[TITLE]" \
   --ttl-ms 10800000 \
   --pagecode "[GENERATED_PAGECODE]"
@@ -74,12 +77,12 @@ Optional:
 
 8. Return fixed output fields exactly as defined in `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
 
-9. Write returned `pageId` back to `./.pages/[PAGE_NAME]/meta.md`:
+9. Write returned `pageId` back to `[PAGE_DIR]/meta.md`:
 - prefer `metadata.page_id`
 - optional mirror field: `page-id`
 
 10. Management-page proactive reminder rule:
-- count non-management local page projects under `./.pages` using this deterministic rule:
+- count non-management local page projects under the parent of `[PAGE_DIR]` (i.e. `~/.clawpage/pages/` for global workspace, or `./.pages/` for project-scoped) using this deterministic rule:
   - include only directories that contain `meta.md`
   - exclude directory named `page-management-center`
   - exclude any project whose `meta.md` has `metadata.management_page: true`
@@ -101,8 +104,8 @@ Optional:
 
 **Idempotency Guard (Crucial for error recovery):**
 If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
-- **DO NOT** wipe out, revert, or delete the local `./.pages/[PAGE_NAME]` directory.
-- Check `./.pages/[PAGE_NAME]/meta.md`:
+- **DO NOT** wipe out, revert, or delete the local `[PAGE_DIR]` directory.
+- Check `[PAGE_DIR]/meta.md`:
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. Retry the publish command exactly as you did in the Creation flow.
   - If `metadata.page_id` EXISTS: It means the remote page *was* created before the failure. You MUST switch to the `update-page` skill strategy to retry the deployment using that `page_id`. DO NOT create a duplicate page.
 

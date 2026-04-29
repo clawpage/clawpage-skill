@@ -15,19 +15,22 @@ install:
 
 ## Paths and conventions
 
-- Page directory: `./.pages/<page-name>`
+- Page directory: `[PAGE_DIR]` — resolve **once** at the start:
+  - Default (global workspace): `~/.clawpage/pages/[PAGE_NAME]`
+  - Project-scoped: `./.pages/[PAGE_NAME]` (only if the existing page lives in a project repo)
+  - Listing existing pages: `ls ~/.clawpage/pages/` (default) or `find ./.pages -mindepth 2 -maxdepth 2 -name meta.md` (project-scoped)
 - Page files: `meta.md`, `index.html`, `default.css`, `default.js`
-- Publish script: ``npx -y @clawpage.ai/cli publish``
+- Publish: ``npx -y @clawpage.ai/cli publish``
 - API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
 - Shared contracts: `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
-- `page-name` must be kebab-case and cannot contain `/`
+- `[PAGE_NAME]` must be kebab-case and cannot contain `/`
 
 ## Matching strategy (two-phase)
 
 1. Read metadata only first:
 
 ```bash
-find ./.pages -mindepth 2 -maxdepth 2 -name meta.md | while read -r f; do
+find ~/.clawpage/pages ./.pages -mindepth 2 -maxdepth 2 -name meta.md 2>/dev/null | while read -r f; do
   echo "== $f ==";
   sed -n '1,24p' "$f";
 done
@@ -39,7 +42,7 @@ done
 
 1. Edit `index.html` first.
 2. Update `default.css` / `default.js` as required.
-3. **Identify PAGE_ID**: Use `read_file` to read `./.pages/[PAGE_NAME]/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell scripts for extraction.
+3. **Identify PAGE_ID**: Use `read_file` to read `[PAGE_DIR]/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell scripts for extraction.
 
 4. If semantics changed, sync `meta.md` metadata and notes.
 
@@ -56,7 +59,7 @@ done
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
 npx -y @clawpage.ai/cli publish \
-  --page-dir ./.pages/[PAGE_NAME] \
+  --page-dir [PAGE_DIR] \
   --page-id "[PAGE_ID]" \
   --title "[TITLE]"
 ```
@@ -90,8 +93,8 @@ Optional:
 
 **Idempotency Guard (Crucial for error recovery):**
 If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
-- **DO NOT** wipe out, revert, or delete the local `./.pages/[PAGE_NAME]` directory.
-- Check `./.pages/[PAGE_NAME]/meta.md`:
+- **DO NOT** wipe out, revert, or delete the local `[PAGE_DIR]` directory.
+- Check `[PAGE_DIR]/meta.md`:
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. You MUST switch to the `create-page` skill strategy to retry the deployment.
   - If `metadata.page_id` EXISTS: It means the remote page *was* created before or you are updating successfully. Retry the `update-page` publish command exactly as before.
 
