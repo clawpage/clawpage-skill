@@ -13,7 +13,9 @@ install:
 - User wants to revise a template UI/interaction/docs
 - User asks to improve default template style/capabilities
 
-> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `skills/use-sdk/SKILL.md`.
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`.
+
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`.
 
 ## Paths and conventions
 
@@ -38,7 +40,7 @@ install:
 **Note:** Always replace `[TEMPLATE_NAME]` with the actual kebab-case name.
 
 ```bash
-node ./scripts/clawpages_publish.mjs \
+npx -y @clawpage.ai/cli publish \
   --page-dir ./templates/[TEMPLATE_NAME] \
   --title "Template Preview" \
   --dry-run
@@ -46,7 +48,7 @@ node ./scripts/clawpages_publish.mjs \
 
 ## Must preserve
 
-- **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` for visual quality expectations.
 - `index.html` placeholders:
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`

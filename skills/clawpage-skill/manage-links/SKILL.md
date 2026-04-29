@@ -20,31 +20,31 @@ Short links shorten any `*.clawpage.ai` URL to `https://clawpage.ai/s/<7-char sl
 - External URLs (YouTube, Twitter, etc.) — **target must be `*.clawpage.ai`** or creation fails 400
 - Any scheme other than `https`
 
-> **Management pages:** if rendering link data in a pagecode-protected management page, use `c.links` from the Clawpage JS SDK — see `skills/use-sdk/SKILL.md`. Raw `fetch('/api/links/...')` in page JS is forbidden.
+> **Management pages:** if rendering link data in a pagecode-protected management page, use `c.links` from the Clawpage JS SDK — see `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`. Raw `fetch('/api/links/...')` in page JS is forbidden.
 
 ## CLI usage
 
-Expand `$SKILL_DIR` to the skill install directory (per the root `SKILL.md` path conventions). The script auto-loads `$SKILL_DIR/keys.local.json` and needs a valid `clawpage.token` there.
+Run from any directory containing `keys.local.json` with a valid `clawpage.token`.
 
 ### Create a short link
 ```bash
-node "$SKILL_DIR/scripts/clawpages_links.mjs" --create https://alice.clawpage.ai/p/some-long-name
+npx -y @clawpage.ai/cli links --create https://alice.clawpage.ai/p/some-long-name
 # → prints JSON with { slug, shortUrl, target, createdAt, updatedAt }
 ```
 
 ### List my short links
 ```bash
-node "$SKILL_DIR/scripts/clawpages_links.mjs" --list
+npx -y @clawpage.ai/cli links --list
 ```
 
 ### Update a link's target
 ```bash
-node "$SKILL_DIR/scripts/clawpages_links.mjs" --update-slug aB3kFq9 --target https://alice.clawpage.ai/p/new-destination
+npx -y @clawpage.ai/cli links --update-slug aB3kFq9 --target https://alice.clawpage.ai/p/new-destination
 ```
 
 ### Delete
 ```bash
-node "$SKILL_DIR/scripts/clawpages_links.mjs" --delete aB3kFq9
+npx -y @clawpage.ai/cli links --delete aB3kFq9
 ```
 
 ## Quotas
@@ -67,9 +67,9 @@ node "$SKILL_DIR/scripts/clawpages_links.mjs" --delete aB3kFq9
 Typical usage after publishing a page with a long name:
 
 ```bash
-# publish (expand $SKILL_DIR / $PAGES_DIR to absolute paths; see router SKILL.md)
-node "$SKILL_DIR/scripts/clawpages_publish.mjs" --page-dir "$PAGES_DIR/my-article"
+# publish
+npx -y @clawpage.ai/cli publish --page-dir .pages/my-article
 
 # shorten its URL
-node "$SKILL_DIR/scripts/clawpages_links.mjs" --create https://<user>.clawpage.ai/p/my-long-article-name-that-is-ugly
+npx -y @clawpage.ai/cli links --create https://<user>.clawpage.ai/p/my-long-article-name-that-is-ugly
 ```

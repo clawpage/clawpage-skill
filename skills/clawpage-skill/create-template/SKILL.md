@@ -13,7 +13,9 @@ install:
 - User wants a new template style/capability
 - A reusable template directory must be created
 
-> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `skills/use-sdk/SKILL.md`.
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`.
+
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`.
 
 ## Template directory spec
 
@@ -27,7 +29,7 @@ Required files:
 
 ## Required constraints
 
-- **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` for visual quality expectations.
 - `index.html` must include placeholders:
   - `__CONTENT_HTML__`
   - `__DEFAULT_CSS__`
@@ -50,7 +52,7 @@ Required files:
 **Note:** Always replace `[TEMPLATE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-node ./scripts/clawpages_publish.mjs \
+npx -y @clawpage.ai/cli publish \
   --page-dir ./templates/[TEMPLATE_NAME] \
   --title "Template Preview" \
   --dry-run

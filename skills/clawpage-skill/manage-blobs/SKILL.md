@@ -20,7 +20,9 @@ Clawpage stores blobs (images, documents, any binary file) in Cloudflare R2. Acc
 
 **Don't** upload: anything confidential; anything that must be auth-gated; files > 10 MB.
 
-> **Management pages:** if rendering blob data in a pagecode-protected management page, use `c.blobs` from the Clawpage JS SDK — see `skills/use-sdk/SKILL.md`. Raw `fetch('/api/blobs/...')` in page JS is forbidden.
+> **Management pages:** if rendering blob data in a pagecode-protected management page, use `c.blobs` from the Clawpage JS SDK — see `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`. Raw `fetch('/api/blobs/...')` in page JS is forbidden.
+
+> **Note (transitional):** the `blobs` subcommand is not yet in `@clawpage.ai/cli` — until cli `0.3.0` ships it, this skill calls the script via `${CLAUDE_SKILL_DIR}/scripts/clawpages_blobs.mjs` (other sub-skills use `npx -y @clawpage.ai/cli ...`). Migration planned after blobs lands in the npm package.
 
 ## Quotas
 
@@ -32,25 +34,25 @@ Clawpage stores blobs (images, documents, any binary file) in Cloudflare R2. Acc
 
 ```bash
 # Upload
-node scripts/clawpages_blobs.mjs --upload ./photo.png
+node ${CLAUDE_SKILL_DIR}/scripts/clawpages_blobs.mjs --upload ./photo.png
 # → returns { blobId, url, filename, size, ... }
 
 # List
-node scripts/clawpages_blobs.mjs --list
+node ${CLAUDE_SKILL_DIR}/scripts/clawpages_blobs.mjs --list
 
 # Delete
-node scripts/clawpages_blobs.mjs --delete aB3kFq9N2p
+node ${CLAUDE_SKILL_DIR}/scripts/clawpages_blobs.mjs --delete aB3kFq9N2p
 
 # Check usage
-node scripts/clawpages_blobs.mjs --usage
+node ${CLAUDE_SKILL_DIR}/scripts/clawpages_blobs.mjs --usage
 ```
 
 ## Typical workflow: add an image to a page
 
-1. Upload: `node scripts/clawpages_blobs.mjs --upload ./hero.jpg`
+1. Upload: `node ${CLAUDE_SKILL_DIR}/scripts/clawpages_blobs.mjs --upload ./hero.jpg`
 2. Copy the returned `url` (e.g. `https://blob.clawpage.ai/aB3kFq9N2p.jpg`)
 3. In your HTML: `<img src="https://blob.clawpage.ai/aB3kFq9N2p.jpg" alt="Hero" />`
-4. Publish the page as usual via `clawpages_publish.mjs`
+4. Publish the page as usual via `npx -y @clawpage.ai/cli publish ...`
 
 ## Important limitations
 

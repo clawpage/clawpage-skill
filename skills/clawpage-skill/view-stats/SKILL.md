@@ -10,21 +10,21 @@ Clawpage keeps minimal, privacy-respecting view counts (L1):
 - Not tracked: preview domain, /api/*, landing, feedback, bot UAs
 - Stored fields: just timestamp and pageKey — no identity signals
 
-> **Management pages:** if embedding stats in a pagecode-protected management page, use `c.stats` from the Clawpage JS SDK — see `skills/use-sdk/SKILL.md`. Raw `fetch('/api/stats/...')` in page JS is forbidden.
+> **Management pages:** if embedding stats in a pagecode-protected management page, use `c.stats` from the Clawpage JS SDK — see `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`. Raw `fetch('/api/stats/...')` in page JS is forbidden.
 
-Use CLI from `clawpage-skill/`:
+Run from any directory with `keys.local.json`:
 
 ### Overview (all pages, sorted by total desc)
 ```bash
-node scripts/clawpages_stats.mjs --overview
+npx -y @clawpage.ai/cli stats --overview
 ```
 Returns total views + per-page { total, last7, last30 }.
 
 ### Single page daily series
 ```bash
-node scripts/clawpages_stats.mjs --page hello --days 30      # p:hello
-node scripts/clawpages_stats.mjs --home --days 7             # user home
-node scripts/clawpages_stats.mjs --link aB3kFq9 --days 30    # short link
+npx -y @clawpage.ai/cli stats --page hello --days 30      # p:hello
+npx -y @clawpage.ai/cli stats --home --days 7             # user home
+npx -y @clawpage.ai/cli stats --link aB3kFq9 --days 30    # short link
 ```
 
 `--days` default 30, max 365. `series` covers the full window (missing days filled with 0).
