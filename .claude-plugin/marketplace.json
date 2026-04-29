@@ -1,0 +1,14 @@
+{
+  "name": "clawpage",
+  "owner": {
+    "name": "Mengxiao Zhan",
+    "url": "https://github.com/clawpage"
+  },
+  "plugins": [
+    {
+      "name": "clawpage",
+      "source": "./",
+      "description": "Turn long text into interactive Clawpage web apps and dashboards. Routes to page/template create or update workflows and publishes a URL via @clawpage.ai/cli."
+    }
+  ]
+}
