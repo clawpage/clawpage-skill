@@ -2,7 +2,7 @@
 
 英文版本见：[../README.md](../README.md)。
 
-`clawpage-skill` 用于把长文本快速转成可交互的 Clawpage 页面。  
+`clawpage-skill` 用于把长文本快速转成可交互的 Clawpage 页面。
 你可以直接描述目标页面，skill 会自动路由到创建/更新页面或模板流程，并发布可访问 URL。
 
 官网：`https://clawpage.ai`
@@ -14,46 +14,56 @@
 - 基于 `pageId` 更新已有页面
 - 发布时控制有效期与访问口令
 
-## 快速开始
+## 安装
 
-1. 初始化本地 key 文件：
+本仓库是 **Claude Code plugin**。所有运行时通过 [`@clawpage.ai/cli`](https://www.npmjs.com/package/@clawpage.ai/cli) npm 包跑（`npx -y` 自动拉取），你只需要安装本 plugin。
 
-```bash
-cp keys.local.example.json keys.local.json
+### Claude Code
+
+```text
+/plugin marketplace add https://github.com/clawpage/clawpage-marketplace
+/plugin install clawpage@clawpage-marketplace
 ```
 
-2. 如无 token，先注册：
+或者本地测试：`claude --plugin-dir /path/to/clawpage-skill`。
+
+### Codex / Gemini CLI
+
+这两家 CLI 不读 Claude 的 plugin manifest，按 git clone 形式安装：
 
 ```bash
-curl -sS -X POST https://api.clawpage.ai/api/register \
-  -H 'Content-Type: application/json' \
-  -d '{"username":"<username>"}'
+# Codex
+git clone https://github.com/clawpage/clawpage-skill ~/.codex/skills/clawpage
+
+# Gemini
+gemini extensions install https://github.com/clawpage/clawpage-skill
 ```
 
-用户名规则：
-- 仅 `a-z` / `0-9` / `-`
-- 长度至少 6 位
-- 不能以 `-` 开头或结尾
+## 首次认证
 
-如果返回 `409 USERNAME_TAKEN`：
-- 提供 3 个新候选名
-- 优先用 `-lab`、`-app` 或 2-4 位数字后缀
-- 让用户选择后重试
+加载 skill 后，对它说一声：
 
-3. 将 token 写入 `keys.local.json`：
+```text
+使用 clawpage-skill 完成 init
+```
 
-```json
+会自动执行 `npx -y @clawpage.ai/cli init`，注册新账号并把 token 写到 `~/.clawpage/keys.local.json`。之后无论从哪个目录调用 skill，都能直接用。
+
+如果想手动设 token：
+
+```bash
+mkdir -p ~/.clawpage
+cat > ~/.clawpage/keys.local.json <<'EOF'
 {
   "clawpage": {
-    "token": "sk_replace_me",
+    "token": "sk_xxx",
     "apiHost": "https://api.clawpage.ai"
   }
 }
+EOF
 ```
 
-## 场景示例：长股票分析文本 -> 生动图表页
-
-给 Codex 的指令示例：
+## 场景示例：长股票分析文本 → 生动图表页
 
 ```text
 使用 clawpage-skill 把下面这段股票分析长文做成可视化页面：
@@ -66,40 +76,49 @@ curl -sS -X POST https://api.clawpage.ai/api/register \
 常见处理流程：
 - 自动选模板（如 `stock-analysis-terminal`）
 - 把长文结构化为摘要、风险、观察模块
-- 写入 `$PAGES_DIR/<page-name>/`。`$PAGES_DIR` 默认是 `$PWD/.pages`（用户项目目录，**不是**技能安装目录），也可以改为 `/tmp/clawpage-pages` 或任意绝对路径
-- 调用发布脚本并返回链接和有效期
+- `npx -y @clawpage.ai/cli scaffold stock-analysis-terminal <page-name>` 生成 `~/.clawpage/pages/<page-name>/`
+- `npx -y @clawpage.ai/cli publish --page-dir <page-name>` 发布并返回链接 + 有效期
 
-> 技能安装目录 `$SKILL_DIR` 视为只读，不会在里面生成页面内容。
+## 模板目录
+
+随 `@clawpage.ai/cli` 发布。运行时查看：`npx -y @clawpage.ai/cli scaffold --list`。
+
+- `stock-analysis-terminal`
+- `insight-collection-hub`
+- `utility-workbench`
+- `concept-animation-lab`
+- `mini-game-arcade`
+- `general_template`
 
 ## 常用命令
 
-模板 dry-run（`$SKILL_DIR` 展开为技能安装目录）：
+dry-run（不发布、不需 token）：
 
 ```bash
-node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
-  --page-dir "$SKILL_DIR/templates/general_template" \
-  --title "Template Preview" \
-  --dry-run
+npx -y @clawpage.ai/cli scaffold general_template /tmp/preview
+npx -y @clawpage.ai/cli publish --page-dir /tmp/preview --title "Preview" --dry-run
 ```
 
-发布页面（`$PAGES_DIR` 默认 `$PWD/.pages`，可按需要改为 `/tmp/clawpage-pages` 等）：
+发布（裸名 → `~/.clawpage/pages/<name>`；以 `./` 开头则按 cwd 处理）：
 
 ```bash
-node "$SKILL_DIR/scripts/clawpages_publish.mjs" \
-  --page-dir "$PAGES_DIR/<page-name>" \
+npx -y @clawpage.ai/cli publish \
+  --page-dir my-dashboard \
   --title "My Page" \
   --subtitle "Optional"
 ```
 
+子命令完整参考见 [`@clawpage.ai/cli` 主页](https://www.npmjs.com/package/@clawpage.ai/cli)。
+
 ## 占位符与多语言
 
-除 README 文档外，项目中的中文描述已替换为英文大写占位符。  
+文档外，项目中的中文描述已替换为英文大写占位符。
 Skill 规则要求 LLM 在发布前根据用户偏好语言填充这些占位符内容。
 
 ## 安全提示
 
-- 不要提交真实 `keys.local.json`
-- 仅提交 `keys.local.example.json`
+- `~/.clawpage/keys.local.json` 是你的 owner token (`sk_*`)。不要提交，不要贴到公开页面 JS（会泄漏整个账号）。
+- cwd 下的 `./keys.local.json` 优先级高于全局，用于按项目隔离账号。
 
 ## License
 

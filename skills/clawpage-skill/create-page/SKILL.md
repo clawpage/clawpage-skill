@@ -30,14 +30,17 @@ install:
 
 ## Workflow
 
-0. **Resolve `$PAGES_DIR` first.** Default `$PWD/.pages`. If the user asked for `/tmp` or any other location, honor that. Create `$PAGES_DIR` if it doesn't exist (`mkdir -p "$PAGES_DIR"`). `$PAGE_DIR = $PAGES_DIR/[PAGE_NAME]`.
+0. **Resolve `[PAGE_DIR]` first** (one-time, used everywhere below):
+   - Default (global workspace): `~/.clawpage/pages/[PAGE_NAME]` — the cli auto-creates `~/.clawpage/pages/` on first use.
+   - Project-scoped (only if user wants the page in a specific repo): `./.pages/[PAGE_NAME]`.
+   - The CLI's `--page-dir` accepts either form; bare `[PAGE_NAME]` is treated as the global default.
 
 1. Choose template (default `general_template`).
-2. Resolve target directory strategy before copy:
-- if `[PAGE_DIR]` does not exist: copy directly.
+2. Resolve target directory strategy before scaffold:
+- if `[PAGE_DIR]` does not exist: scaffold directly.
 - if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new [PAGE_NAME]`.
 
-**Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name, and expand `$SKILL_DIR` / `$PAGE_DIR` to the absolute paths resolved above.
+**Note:** Replace `[PAGE_NAME]` and `[PAGE_DIR]` with the actual values resolved in step 0. The CLI accepts both bare names (`my-dashboard` → `~/.clawpage/pages/my-dashboard`) and explicit paths (`./.pages/my-dashboard` → cwd-relative).
 
 ```bash
 npx -y @clawpage.ai/cli scaffold general_template [PAGE_DIR]
