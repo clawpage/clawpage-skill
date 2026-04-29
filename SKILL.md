@@ -1,0 +1,1 @@
+skills/clawpage-skill/SKILL.md
