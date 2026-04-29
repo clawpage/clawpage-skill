@@ -59,7 +59,7 @@ Keep `renderPages` ≤ 50 lines and don't swallow errors — let `ClawpageError`
 
 ## Workflow
 
-1. Resolve `$MGMT_PAGE_DIR` once:
+1. Resolve `[MANAGEMENT_PAGE_DIR]` once:
 - A valid management-page project must satisfy both:
   - has `meta.md`
   - `meta.md` contains `metadata.management_page: true`
@@ -69,19 +69,19 @@ Keep `renderPages` ≤ 50 lines and don't swallow errors — let `ClawpageError`
   - if `~/.clawpage/pages/page-management-center` does not exist: use it.
   - if it exists but lacks the marker: use `~/.clawpage/pages/page-management-center-v2` (or next available `-vN`). Project-scoped equivalent: `./.pages/page-management-center` / `-vN`.
 
-**Note:** Always expand `$SKILL_DIR` / `$MGMT_PAGE_DIR` to absolute paths before running the commands below.
+**Note:** Replace `[MANAGEMENT_PAGE_DIR]` with the resolved path. The CLI accepts bare names (`page-management-center` → `~/.clawpage/pages/page-management-center`) and cwd-relative paths.
 
 ```bash
 npx -y @clawpage.ai/cli scaffold general_template [MANAGEMENT_PAGE_DIR]
 ```
 
-2. Ensure metadata in `$MGMT_PAGE_DIR/meta.md` is explicit:
+2. Ensure metadata in `[MANAGEMENT_PAGE_DIR]/meta.md` is explicit:
 - `metadata.name`
 - `metadata.description`
 - required marker: `metadata.management_page: true`
 
 3. Pull latest page list via API. 
-- Use the token from `$SKILL_DIR/keys.local.json`.
+- Use the token from `~/.clawpage/keys.local.json` (or `./keys.local.json` if project-scoped).
 - Example command:
 ```bash
 curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
@@ -108,7 +108,7 @@ curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
 - dry-run succeeds.
 
 7. Publish:
-- **Identify PAGE_ID**: Use `read_file` to read `$MGMT_PAGE_DIR/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell regex.
+- **Identify PAGE_ID**: Use `read_file` to read `[MANAGEMENT_PAGE_DIR]/meta.md` and extract `metadata.page_id` from the YAML frontmatter. Do not use fragile shell regex.
 - **Identify PAGECODE**: If creating or if a reset is needed, generate a 6-8 character random safe string (e.g., base64url or alphanumeric).
 
 - **Create mode** (if `page_id` is missing):
@@ -120,7 +120,7 @@ npx -y @clawpage.ai/cli publish \
   --ttl-ms 10800000 \
   --pagecode "[GENERATED_PAGECODE]"
 ```
-- Write back the returned `pageId` to `metadata.page_id` in `$MGMT_PAGE_DIR/meta.md`.
+- Write back the returned `pageId` to `metadata.page_id` in `[MANAGEMENT_PAGE_DIR]/meta.md`.
 
 - **Update mode** (if `page_id` exists):
 ```bash

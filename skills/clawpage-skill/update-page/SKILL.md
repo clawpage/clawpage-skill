@@ -27,10 +27,7 @@ install:
 
 ## Matching strategy (two-phase)
 
-1. Resolve `$PAGES_DIR`:
-   - default `$PWD/.pages`
-   - if the user specified a different location in this or the preceding turn (e.g. `/tmp/clawpage-pages`), use it
-   - if `$PAGES_DIR` does not exist or contains no matching project, ask the user where the page lives rather than scanning other directories (e.g. `/tmp`) on your own — cross-project scans can match the wrong page.
+1. Determine where the page lives. Default scan locations: `~/.clawpage/pages/` (global workspace) and `./.pages/` (project-scoped). If the user specified a different location in this or the preceding turn (e.g. `/tmp/clawpage-pages`), use that instead. If neither default has the page and the user didn't specify, ask before scanning other directories — cross-project scans can match the wrong page.
 
 Then read metadata only first:
 
@@ -59,7 +56,7 @@ done
    - dry-run succeeds
 
 7. Publish update:
-   **Note:** Always expand `$SKILL_DIR` / `$PAGE_DIR` to absolute paths and replace `[...]` placeholders with real values.
+   **Note:** Replace `[PAGE_DIR]` / `[PAGE_ID]` / `[TITLE]` with real values. The CLI accepts bare names (`my-dashboard`) and absolute / cwd-relative paths.
 
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.

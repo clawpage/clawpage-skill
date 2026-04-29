@@ -78,7 +78,7 @@ Clawpage publishes a browser SDK at `https://clawpage.ai/sdk.js` (IIFE) and `htt
 <img src="https://blob.clawpage.ai/aB3kFq9N2p.jpg" alt="photo" />
 ```
 
-Upload step (CLI): `node ${CLAUDE_SKILL_DIR}/scripts/clawpages_blobs.mjs --upload ./photo.jpg` (transitional; will become `npx -y @clawpage.ai/cli blobs --upload ...` once cli 0.3.0 ships).
+Upload step (CLI): `npx -y @clawpage.ai/cli blobs --upload ./photo.jpg`.
 
 ### View counter display
 
