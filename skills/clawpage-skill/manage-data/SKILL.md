@@ -63,6 +63,8 @@ Only the owner ─────────────────────�
 
 ## 3. Quick recipes (most common tasks)
 
+> **Browser / page-side code: always use the Clawpage JS SDK** (`https://clawpage.ai/sdk.js`). See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`. Raw `fetch('/api/data/...')` in page JS is no longer supported — the `fetch` snippets below remain only as reference for what the SDK abstracts over; do NOT copy them into new page HTML. CLI examples (`npx` from your terminal) are fine as-is.
+
 Run from any directory containing a populated `keys.local.json` (token + apiHost).
 
 ### 3.1 Build a comment board (anonymous append + list)
@@ -315,10 +317,11 @@ When the user asks for a feature that implies data, work through this in order:
    - Creating or replacing by known key → `PUT` / `--put`
    - Atomically incrementing a numeric field (counters, reactions) → `POST /:table/:key/incr` / `--incr`
    - Patching a few fields of an existing object (non-counter) → `PATCH` / `--patch`
-6. **Write the HTML** so that:
-   - Reads use `fetch(...)` to `https://<USERNAME>.clawpage.ai/api/data/<table>[/<key>]`
-   - Writes use the same URL with appropriate method + `{value: ...}` body
-   - NO `sk_` token in page JS — if a write needs a token, it must happen via CLI or your own backend
+6. **Write the HTML using the Browser SDK** (`skills/use-sdk/SKILL.md`):
+   - Embed `<script src="https://clawpage.ai/sdk.js"></script>` in `<head>`.
+   - Reads/writes go through `new Clawpage().table("<name>")` (`.get`, `.put`, `.patch`, `.post`, `.incr`, `.list`).
+   - Raw `fetch('/api/data/...')` in page JS is forbidden.
+   - NO `sk_` token in page JS — if a write needs a token, it must happen via CLI or your own backend.
 7. **Publish the HTML via the standard Clawpage page publish flow** (the `manage-page` skill, not this one).
 8. **Before handing the page to the user**, test each interaction end-to-end (create table, post, read back).
 9. If the user later wants to evolve the data shape, revisit §8 for the migration path.

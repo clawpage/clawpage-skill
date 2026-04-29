@@ -13,6 +13,10 @@ install:
 - User wants a new template style/capability
 - A reusable template directory must be created
 
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`.
+
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `skills/use-sdk/SKILL.md`.
+
 ## Template directory spec
 
 Create: `./templates/[TEMPLATE_NAME]/`

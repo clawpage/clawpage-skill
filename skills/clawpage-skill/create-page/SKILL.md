@@ -30,12 +30,14 @@ install:
 
 ## Workflow
 
+0. **Resolve `$PAGES_DIR` first.** Default `$PWD/.pages`. If the user asked for `/tmp` or any other location, honor that. Create `$PAGES_DIR` if it doesn't exist (`mkdir -p "$PAGES_DIR"`). `$PAGE_DIR = $PAGES_DIR/[PAGE_NAME]`.
+
 1. Choose template (default `general_template`).
 2. Resolve target directory strategy before copy:
 - if `[PAGE_DIR]` does not exist: copy directly.
 - if it exists: explicitly confirm one strategy with user first: `overwrite` / `incremental update` / `use a new [PAGE_NAME]`.
 
-**Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name.
+**Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name, and expand `$SKILL_DIR` / `$PAGE_DIR` to the absolute paths resolved above.
 
 ```bash
 npx -y @clawpage.ai/cli scaffold general_template [PAGE_DIR]
@@ -108,6 +110,14 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 - Check `[PAGE_DIR]/meta.md`:
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. Retry the publish command exactly as you did in the Creation flow.
   - If `metadata.page_id` EXISTS: It means the remote page *was* created before the failure. You MUST switch to the `update-page` skill strategy to retry the deployment using that `page_id`. DO NOT create a duplicate page.
+
+## Interactivity / persistent state
+
+If the page needs comments, reactions, likes, counters, short links, file uploads, or any server-side state:
+1. Load the `use-sdk` sub-skill for recipes.
+2. Embed `<script src="https://clawpage.ai/sdk.js"></script>` in the page `<head>`.
+3. Use `new Clawpage()` + `c.table(...)` / `c.links` / etc. **Never write raw `fetch('/api/...')` calls in page JS** — the SDK is the only supported path.
+4. Never ship an `sk_` owner token in public-page HTML.
 
 ## Quality Bar & UI Expectations (Crucial)
 

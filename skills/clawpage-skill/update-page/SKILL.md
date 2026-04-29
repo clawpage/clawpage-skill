@@ -27,7 +27,12 @@ install:
 
 ## Matching strategy (two-phase)
 
-1. Read metadata only first:
+1. Resolve `$PAGES_DIR`:
+   - default `$PWD/.pages`
+   - if the user specified a different location in this or the preceding turn (e.g. `/tmp/clawpage-pages`), use it
+   - if `$PAGES_DIR` does not exist or contains no matching project, ask the user where the page lives rather than scanning other directories (e.g. `/tmp`) on your own — cross-project scans can match the wrong page.
+
+Then read metadata only first:
 
 ```bash
 find ~/.clawpage/pages ./.pages -mindepth 2 -maxdepth 2 -name meta.md 2>/dev/null | while read -r f; do
@@ -54,7 +59,7 @@ done
    - dry-run succeeds
 
 7. Publish update:
-   **Note:** Always replace placeholders in the following commands with real values.
+   **Note:** Always expand `$SKILL_DIR` / `$PAGE_DIR` to absolute paths and replace `[...]` placeholders with real values.
 
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
@@ -97,6 +102,14 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 - Check `[PAGE_DIR]/meta.md`:
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. You MUST switch to the `create-page` skill strategy to retry the deployment.
   - If `metadata.page_id` EXISTS: It means the remote page *was* created before or you are updating successfully. Retry the `update-page` publish command exactly as before.
+
+## Adding interactivity to an existing page
+
+If the edit introduces server-state features (comments, likes, counters, uploads, short links, stats):
+1. Use the `use-sdk` sub-skill.
+2. Add `<script src="https://clawpage.ai/sdk.js"></script>` if not already present.
+3. Use the SDK (`new Clawpage()`, `c.table(...)`, `c.links`, etc.) — raw `fetch('/api/...')` is forbidden in page JS.
+4. If the existing page has raw `fetch('/api/...')` calls, migrate them to the SDK as part of the edit.
 
 ## Quality Bar & UI Expectations (Crucial)
 

@@ -39,6 +39,26 @@ All execution details (workflow, output, localization, checks, failure handling)
 - Path: `${CLAUDE_SKILL_DIR}/update-template/SKILL.md`
 - Purpose: update an existing template structure/style/interaction/docs
 
+7. `use-sdk`
+- Path: `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`
+- Purpose: embed the Clawpage Browser SDK in a page (`https://clawpage.ai/sdk.js`) for live data, links, stats, blobs, /api/me
+
+8. `manage-data`
+- Path: `${CLAUDE_SKILL_DIR}/manage-data/SKILL.md`
+- Purpose: CRUD per-user KV data tables (comments / counters / configs / CMS) via the Clawpage data API
+
+9. `manage-links`
+- Path: `${CLAUDE_SKILL_DIR}/manage-links/SKILL.md`
+- Purpose: create / list / update / delete short links `clawpage.ai/s/<slug>` → `*.clawpage.ai`
+
+10. `manage-blobs`
+- Path: `${CLAUDE_SKILL_DIR}/manage-blobs/SKILL.md`
+- Purpose: upload images / files to Cloudflare R2 storage, get public `blob.clawpage.ai/<id>` URLs
+
+11. `view-stats`
+- Path: `${CLAUDE_SKILL_DIR}/view-stats/SKILL.md`
+- Purpose: page-view counts and per-day series for the user's pages / homepage / short links
+
 ## Routing Priority (Conflict Resolution)
 
 Apply this priority order when intent is mixed:
@@ -46,9 +66,14 @@ Apply this priority order when intent is mixed:
 1. Initialization intent ("init", "setup", "初始化", "完成注册") -> `init`
 2. Management-page intent ("管理页", "后台页", "列出我所有页面", "pages dashboard", "admin/read-only page list") -> `create management page`
 3. Explicit `page-id` / `pageId` / "update existing page" signal -> `update page`
-4. Existing local project intent (`.pages/<name>`, "基于旧页面", "沿用现有页面") -> `update page`
+4. Existing local project intent (`$PAGES_DIR/<name>`, "基于旧页面", "沿用现有页面") -> `update page`
 5. Template-only intent (create/update template) -> `create template` or `update template`
-6. Otherwise default to creating a new page -> `create page`
+6. Data / KV intent ("comments", "counters", "持久化", "data table") -> `manage-data`
+7. Short-link intent ("short link", "缩短", "redirect", `clawpage.ai/s/...`) -> `manage-links`
+8. Blob / image upload intent ("upload image", "上传图片", "PDF", "blob") -> `manage-blobs`
+9. Stats intent ("view count", "traffic", "访问量", "stats") -> `view-stats`
+10. SDK intent ("use SDK", "live data on page", "interactive page", "browser SDK") -> `use-sdk`
+11. Otherwise default to creating a new page -> `create page`
 
 ## Keyword Hints
 
@@ -66,6 +91,16 @@ Apply this priority order when intent is mixed:
 - Use API default `https://api.clawpage.ai` unless user overrides.
 - For newly created pages, default publish policy is private + 3h TTL (`pagecode` required, `ttlMs=10800000`) unless user explicitly requests otherwise.
 - Management page must be read-only (no destructive operations).
+- **Never write under `$SKILL_DIR`.** Page projects go under `$PAGES_DIR` (default `$PWD/.pages`; user may specify `/tmp/clawpage-pages` or any absolute path). Treat the skill install tree as read-only so in-place edits never trigger extra permission prompts or pollute the install.
+
+## Path Conventions (shared by all sub-skills)
+
+Every sub-skill resolves these two roots at the start of an invocation. They are conceptual variables — expand them to concrete absolute paths before running any shell command.
+
+- `$SKILL_DIR` — this skill's install directory, i.e. the directory that contains **this `SKILL.md` file**. Holds `templates/`, `scripts/`, `references/`, `keys.local.json`. Read-only. Resolve it by taking the absolute path of the SKILL.md file you were loaded from and stripping the filename; if in doubt, run `dirname "$(realpath <path-to-this-SKILL.md>)"`. Do NOT guess it from `$PWD`.
+- `$PAGES_DIR` — where generated page projects live. **Default: `$PWD/.pages`** (the user's current working directory, *not* `$SKILL_DIR`). Respect user overrides such as `/tmp/clawpage-pages` or any absolute path supplied in the request. When updating a page, use the same `$PAGES_DIR` it was originally written to; if you can't locate the project, ask the user rather than guessing by scanning arbitrary directories.
+
+Each page project sits at `$PAGES_DIR/<kebab-case-page-name>/`.
 
 ## References
 
