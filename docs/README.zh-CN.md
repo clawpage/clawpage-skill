@@ -27,17 +27,21 @@
 
 或者本地测试：`claude --plugin-dir /path/to/clawpage-skill`。
 
-### Codex / Gemini CLI
-
-这两家 CLI 不读 Claude 的 plugin manifest，按 git clone 形式安装：
+### Codex
 
 ```bash
-# Codex
 git clone https://github.com/clawpage/clawpage-skill ~/.codex/skills/clawpage
+```
 
-# Gemini
+仓库根有 `SKILL.md`（symlink 到 `skills/clawpage-skill/SKILL.md`），Codex 的 flat-skill 发现会原生识别。
+
+### Gemini CLI
+
+```bash
 gemini extensions install https://github.com/clawpage/clawpage-skill
 ```
+
+仓库根有 `gemini-extension.json`，Gemini 注册为 extension；router skill 通过 `skills/clawpage-skill/SKILL.md` 自动发现。
 
 ## 首次认证
 

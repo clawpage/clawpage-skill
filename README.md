@@ -27,19 +27,21 @@ This repo is a **Claude Code plugin**. Sub-skills shell out to [`@clawpage.ai/cl
 
 (Or test locally before submitting to the official marketplace: `claude --plugin-dir /path/to/clawpage-skill`.)
 
-### Codex / Gemini CLI
-
-These don't natively read the Claude plugin manifest. Treat the skill files as a flat clone:
+### Codex
 
 ```bash
-# Codex
 git clone https://github.com/clawpage/clawpage-skill ~/.codex/skills/clawpage
+```
 
-# Gemini
+The repo ships a root-level `SKILL.md` (symlinked to `skills/clawpage-skill/SKILL.md`) so Codex's flat-skill discovery picks it up natively.
+
+### Gemini CLI
+
+```bash
 gemini extensions install https://github.com/clawpage/clawpage-skill
 ```
 
-(Note: a unified cross-CLI manifest is on the roadmap. Until then, the plugin layout is Claude-Code-first.)
+The repo ships a root-level `gemini-extension.json` so Gemini registers it as an extension. The router skill is auto-discovered from `skills/clawpage-skill/SKILL.md`.
 
 ## First-time auth
 
