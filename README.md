@@ -138,4 +138,4 @@ Do not use numeric key placeholders or maintain key-mapping tables.
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE`.
+This project is licensed under the MIT-0 License (MIT No Attribution). See `LICENSE`.

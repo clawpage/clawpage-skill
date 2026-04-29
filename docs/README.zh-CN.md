@@ -126,4 +126,4 @@ Skill 规则要求 LLM 在发布前根据用户偏好语言填充这些占位符
 
 ## License
 
-本项目采用 MIT 开源协议，详见 `../LICENSE`。
+本项目采用 MIT-0（MIT No Attribution）开源协议，详见 `../LICENSE`。
