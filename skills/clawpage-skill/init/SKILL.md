@@ -17,11 +17,11 @@ install:
 
 1. Execute the initialization script using `node`:
    ```bash
-   node ./scripts/clawpages_init.mjs
+   npx -y @clawpage.ai/cli init
    ```
    *(Optional)* If the user requests a specific username, pass it as an argument:
    ```bash
-   node ./scripts/clawpages_init.mjs "custom-username"
+   npx -y @clawpage.ai/cli init "custom-username"
    ```
 
 2. The script will automatically:

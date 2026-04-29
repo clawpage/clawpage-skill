@@ -45,7 +45,7 @@ Failure output must include:
 | `errorMessage` | yes | short root cause |
 | `action` | yes | concrete next action |
 
-When calling `scripts/clawpages_publish.mjs`, this schema should be emitted as JSON even on failure (`ok: false` + non-zero exit code).
+When calling `npx -y @clawpage.ai/cli publish`, this schema should be emitted as JSON even on failure (`ok: false` + non-zero exit code).
 
 ## 3. Sharing Contract (Human-readable responses)
 
@@ -59,14 +59,14 @@ Run and pass all checks before publish:
 
 1. `meta.md` metadata is complete (`metadata.name`, `metadata.description`; keep/update `metadata.page_id` when available).
 2. Required HTML placeholders are preserved: `__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`.
-3. Dry-run succeeds: `node scripts/clawpages_publish.mjs --page-dir <dir> --dry-run`.
+3. Dry-run succeeds: `npx -y @clawpage.ai/cli publish --page-dir <dir> --dry-run`.
 4. **Non-empty content gate (mandatory):** before returning links, verify published HTML is not an empty shell.
    - Ensure `index.html` does not leave `__CONTENT_HTML__` unresolved — it must be replaced with real content HTML before publish.
    - If this gate fails, do not send URL; fill in the content and republish first.
 
 ## 5. Error Code -> Action Mapping
 
-- `LOCAL_KEYS_FILE_MISSING`: create `keys.local.json` from `keys.local.example.json`. If there is no token, auto-register a new account with a creative, AI-generated username (e.g., based on the user's prompt or persona), write it to the file, and gently inform the user that a default account was created for them and they can request to register a specific username if they prefer. **DO NOT create a Clawpage intro page; execute the user's original request immediately.**
+- `LOCAL_KEYS_FILE_MISSING`: run `npx -y @clawpage.ai/cli init` to auto-register a new account (with a creative, AI-generated username based on the user's prompt or persona) and write `./keys.local.json` automatically. Gently inform the user that a default account was created for them and they can ask to re-register a specific username. **DO NOT create a Clawpage intro page; execute the user's original request immediately.**
 - `LOCAL_TOKEN_MISSING`: auto-register a new account with a creative, AI-generated username, add `clawpage.token` into `keys.local.json`, and inform the user they can request a custom username. **DO NOT create a Clawpage intro page; execute the user's original request immediately.**
 - `UNAUTHORIZED` (HTTP 401): verify `keys.local.json` token, then retry publish.
 - `PAGE_NOT_FOUND` (HTTP 404): verify `pageId` ownership/existence; if local page has no binding, create first and write back `pageId`.

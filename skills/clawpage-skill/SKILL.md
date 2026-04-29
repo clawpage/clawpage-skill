@@ -16,27 +16,27 @@ All execution details (workflow, output, localization, checks, failure handling)
 ## Sub-skills
 
 1. `init`
-- Path: `skills/init/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/init/SKILL.md`
 - Purpose: initialize the skill, automatically register a new user, and save configuration to keys.local.json
 
 2. `create page`
-- Path: `skills/create-page/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/create-page/SKILL.md`
 - Purpose: create a new page project and publish
 
 3. `update page`
-- Path: `skills/update-page/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/update-page/SKILL.md`
 - Purpose: update an existing page project and republish
 
 4. `create management page`
-- Path: `skills/create-management-page/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/create-management-page/SKILL.md`
 - Purpose: create or update the current read-only management page that lists user's pages
 
 5. `create template`
-- Path: `skills/create-template/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/create-template/SKILL.md`
 - Purpose: create a reusable template folder
 
 6. `update template`
-- Path: `skills/update-template/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/update-template/SKILL.md`
 - Purpose: update an existing template structure/style/interaction/docs
 
 ## Routing Priority (Conflict Resolution)
@@ -69,6 +69,12 @@ Apply this priority order when intent is mixed:
 
 ## References
 
-- API semantics: `references/api-quickref.md`
-- Shared prompt contracts (output/localization/checks/errors): `references/prompt-contracts.md`
-- Publish entrypoint: `scripts/clawpages_publish.mjs`
+- API semantics: `${CLAUDE_SKILL_DIR}/references/api-quickref.md`
+- Shared prompt contracts (output/localization/checks/errors): `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
+- Publish entrypoint: `npx -y @clawpage.ai/cli publish` (npm package [@clawpage.ai/cli](https://www.npmjs.com/package/@clawpage.ai/cli))
+
+## Path Conventions
+
+- **Bash commands** — invoke runtime via `npx -y @clawpage.ai/cli <subcommand>`. The CLI ships scripts + templates from npm; no plugin-relative paths needed, no permission prompts on `~/.claude/...`.
+- **Read-only references** — `${CLAUDE_SKILL_DIR}/references/...` for plugin-bundled docs (api / contracts / design guidelines). Read by Claude, not executed.
+- **User CWD** — `./.pages/<name>/` (page workspace) and `./keys.local.json` (user's API token; auto-created by `npx -y @clawpage.ai/cli init`).

@@ -8,7 +8,7 @@ description: Manage a user's Clawpage KV data tables — create/permission/delet
 Clawpage ships a per-user KV data API at `https://<username>.clawpage.ai/api/data/<table>/<key>`.
 It is the **only** legitimate way to persist structured data for a Clawpage HTML page.
 
-> **The CLI script `scripts/clawpages_data.mjs` auto-discovers the user's username via `/api/me` on first call and caches it in `keys.local.json`. Just run a command; auth + URL resolution is handled for you.**
+> **The CLI command `npx -y @clawpage.ai/cli data ...` auto-discovers the user's username via `/api/me` on first call and caches it in `keys.local.json`. Just run a command; auth + URL resolution is handled for you.**
 
 ---
 
@@ -63,13 +63,13 @@ Only the owner ─────────────────────�
 
 ## 3. Quick recipes (most common tasks)
 
-All commands run from `clawpage-skill/` directory and require a populated `keys.local.json` (token + apiHost).
+Run from any directory containing a populated `keys.local.json` (token + apiHost).
 
 ### 3.1 Build a comment board (anonymous append + list)
 
 ```bash
 # one-time: create the table
-node scripts/clawpages_data.mjs --create-table comments --permission public
+npx -y @clawpage.ai/cli data --create-table comments --permission public
 ```
 
 In HTML:
@@ -99,8 +99,8 @@ async function listComments() {
 
 ```bash
 # single record in a public table, key="global"
-node scripts/clawpages_data.mjs --create-table reactions --permission public
-node scripts/clawpages_data.mjs --put reactions/global --value '{"like":0,"heart":0,"fire":0}'
+npx -y @clawpage.ai/cli data --create-table reactions --permission public
+npx -y @clawpage.ai/cli data --put reactions/global --value '{"like":0,"heart":0,"fire":0}'
 ```
 
 In HTML (use `/incr` for atomic field increments — safe under concurrency):
@@ -122,14 +122,14 @@ async function react(kind) {
 ### 3.3 Publish content from the CLI (read-public CMS)
 
 ```bash
-node scripts/clawpages_data.mjs --create-table posts --permission read-public
+npx -y @clawpage.ai/cli data --create-table posts --permission read-public
 
 # Publish a post (from your machine, using CLI)
-node scripts/clawpages_data.mjs --put posts/hello \
+npx -y @clawpage.ai/cli data --put posts/hello \
   --value '{"title":"Hello","body":"my first post","at":"2026-04-17"}'
 
 # Update via deep merge (only changes `body`)
-node scripts/clawpages_data.mjs --patch posts/hello --value '{"body":"updated body"}'
+npx -y @clawpage.ai/cli data --patch posts/hello --value '{"body":"updated body"}'
 ```
 
 In HTML (anonymous read, no token):
@@ -144,17 +144,17 @@ const post = (await r.json()).value;
 ### 3.4 Private bookmarks you alone can see
 
 ```bash
-node scripts/clawpages_data.mjs --create-table bookmarks --permission private
-node scripts/clawpages_data.mjs --post bookmarks --value '{"url":"https://...","title":"..."}'
-node scripts/clawpages_data.mjs --list bookmarks --all   # fetches all records
+npx -y @clawpage.ai/cli data --create-table bookmarks --permission private
+npx -y @clawpage.ai/cli data --post bookmarks --value '{"url":"https://...","title":"..."}'
+npx -y @clawpage.ai/cli data --list bookmarks --all   # fetches all records
 ```
 
 ### 3.5 Backup a table before a risky edit
 
 ```bash
-node scripts/clawpages_data.mjs --export posts --out posts-backup-2026-04-17.json
+npx -y @clawpage.ai/cli data --export posts --out posts-backup-2026-04-17.json
 # later, restore:
-node scripts/clawpages_data.mjs --import posts --in posts-backup-2026-04-17.json
+npx -y @clawpage.ai/cli data --import posts --in posts-backup-2026-04-17.json
 ```
 
 The export file looks like `{table, permission, records: {key1: value, key2: value, ...}}`. `--import` accepts either that shape or a bare `{key: value}` map.
@@ -279,9 +279,9 @@ When you add a field to existing records, there are three clean options:
 2. **Lazy migration**: on each write, re-put with the new field. Old records keep the old shape until touched.
 3. **Eager migration** (for small tables): CLI script `export` → edit JSON locally → `import`. Example:
    ```bash
-   node scripts/clawpages_data.mjs --export posts --out posts.json
+   npx -y @clawpage.ai/cli data --export posts --out posts.json
    # edit posts.json — add fields, reshape, etc.
-   node scripts/clawpages_data.mjs --import posts --in posts.json  # bulk upsert
+   npx -y @clawpage.ai/cli data --import posts --in posts.json  # bulk upsert
    ```
 
 For removing a field, nothing is required — old data carries the extra key harmlessly until overwritten.

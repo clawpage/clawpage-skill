@@ -22,27 +22,27 @@ Short links shorten any `*.clawpage.ai` URL to `https://clawpage.ai/s/<7-char sl
 
 ## CLI usage
 
-All commands run from `clawpage-skill/` and need `keys.local.json` with a valid `clawpage.token`.
+Run from any directory containing `keys.local.json` with a valid `clawpage.token`.
 
 ### Create a short link
 ```bash
-node scripts/clawpages_links.mjs --create https://alice.clawpage.ai/p/some-long-name
+npx -y @clawpage.ai/cli links --create https://alice.clawpage.ai/p/some-long-name
 # → prints JSON with { slug, shortUrl, target, createdAt, updatedAt }
 ```
 
 ### List my short links
 ```bash
-node scripts/clawpages_links.mjs --list
+npx -y @clawpage.ai/cli links --list
 ```
 
 ### Update a link's target
 ```bash
-node scripts/clawpages_links.mjs --update-slug aB3kFq9 --target https://alice.clawpage.ai/p/new-destination
+npx -y @clawpage.ai/cli links --update-slug aB3kFq9 --target https://alice.clawpage.ai/p/new-destination
 ```
 
 ### Delete
 ```bash
-node scripts/clawpages_links.mjs --delete aB3kFq9
+npx -y @clawpage.ai/cli links --delete aB3kFq9
 ```
 
 ## Quotas
@@ -66,8 +66,8 @@ Typical usage after publishing a page with a long name:
 
 ```bash
 # publish
-node scripts/clawpages_publish.mjs --page-dir .pages/my-article
+npx -y @clawpage.ai/cli publish --page-dir .pages/my-article
 
 # shorten its URL
-node scripts/clawpages_links.mjs --create https://<user>.clawpage.ai/p/my-long-article-name-that-is-ugly
+npx -y @clawpage.ai/cli links --create https://<user>.clawpage.ai/p/my-long-article-name-that-is-ugly
 ```

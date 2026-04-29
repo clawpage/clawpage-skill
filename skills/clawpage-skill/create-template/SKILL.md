@@ -25,7 +25,7 @@ Required files:
 
 ## Required constraints
 
-- **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` for visual quality expectations.
 - `index.html` must include placeholders:
   - `__CONTENT_HTML__`
   - `__DEFAULT_CSS__`
@@ -48,7 +48,7 @@ Required files:
 **Note:** Always replace `[TEMPLATE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-node ./scripts/clawpages_publish.mjs \
+npx -y @clawpage.ai/cli publish \
   --page-dir ./templates/[TEMPLATE_NAME] \
   --title "Template Preview" \
   --dry-run

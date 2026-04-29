@@ -36,7 +36,7 @@ install:
 **Note:** Always replace `[TEMPLATE_NAME]` with the actual kebab-case name.
 
 ```bash
-node ./scripts/clawpages_publish.mjs \
+npx -y @clawpage.ai/cli publish \
   --page-dir ./templates/[TEMPLATE_NAME] \
   --title "Template Preview" \
   --dry-run
@@ -44,7 +44,7 @@ node ./scripts/clawpages_publish.mjs \
 
 ## Must preserve
 
-- **Design reference:** follow `./references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` for visual quality expectations.
 - `index.html` placeholders:
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`

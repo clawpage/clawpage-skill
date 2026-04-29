@@ -16,10 +16,10 @@ install:
 ## Inputs and conventions
 
 - Page directory: `./.pages/<page-name>`
-- Template directory: `./templates/<template-name>`
-- Publish script: `./scripts/clawpages_publish.mjs`
-- API reference: `./references/api-quickref.md`
-- Shared contracts: `./references/prompt-contracts.md`
+- Templates: shipped with `@clawpage.ai/cli`. List names: `npx -y @clawpage.ai/cli scaffold --list`. Copy: `npx -y @clawpage.ai/cli scaffold <template-name> <target-dir>`
+- Publish script: ``npx -y @clawpage.ai/cli publish``
+- API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md`
+- Shared contracts: `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
 - `page-name` must be kebab-case and cannot contain `/`
 - Create default policy (unless user explicitly overrides):
   - private page by default (`pagecode` required)
@@ -35,7 +35,7 @@ install:
 **Note:** Always replace `[PAGE_NAME]` in the following commands with the actual kebab-case name.
 
 ```bash
-cp -R ./templates/general_template ./.pages/[PAGE_NAME]
+npx -y @clawpage.ai/cli scaffold general_template ./.pages/[PAGE_NAME]
 ```
 
 3. Update `./.pages/[PAGE_NAME]/meta.md`:
@@ -48,7 +48,7 @@ cp -R ./templates/general_template ./.pages/[PAGE_NAME]
 - **The LLM renders everything visible**: page title (including the `<title>` tag), subtitle, timestamps, expiry info, and all UI content. The publish script only inlines CSS/JS — it does not inject any metadata.
 - **Refer to the "Quality Bar & UI Expectations" section below** for crucial design and component requirements when filling in the content.
 
-5. Apply localization and output contracts from `./references/prompt-contracts.md`.
+5. Apply localization and output contracts from `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
 
 6. Run pre-publish hard checklist (must pass all):
 - metadata complete in `meta.md`
@@ -60,7 +60,7 @@ cp -R ./templates/general_template ./.pages/[PAGE_NAME]
 
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
-node ./scripts/clawpages_publish.mjs \
+npx -y @clawpage.ai/cli publish \
   --page-dir ./.pages/[PAGE_NAME] \
   --title "[TITLE]" \
   --ttl-ms 10800000 \
@@ -72,7 +72,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
 - `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
 
-8. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
 
 9. Write returned `pageId` back to `./.pages/[PAGE_NAME]/meta.md`:
 - prefer `metadata.page_id`
@@ -89,8 +89,8 @@ Optional:
 
 ## Failure handling (error code -> action)
 
-- `LOCAL_KEYS_FILE_MISSING` -> create `./keys.local.json` from `./keys.local.example.json`.
-- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`./references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `./keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed to create the EXACT page the user originally requested.**
+- `LOCAL_KEYS_FILE_MISSING` -> run `npx -y @clawpage.ai/cli init` to register a new account and write `./keys.local.json` automatically.
+- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`${CLAUDE_SKILL_DIR}/references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `./keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed to create the EXACT page the user originally requested.**
 - `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> check wrong endpoint/owner context; confirm create path and retry.
 - `409 USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.
@@ -108,7 +108,7 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 
 ## Quality Bar & UI Expectations (Crucial)
 
-> **Full design reference:** `./references/design-guidelines.md` — read it before generating any UI.
+> **Full design reference:** `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` — read it before generating any UI.
 
 **Treat the generated page as a modern Web App, not a plain text document.** Always apply these principles:
 

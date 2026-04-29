@@ -17,9 +17,9 @@ install:
 
 - Page directory: `./.pages/<page-name>`
 - Page files: `meta.md`, `index.html`, `default.css`, `default.js`
-- Publish script: `./scripts/clawpages_publish.mjs`
-- API reference: `./references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
-- Shared contracts: `./references/prompt-contracts.md`
+- Publish script: ``npx -y @clawpage.ai/cli publish``
+- API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
+- Shared contracts: `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
 - `page-name` must be kebab-case and cannot contain `/`
 
 ## Matching strategy (two-phase)
@@ -43,7 +43,7 @@ done
 
 4. If semantics changed, sync `meta.md` metadata and notes.
 
-5. Apply localization and output contracts from `./references/prompt-contracts.md`.
+5. Apply localization and output contracts from `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
 
 6. Run pre-publish hard checklist (must pass all):
    - metadata complete in `meta.md`
@@ -55,7 +55,7 @@ done
 
 ```bash
 # **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
-node ./scripts/clawpages_publish.mjs \
+npx -y @clawpage.ai/cli publish \
   --page-dir ./.pages/[PAGE_NAME] \
   --page-id "[PAGE_ID]" \
   --title "[TITLE]"
@@ -66,7 +66,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection
 - `--page-name [SLUG]` rename page
 
-8. Return fixed output fields exactly as defined in `./references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
 
 ## If `page-id` is missing
 
@@ -78,8 +78,8 @@ Optional:
 
 ## Failure handling (error code -> action)
 
-- `LOCAL_KEYS_FILE_MISSING` -> create `./keys.local.json` from `./keys.local.example.json`.
-- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`./references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `./keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed with the original user request.**
+- `LOCAL_KEYS_FILE_MISSING` -> run `npx -y @clawpage.ai/cli init` to register a new account and write `./keys.local.json` automatically.
+- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`${CLAUDE_SKILL_DIR}/references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `./keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed with the original user request.**
 - `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> verify `pageId` ownership/existence; if unbound, create first and write back `pageId`.
 - `409 USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.
@@ -97,7 +97,7 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 
 ## Quality Bar & UI Expectations (Crucial)
 
-> **Full design reference:** `./references/design-guidelines.md` — read it before generating any UI.
+> **Full design reference:** `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` — read it before generating any UI.
 
 **Treat the updated page as a modern Web App, not a plain text document.** Always apply these principles:
 
