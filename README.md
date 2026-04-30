@@ -43,6 +43,14 @@ gemini extensions install https://github.com/clawpage/clawpage-skill
 
 The repo ships a root-level `gemini-extension.json` so Gemini registers it as an extension. The router skill is auto-discovered from `skills/clawpage-skill/SKILL.md`.
 
+### OpenClaw
+
+```bash
+openclaw skills install clawpage-skill
+```
+
+OpenClaw resolves the skill name against its registry and installs into the underlying coding-CLI backend it's currently routed to.
+
 ## First-time auth
 
 Once the skill is loaded, a one-time:
