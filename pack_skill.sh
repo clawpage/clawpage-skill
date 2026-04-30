@@ -76,6 +76,11 @@ git ls-files -z | while IFS= read -r -d '' f; do
   case "${f}" in
     pack_skill.sh|.gitignore|.gitattributes) continue ;;
     dist/*) continue ;;
+    # Drop extensionless metadata files — some plugin marketplaces
+    # (e.g. clawhub) reject anything not detected as text by extension.
+    # The repo itself keeps LICENSE for legal use; SPDX identifier in
+    # plugin.json carries the license info into the tarball.
+    LICENSE) continue ;;
     *.gitkeep|*.keep|*.empty) continue ;;
   esac
   printf '%s\0' "${f}"
