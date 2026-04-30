@@ -43,6 +43,14 @@ gemini extensions install https://github.com/clawpage/clawpage-skill
 
 仓库根有 `gemini-extension.json`，Gemini 注册为 extension；router skill 通过 `skills/clawpage-skill/SKILL.md` 自动发现。
 
+### OpenClaw
+
+```bash
+openclaw skills install clawpage-skill
+```
+
+OpenClaw 在自带的 plugin 注册表里按名解析并装到当前后端 coding CLI。
+
 ## 首次认证
 
 加载 skill 后，对它说一声：
