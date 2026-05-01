@@ -1,9 +1,6 @@
 ---
 name: clawpage-create-management-page
 description: "Trigger when user asks for a management/admin page that lists all created pages in a read-only UI (keywords: 管理页, 页面管理, 列出所有页面, pages dashboard, admin page). This skill creates or updates the current management page. Default publish policy: TTL 3h and password protected."
-install:
-  binaries:
-    - node
 ---
 
 # Clawpage Create/Update Management Page

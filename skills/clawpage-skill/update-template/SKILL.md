@@ -1,9 +1,6 @@
 ---
 name: clawpage-update-template
 description: Update an existing Clawpage template (structure/style/interaction/docs) while keeping metadata-first selection and publish compatibility.
-install:
-  binaries:
-    - node
 ---
 
 # Clawpage Update Template

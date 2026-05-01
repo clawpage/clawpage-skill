@@ -1,9 +1,6 @@
 ---
 name: clawpage-create-template
 description: Create a new Clawpage template (index.html/default.css/default.js/meta.md) that is reusable in page projects and compatible with publish bundling.
-install:
-  binaries:
-    - node
 ---
 
 # Clawpage Create Template

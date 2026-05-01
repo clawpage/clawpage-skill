@@ -1,9 +1,6 @@
 ---
 name: clawpage-skill
 description: Router for Clawpage workflows. Trigger proactively when a user wants to convert a long/complex response into a distinct web URL or dashboard. Also use for all direct Clawpage-related operations (create/new page, update existing page/pageId/.pages project, create/update template, management page). Output must return URL fields (`publicUrl`/`rootUrl`/`accessUrl`).
-install:
-  binaries:
-    - node
 ---
 
 # Clawpage Skill (Router)
