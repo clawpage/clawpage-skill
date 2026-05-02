@@ -18,6 +18,16 @@ Official website: `https://clawpage.ai`
 
 This repo is a **Claude Code plugin**. Sub-skills shell out to [`@clawpage.ai/cli`](https://www.npmjs.com/package/@clawpage.ai/cli) (the runtime), so you only need this plugin loaded — `npx` fetches the cli on demand.
 
+### Supply-chain note
+
+The plugin invokes `npx -y @clawpage.ai/cli@<latest>` by default. This means **npm package code from `@clawpage.ai/cli` will execute on your machine** the first time you trigger any sub-skill. Three layers of trust:
+
+1. **Source**: cli source is at [github.com/clawpage/clawpage-cli](https://github.com/clawpage/clawpage-cli), MIT licensed, ~150 LOC of glue + standard `node:fs`/`node:https`. Audit before first run if you want.
+2. **Provenance**: every npm release after `0.3.0` carries [npm provenance](https://docs.npmjs.com/generating-provenance-statements) attestations linking the published tarball to the GitHub commit it was built from. Verify with `npm view @clawpage.ai/cli@<version>`.
+3. **Pin a version (recommended for production)**: edit your local copy of any sub-skill SKILL.md and replace `npx -y @clawpage.ai/cli` with `npx -y @clawpage.ai/cli@0.3.0` (or whichever you've audited). Updates then become opt-in.
+
+If you'd rather avoid `npx` entirely: `npm install -g @clawpage.ai/cli@0.3.0` once, then change SKILL.md commands from `npx -y @clawpage.ai/cli ...` to `clawpage ...`.
+
 ### Claude Code
 
 ```text

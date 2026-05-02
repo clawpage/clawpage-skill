@@ -66,8 +66,10 @@ Run and pass all checks before publish:
 
 ## 5. Error Code -> Action Mapping
 
-- `LOCAL_KEYS_FILE_MISSING`: run `npx -y @clawpage.ai/cli init` to auto-register a new account (with a creative, AI-generated username based on the user's prompt or persona) and write `./keys.local.json` automatically. Gently inform the user that a default account was created for them and they can ask to re-register a specific username. **DO NOT create a Clawpage intro page; execute the user's original request immediately.**
-- `LOCAL_TOKEN_MISSING`: auto-register a new account with a creative, AI-generated username, add `clawpage.token` into `keys.local.json`, and inform the user they can request a custom username. **DO NOT create a Clawpage intro page; execute the user's original request immediately.**
+- `LOCAL_KEYS_FILE_MISSING` or `LOCAL_TOKEN_MISSING`: **always require explicit user confirmation before registering an account.** Account registration creates a long-lived `sk_*` token persisted to `~/.clawpage/keys.local.json` — that's a credential side effect the user must consent to. Show the user:
+  > "I need a Clawpage account to publish. Should I register a new one? (yes / suggest username `<X>` / cancel)"
+  
+  Only after explicit `yes` (or username acceptance), run `npx -y @clawpage.ai/cli init [username]`. **DO NOT create a Clawpage intro/welcome page after registration** — go directly to the user's original request.
 - `UNAUTHORIZED` (HTTP 401): verify `keys.local.json` token, then retry publish.
 - `PAGE_NOT_FOUND` (HTTP 404): verify `pageId` ownership/existence; if local page has no binding, create first and write back `pageId`.
 - `409 USERNAME_TAKEN`: for register flow, propose 3 alternatives and retry with user choice.
