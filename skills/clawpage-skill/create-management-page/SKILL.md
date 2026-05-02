@@ -13,35 +13,22 @@ description: "Trigger when user asks for a management/admin page that lists all 
 
 ## Data-flow rule
 
-> The default workflow pre-fetches page data **at publish time via CLI `curl`** (see Workflow step 3) and inlines the JSON into the static HTML. The rendered management page makes **zero live API calls from the browser**, so the SDK is not required in the default path.
+> The default workflow pre-fetches page data **at publish time via CLI `curl`** (see Workflow step 3) and inlines the JSON into the static HTML. The rendered management page makes **zero live API calls from the browser**, ships **zero tokens**, and requires no SDK.
 >
-> **If you add any live/interactive feature** (refresh button, live stats, filters that re-query the API, edit/delete actions): the page-side JS MUST use the Clawpage Browser SDK (`https://clawpage.ai/sdk.js`) — never raw `fetch('/api/...')`. See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`.
->
-> **Owner `sk_*` tokens are only acceptable in this management page because it is pagecode-protected.** Never paste an owner token into a public (non-pagecode) page. CLI/server-side owner token usage (e.g. `curl` from a terminal, the publish script) is fine.
->
-> **SDK coverage:** the SDK wraps `table` / `links` / `stats` / `blobs` / `me` / `pages`. For live page listing / refresh / edit actions in the browser, use `c.pages` — see the "Live-refresh recipe" below.
+> **Never embed an `sk_*` owner token into browser-shipped JS — even on a pagecode-protected page.** Pagecodes can be shared, page HTML can be inspected, browser caches persist, and any leak gives full account control. There is currently no token-scoping primitive that can safely live in the browser.
 
-### Live-refresh recipe (optional)
+### Refresh strategies
 
-If the user asks for a "refresh now" button or live filtering, embed the SDK and use `c.pages.listAll()` — owner token is fine here because the page is pagecode-protected:
+If the user asks to "refresh now" without re-publishing, pick the **least-privilege** option that meets their need:
 
-```html
-<script src="https://clawpage.ai/sdk.js"></script>
-<script>
-  const c = new Clawpage({ token: "__OWNER_TOKEN__" });  // inlined from keys.local.json at publish time
+1. **Republish (recommended default).** Treat refresh as a new publish run — re-fetch via CLI, re-render HTML, `npx -y @clawpage.ai/cli publish --page-id [PAGE_ID]`. Token never leaves the CLI / your machine. This is what every other Clawpage page does.
+2. **Manual refresh button → CLI hint.** Render a button that copies the republish command to clipboard or links to a docs section; user runs it from their terminal.
+3. **Public-data-only auto-refresh.** If the page only needs to refresh `public` data tables / public stats endpoints, embed the SDK **without any token** — anonymous public reads are safe even on a publicly accessible page.
 
-  async function refresh() {
-    const items = await c.pages.listAll({ maxItems: 500 });
-    renderPages(items);       // your DOM update
-    document.getElementById("data-fetched-at").textContent = new Date().toLocaleString();
-  }
-
-  // Initial paint from inlined data; refresh button calls refresh().
-  document.getElementById("refresh-btn")?.addEventListener("click", refresh);
-</script>
-```
-
-Keep `renderPages` ≤ 50 lines and don't swallow errors — let `ClawpageError` bubble to a toast. If live refresh is not requested, skip this entirely and stick with the publish-time-inlined static flow below.
+**Forbidden:** any code that ships an `sk_*` token to the browser, including:
+- `const c = new Clawpage({ token: "sk_..." })` in inline `<script>` tags
+- token in `localStorage` / `sessionStorage` / cookies set by the page
+- token in `data-*` attributes or HTML comments
 
 ## Inputs and conventions
 
@@ -139,9 +126,10 @@ npx -y @clawpage.ai/cli publish \
 
 ## Failure handling (error code -> action)
 
-- `LOCAL_KEYS_FILE_MISSING` -> run `npx -y @clawpage.ai/cli init` to register and write `./keys.local.json` automatically.
-- `LOCAL_TOKEN_MISSING` -> add valid token to `./keys.local.json` (`clawpage.token`), then retry.
-- if user has no token: register first via API reference (`${CLAUDE_SKILL_DIR}/references/api-quickref.md`), then write token to `./keys.local.json`.
+- `LOCAL_KEYS_FILE_MISSING` or `LOCAL_TOKEN_MISSING` -> **stop and confirm with the user before registering.** Show:
+  > "No Clawpage account is configured. To create a management page I need to register a new account. This creates a long-lived API token at `~/.clawpage/keys.local.json`. Proceed? (yes / pick a username / cancel)"
+  
+  Only run `npx -y @clawpage.ai/cli init` after explicit `yes`.
 - `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> verify bound `pageId`; if missing/invalid, create once then persist returned `pageId`.
 - `USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.

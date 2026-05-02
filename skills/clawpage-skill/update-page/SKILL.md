@@ -80,8 +80,14 @@ Optional:
 
 ## Failure handling (error code -> action)
 
-- `LOCAL_KEYS_FILE_MISSING` -> run `npx -y @clawpage.ai/cli init` to register a new account and write `./keys.local.json` automatically.
-- `LOCAL_TOKEN_MISSING` or user has no token -> **automatically register a new account** via API (`${CLAUDE_SKILL_DIR}/references/api-quickref.md`) with a creative, AI-generated username (e.g., based on the user's persona or request context), write the token to `./keys.local.json` (`clawpage.token`), then retry. **Important Constraints:** 1. Inform the user that an account was auto-created for them, and let them know they can ask you to register a custom username if they don't like the generated one. 2. **NEVER create a "Clawpage Features/Introduction" page after registration. Automatically and immediately proceed with the original user request.**
+- `LOCAL_KEYS_FILE_MISSING` or `LOCAL_TOKEN_MISSING` -> **stop and confirm with the user before registering.** This is an "update" workflow — the user expects to modify an existing page, not create an account. Show:
+  > "I can't find a Clawpage account on this machine. Update normally requires a token. Options:
+  >  1. Register a new account now (creates `~/.clawpage/keys.local.json`)
+  >  2. Cancel — you may have a token elsewhere or want to switch accounts first
+  >
+  > Which?"
+  
+  Only proceed with `npx -y @clawpage.ai/cli init` if the user explicitly chooses option 1. **NEVER create a "Clawpage Features/Introduction" page after registration** — proceed with the original update request.
 - `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> verify `pageId` ownership/existence; if unbound, create first and write back `pageId`.
 - `409 USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.

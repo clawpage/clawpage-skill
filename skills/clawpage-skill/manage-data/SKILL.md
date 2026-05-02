@@ -165,27 +165,36 @@ The export file looks like `{table, permission, records: {key1: value, key2: val
 
 ## 4. Full command reference
 
+> **Destructive-action confirmation rule.** Before running any of these commands, you MUST get explicit user confirmation:
+> - `--delete-table <name>` (irreversible — wipes table + all records)
+> - `--delete-record <table>/<key>` (irreversible — wipes one record)
+> - `--update-permission` (changes who can read/write — can break a deployed page's contract)
+> - `--import` with no prior `--export` (overwrites existing keys)
+> - `--put` / `--patch` / `--incr` against a permission-`public` table without a backup
+>
+> Pattern: state what will happen ("This will delete table `comments` and all 423 records. Proceed?"), wait for `yes`, then run. **Suggest `--export` first** for any table with > 10 records before delete or bulk-overwrite.
+
 ### Table management (always needs owner Bearer token)
 
 ```
---list-tables                                              # list my tables
+--list-tables                                              # list my tables (safe)
 --create-table <name> --permission <LEVEL>                 # create (levels: private | read-public | public)
---update-permission <name> --permission <LEVEL>            # change a table's permission
---delete-table <name>                                      # delete table + all its records
---export <table> --out <file.json>                         # download the full table
---import <table> --in <file.json>                          # bulk upsert records from file
+--update-permission <name> --permission <LEVEL>            # ⚠ requires confirmation — changes contract
+--delete-table <name>                                      # ⚠ DESTRUCTIVE — requires confirmation + export
+--export <table> --out <file.json>                         # download the full table (safe)
+--import <table> --in <file.json>                          # ⚠ overwrites — requires confirmation
 ```
 
 ### Record CRUD (permission-aware)
 
 ```
---get <table>/<key>                                        # read one record
---put <table>/<key>    (--value '<json>' | --value-file <path>)   # full upsert
---patch <table>/<key>  (--value '<json>' | --value-file <path>)   # deep-merge objects
---incr <table>/<key> --field <name> [--by <N>]             # atomic field increment (counters); --by defaults to 1, negative OK
---post <table>         (--value '<json>' | --value-file <path>)   # auto-gen key
---delete-record <table>/<key>                              # delete one record
---list <table> [--limit N] [--after <key>] [--all]         # list; --all follows cursors
+--get <table>/<key>                                        # read one record (safe)
+--put <table>/<key>    (--value '<json>' | --value-file <path>)   # full upsert ⚠ confirm if record exists
+--patch <table>/<key>  (--value '<json>' | --value-file <path>)   # deep-merge objects (mostly safe)
+--incr <table>/<key> --field <name> [--by <N>]             # atomic field increment (safe)
+--post <table>         (--value '<json>' | --value-file <path>)   # auto-gen key (safe — append)
+--delete-record <table>/<key>                              # ⚠ DESTRUCTIVE — requires confirmation
+--list <table> [--limit N] [--after <key>] [--all]         # list; --all follows cursors (safe)
 ```
 
 ### Options
