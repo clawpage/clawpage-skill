@@ -44,7 +44,7 @@ This repo is a **Claude Code plugin** (with `.claude-plugin/plugin.json`). It co
 
 - All page-side JS that hits Clawpage APIs (data tables, atomic incr, short links, stats, blobs, `/api/me`) MUST use the Browser SDK: `https://clawpage.ai/sdk.js` (IIFE) or `https://clawpage.ai/sdk.mjs` (ESM). Raw `fetch('/api/...')` in page HTML/JS is forbidden.
 - CLI scope (`@clawpage.ai/cli`'s Node scripts) may keep using raw `fetch`/`curl` — the SDK is browser-targeted.
-- Owner `sk_*` tokens must NEVER appear in public-page JS; only acceptable in pagecode-protected management pages or CLI/server contexts.
+- Owner `sk_*` tokens must NEVER appear in **any** browser-shipped page JS — including pagecode-protected pages. Pagecodes are not a token container: they can be shared, the page source can be inspected via DevTools, and browser caches persist. The only acceptable contexts for an `sk_*` token are CLI invocations (`npx -y @clawpage.ai/cli ...`) and server-side processes you control.
 - See `skills/clawpage-skill/use-sdk/SKILL.md`.
 
 ## Testing Guidelines
