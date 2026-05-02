@@ -80,16 +80,14 @@ Clawpage publishes a browser SDK at `https://clawpage.ai/sdk.js` (IIFE) and `htt
 
 Upload step (CLI): `npx -y @clawpage.ai/cli blobs --upload ./photo.jpg`.
 
-### View counter display
+### View counter fetch (Server-side only)
 
-```html
-<p>Total views: <span id="views">…</span></p>
-<script src="https://clawpage.ai/sdk.js"></script>
-<script>
-  // Requires owner token — don't ship this code in a public page
-  const c = new Clawpage({ token: "REDACTED" });
-  c.stats.overview().then(d => document.getElementById("views").textContent = d.totalViews);
-</script>
+```javascript
+import Clawpage from "https://clawpage.ai/sdk.mjs";
+// Pass your token in a secure environment (e.g. CLI, server)
+const c = new Clawpage({ token: process.env.CLAWPAGE_TOKEN });
+const data = await c.stats.overview();
+console.log(`Total views: ${data.totalViews}`);
 ```
 
 ## Error handling
