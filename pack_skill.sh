@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 #
-# Pack the clawpage-skill plugin into a tar.gz for upload to plugin
+# Pack the clawpage plugin into a tar.gz for upload to plugin
 # distribution channels (e.g. clawhub, manual sharing).
 #
-# Plugin contents = git-tracked files only — no scripts/templates dead
-# code from the pre-0.3.0 era. Symlinks are dereferenced so receivers
-# get the actual file contents without needing symlink support.
+# Plugin contents = git-tracked files only.
 #
 # Usage:
-#   ./pack_skill.sh                 # default: dist/clawpage-skill-<version>-<sha>.tar.gz
+#   ./pack_skill.sh                 # default: dist/clawpage-<version>-<sha>.tar.gz
 #   ./pack_skill.sh my-name         # custom: dist/my-name.tar.gz
 #   ./pack_skill.sh --format zip    # produce zip instead
 
@@ -57,7 +55,7 @@ fi
 
 version="$(node -p "require('./.claude-plugin/plugin.json').version" 2>/dev/null || echo "0.0.0")"
 sha_short="$(git rev-parse --short HEAD)"
-default_name="clawpage-skill-${version}-${sha_short}"
+default_name="clawpage-${version}-${sha_short}"
 output_name="${custom_name:-${default_name}}"
 output_path="${DIST_DIR}/${output_name}.${format}"
 
@@ -94,9 +92,7 @@ if [[ "${file_count}" == "0" ]]; then
 fi
 
 if [[ "${format}" == "tar.gz" ]]; then
-  # -h dereferences symlinks (root SKILL.md → skills/clawpage-skill/SKILL.md)
-  # so receivers get real content without symlink support.
-  tar --null -T "${file_list}" -czhf "${output_path}"
+  tar --null -T "${file_list}" -czf "${output_path}"
 else
   # zip needs a different invocation; build via temp dir to handle symlinks.
   staging="$(mktemp -d)"

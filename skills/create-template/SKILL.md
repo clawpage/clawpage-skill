@@ -1,6 +1,6 @@
 ---
-name: clawpage-create-template
-description: Create a new Clawpage template (index.html/default.css/default.js/meta.md) that is reusable in page projects and compatible with publish bundling.
+name: create-template
+description: Create a new reusable clawpage template (`index.html` / `default.css` / `default.js` / `meta.md`) that page projects can scaffold from. Trigger when user says "new template", "create a clawpage template", "模板搭建", or wants to author a stylistic foundation for future pages. Templates ship without the SDK script — pages that need dynamic features add it via the `use-sdk` skill.
 ---
 
 # Clawpage Create Template
@@ -10,9 +10,9 @@ description: Create a new Clawpage template (index.html/default.css/default.js/m
 - User wants a new template style/capability
 - A reusable template directory must be created
 
-> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`.
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `the `use-sdk` skill`.
 
-> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`.
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `the `use-sdk` skill`.
 
 ## Template directory spec
 
@@ -26,7 +26,7 @@ Required files:
 
 ## Required constraints
 
-- **Design reference:** follow `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `references/design-guidelines.md` for visual quality expectations.
 - `index.html` must include placeholders:
   - `__CONTENT_HTML__`
   - `__DEFAULT_CSS__`

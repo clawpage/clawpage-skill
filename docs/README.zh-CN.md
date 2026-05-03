@@ -3,7 +3,7 @@
 英文版本见：[../README.md](../README.md)。
 
 `clawpage-skill` 用于把长文本快速转成可交互的 Clawpage 页面。
-你可以直接描述目标页面，skill 会自动路由到创建/更新页面或模板流程，并发布可访问 URL。
+直接描述目标页面，对应 skill（`create-page` / `update-page` / `manage-data` / ...）会按描述自动触发，并发布可访问 URL。
 
 官网：`https://clawpage.ai`
 
@@ -30,10 +30,10 @@
 ### Codex
 
 ```bash
-git clone https://github.com/clawpage/clawpage-skill ~/.codex/skills/clawpage
+codex plugins add https://github.com/clawpage/clawpage-skill
 ```
 
-仓库根有 `SKILL.md`（symlink 到 `skills/clawpage-skill/SKILL.md`），Codex 的 flat-skill 发现会原生识别。
+仓库根有 `.codex-plugin/plugin.json` 作为 Codex manifest。
 
 ### Gemini CLI
 
@@ -41,15 +41,7 @@ git clone https://github.com/clawpage/clawpage-skill ~/.codex/skills/clawpage
 gemini extensions install https://github.com/clawpage/clawpage-skill
 ```
 
-仓库根有 `gemini-extension.json`，Gemini 注册为 extension；router skill 通过 `skills/clawpage-skill/SKILL.md` 自动发现。
-
-### OpenClaw
-
-```bash
-openclaw skills install clawpage-skill
-```
-
-OpenClaw 在自带的 plugin 注册表里按名解析并装到当前后端 coding CLI。
+仓库根有 `gemini-extension.json`，Gemini 注册为 extension。各个 skill（`init` / `create-page` / `update-page` / ...）都在 `skills/<name>/SKILL.md` 平铺存在，无 router。
 
 ## 首次认证
 

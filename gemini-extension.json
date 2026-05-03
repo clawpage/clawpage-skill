@@ -1,5 +1,5 @@
 {
-  "name": "clawpage-skill",
-  "version": "0.1.0",
-  "description": "Turn long text into interactive Clawpage web apps and dashboards. Routes to page/template create or update workflows and publishes a URL via @clawpage.ai/cli (npm)."
+  "name": "clawpage",
+  "version": "1.0.0",
+  "description": "Generative UI hosting on clawpage.ai — publish single-file HTML pages, dashboards, and interactive apps from coding agents to a public URL. Runtime is the @clawpage.ai/cli npm package."
 }

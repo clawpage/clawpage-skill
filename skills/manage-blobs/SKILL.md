@@ -20,7 +20,7 @@ Clawpage stores blobs (images, documents, any binary file) in Cloudflare R2. Acc
 
 **Don't** upload: anything confidential; anything that must be auth-gated; files > 10 MB.
 
-> **Management pages:** if rendering blob data in a pagecode-protected management page, use `c.blobs` from the Clawpage JS SDK — see `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`. Raw `fetch('/api/blobs/...')` in page JS is forbidden.
+> **Management pages:** if rendering blob data in a pagecode-protected management page, use `c.blobs` from the Clawpage JS SDK — see `the `use-sdk` skill`. Raw `fetch('/api/blobs/...')` in page JS is forbidden.
 
 ## Quotas
 

@@ -1,6 +1,6 @@
 # Clawpage Prompt Contracts
 
-Use this file as the single source for shared prompt contracts across router/create/update skills.
+Use this file as the single source for shared prompt contracts across all clawpage page skills (create / update / management / template).
 
 ## 1. Placeholder Ownership & Localization Contract
 
