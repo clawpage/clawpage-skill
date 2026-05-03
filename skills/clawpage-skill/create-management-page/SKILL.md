@@ -13,7 +13,7 @@ description: "Trigger when user asks for a management/admin page that lists all 
 
 ## Data-flow rule
 
-> The default workflow pre-fetches page data **at publish time via CLI `curl`** (see Workflow step 3) and inlines the JSON into the static HTML. The rendered management page makes **zero live API calls from the browser**, ships **zero tokens**, and requires no SDK.
+> The default workflow pre-fetches page data **at publish time via the `pages --list` CLI command** (see Workflow step 3) and inlines the JSON into the static HTML. The rendered management page makes **zero live API calls from the browser**, ships **zero tokens**, and requires no SDK.
 >
 > **Never embed an `sk_*` owner token into browser-shipped JS — even on a pagecode-protected page.** Pagecodes can be shared, page HTML can be inspected, browser caches persist, and any leak gives full account control. There is currently no token-scoping primitive that can safely live in the browser.
 
@@ -64,16 +64,14 @@ npx -y @clawpage.ai/cli scaffold general_template [MANAGEMENT_PAGE_DIR]
 - `metadata.description`
 - required marker: `metadata.management_page: true`
 
-3. Pull latest page list via API. 
-- Use the token from `~/.clawpage/keys.local.json` (or `./keys.local.json` if project-scoped).
-- Example command:
+3. Pull latest page list via the CLI (token cascade is handled internally — no need to read `keys.local.json` or set headers manually):
 ```bash
-curl -sS https://api.clawpage.ai/api/pages?page=1&limit=50 \
-  -H "Authorization: Bearer [YOUR_TOKEN]"
+npx -y @clawpage.ai/cli pages --list --all
 ```
-- include key fields: `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, expiry/protection status.
-- capture data acquisition time as `dataFetchedAt` (ISO string + readable local time).
+- Output is JSON on stdout: `{ items, total, fetchedPages, mode, dataFetchedAt }`. Each item includes `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, `expiresAt`, `passwordProtected` — exactly the fields the UI needs.
+- Reuse the top-level `dataFetchedAt` (ISO) directly — do NOT generate your own timestamp; the CLI emits it at fetch time.
 - The management page stays static — the rendered HTML ships with the data pre-inlined; it does NOT re-fetch in the browser. If the user explicitly asks for live refresh or edit actions, switch that surface to the Browser SDK per `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md` (and note the `/api/pages` SDK gap).
+- For very large accounts where you only want a window: `--list --limit 50 --page 1` (omit `--all`).
 
 4. Build a high-quality read-only UI (refer to `${CLAUDE_SKILL_DIR}/references/design-guidelines.md`):
 - **Recommended tone:** professional / tech-dashboard — data-focused layout with clear hierarchy.
