@@ -13,47 +13,47 @@ All execution details (workflow, output, localization, checks, failure handling)
 ## Sub-skills
 
 1. `init`
-- Path: `${CLAUDE_SKILL_DIR}/init/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/init/INSTRUCTIONS.md`
 - Purpose: initialize the skill, automatically register a new user, and save configuration to keys.local.json
 
 2. `create page`
-- Path: `${CLAUDE_SKILL_DIR}/create-page/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/create-page/INSTRUCTIONS.md`
 - Purpose: create a new page project and publish
 
 3. `update page`
-- Path: `${CLAUDE_SKILL_DIR}/update-page/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/update-page/INSTRUCTIONS.md`
 - Purpose: update an existing page project and republish
 
 4. `create management page`
-- Path: `${CLAUDE_SKILL_DIR}/create-management-page/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/create-management-page/INSTRUCTIONS.md`
 - Purpose: create or update the current read-only management page that lists user's pages
 
 5. `create template`
-- Path: `${CLAUDE_SKILL_DIR}/create-template/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/create-template/INSTRUCTIONS.md`
 - Purpose: create a reusable template folder
 
 6. `update template`
-- Path: `${CLAUDE_SKILL_DIR}/update-template/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/update-template/INSTRUCTIONS.md`
 - Purpose: update an existing template structure/style/interaction/docs
 
 7. `use-sdk`
-- Path: `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`
 - Purpose: embed the Clawpage Browser SDK in a page (`https://clawpage.ai/sdk.js`) for live data, links, stats, blobs, /api/me
 
 8. `manage-data`
-- Path: `${CLAUDE_SKILL_DIR}/manage-data/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/manage-data/INSTRUCTIONS.md`
 - Purpose: CRUD per-user KV data tables (comments / counters / configs / CMS) via the Clawpage data API
 
 9. `manage-links`
-- Path: `${CLAUDE_SKILL_DIR}/manage-links/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/manage-links/INSTRUCTIONS.md`
 - Purpose: create / list / update / delete short links `clawpage.ai/s/<slug>` → `*.clawpage.ai`
 
 10. `manage-blobs`
-- Path: `${CLAUDE_SKILL_DIR}/manage-blobs/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/manage-blobs/INSTRUCTIONS.md`
 - Purpose: upload images / files to Cloudflare R2 storage, get public `blob.clawpage.ai/<id>` URLs
 
 11. `view-stats`
-- Path: `${CLAUDE_SKILL_DIR}/view-stats/SKILL.md`
+- Path: `${CLAUDE_SKILL_DIR}/view-stats/INSTRUCTIONS.md`
 - Purpose: page-view counts and per-day series for the user's pages / homepage / short links
 
 ## Routing Priority (Conflict Resolution)

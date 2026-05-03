@@ -64,7 +64,7 @@ npx -y @clawpage.ai/cli scaffold general_template [PAGE_DIR]
 - **Resolve PAGECODE**: If a private page is required, generate a random 6-digit number (e.g., "123456"). Do not use fragile shell scripts for generation.
 
 ```bash
-# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
+# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The cli resolves the token via its built-in cascade: `--keys-file` → cwd `./keys.local.json` → `~/.clawpage/keys.local.json` (global default).
 npx -y @clawpage.ai/cli publish \
   --page-dir [PAGE_DIR] \
   --title "[TITLE]" \

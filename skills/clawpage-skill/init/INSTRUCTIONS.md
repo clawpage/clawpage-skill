@@ -24,6 +24,6 @@ description: Trigger when user wants to initialize or setup the Clawpage skill, 
 2. The script will automatically:
    - Handle username generation and availability checks.
    - Register the account via the Clawpage API.
-   - Save the token and configuration to `./keys.local.json`.
+   - Save the token and configuration to `~/.clawpage/keys.local.json` (the cli's global default since 0.2.0; cwd-scoped `./keys.local.json` is opt-in via `--keys-file` or by pre-creating one in cwd).
 
 3. Once the script completes successfully, report back to the user that `clawpage-skill` is fully initialized and ready to use.

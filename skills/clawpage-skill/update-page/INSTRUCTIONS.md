@@ -56,7 +56,7 @@ done
    **Note:** Replace `[PAGE_DIR]` / `[PAGE_ID]` / `[TITLE]` with real values. The CLI accepts bare names (`my-dashboard`) and absolute / cwd-relative paths.
 
 ```bash
-# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The publish script will dynamically find and load `keys.local.json` from the workspace root.
+# **Token Management Note**: DO NOT manually pass an API token argument (like --api-token). The cli resolves the token via its built-in cascade: `--keys-file` → cwd `./keys.local.json` → `~/.clawpage/keys.local.json` (global default).
 npx -y @clawpage.ai/cli publish \
   --page-dir [PAGE_DIR] \
   --page-id "[PAGE_ID]" \

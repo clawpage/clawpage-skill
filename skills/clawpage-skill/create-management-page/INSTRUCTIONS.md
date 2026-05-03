@@ -70,7 +70,7 @@ npx -y @clawpage.ai/cli pages --list --all
 ```
 - Output is JSON on stdout: `{ items, total, fetchedPages, mode, dataFetchedAt }`. Each item includes `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, `expiresAt`, `passwordProtected` — exactly the fields the UI needs.
 - Reuse the top-level `dataFetchedAt` (ISO) directly — do NOT generate your own timestamp; the CLI emits it at fetch time.
-- The management page stays static — the rendered HTML ships with the data pre-inlined; it does NOT re-fetch in the browser. If the user explicitly asks for live refresh or edit actions, switch that surface to the Browser SDK per `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md` (and note the `/api/pages` SDK gap).
+- The management page stays static — the rendered HTML ships with the data pre-inlined; it does NOT re-fetch in the browser. If the user explicitly asks for live refresh or edit actions, switch that surface to the Browser SDK per `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md` (and note the `/api/pages` SDK gap).
 - For very large accounts where you only want a window: `--list --limit 50 --page 1` (omit `--all`).
 
 4. Build a high-quality read-only UI (refer to `${CLAUDE_SKILL_DIR}/references/design-guidelines.md`):
