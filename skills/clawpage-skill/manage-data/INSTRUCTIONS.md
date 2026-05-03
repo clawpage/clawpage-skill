@@ -65,7 +65,7 @@ Only the owner ─────────────────────�
 
 > **Browser / page-side code: always use the Clawpage JS SDK** (`https://clawpage.ai/sdk.js`). See `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`. Raw `fetch('/api/data/...')` in page JS is no longer supported — the `fetch` snippets below remain only as reference for what the SDK abstracts over; do NOT copy them into new page HTML. CLI examples (`npx` from your terminal) are fine as-is.
 
-Run from any directory containing a populated `keys.local.json` (token + apiHost).
+Token is resolved by the cli's keys cascade (`--keys-file` → cwd `./keys.local.json` → `~/.clawpage/keys.local.json`); the global default is fine for almost everyone, so you can run these from any directory.
 
 ### 3.1 Build a comment board (anonymous append + list)
 

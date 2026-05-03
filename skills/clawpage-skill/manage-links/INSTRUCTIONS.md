@@ -24,7 +24,7 @@ Short links shorten any `*.clawpage.ai` URL to `https://clawpage.ai/s/<7-char sl
 
 ## CLI usage
 
-Run from any directory containing `keys.local.json` with a valid `clawpage.token`.
+Token is resolved by the cli's keys cascade (`--keys-file` → cwd `./keys.local.json` → `~/.clawpage/keys.local.json`); the global default is fine for almost everyone, so you can run these from any directory.
 
 ### Create a short link
 ```bash
