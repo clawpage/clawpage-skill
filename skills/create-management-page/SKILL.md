@@ -1,6 +1,6 @@
 ---
-name: clawpage-create-management-page
-description: "Trigger when user asks for a management/admin page that lists all created pages in a read-only UI (keywords: 管理页, 页面管理, 列出所有页面, pages dashboard, admin page). This skill creates or updates the current management page. Default publish policy: TTL 3h and password protected."
+name: create-management-page
+description: Create or refresh a read-only dashboard listing all of the user's clawpage pages. Trigger keywords: "管理页", "页面管理", "列出所有页面", "pages dashboard", "admin page", "read-only page list", "manage all my pages". Default policy: 3h TTL + pagecode-protected. SECURITY-CRITICAL — never embed `sk_*` tokens in browser-shipped JS, even on a pagecode-protected page.
 ---
 
 # Clawpage Create/Update Management Page
@@ -35,8 +35,8 @@ If the user asks to "refresh now" without re-publishing, pick the **least-privil
 - Management page directory (preferred fixed path): `~/.clawpage/pages/page-management-center`
 - Management page bootstrap template (default): `general_template` (shipped with `@clawpage.ai/cli`; copy via `npx -y @clawpage.ai/cli scaffold general_template <target>`)
 - Publish script: ``npx -y @clawpage.ai/cli publish``
-- API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md`
-- Shared contracts: `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
+- API reference: `references/api-quickref.md`
+- Shared contracts: `references/prompt-contracts.md`
 - Security defaults (unless user explicitly overrides):
   - `ttlMs = 10800000` (3 hours)
   - must be password protected (`pagecode` must not be null/empty)
@@ -70,10 +70,10 @@ npx -y @clawpage.ai/cli pages --list --all
 ```
 - Output is JSON on stdout: `{ items, total, fetchedPages, mode, dataFetchedAt }`. Each item includes `pageId`, `pageName`, `rootUrl`, `publicUrl`, `currentVersion`, `expiresAt`, `passwordProtected` — exactly the fields the UI needs.
 - Reuse the top-level `dataFetchedAt` (ISO) directly — do NOT generate your own timestamp; the CLI emits it at fetch time.
-- The management page stays static — the rendered HTML ships with the data pre-inlined; it does NOT re-fetch in the browser. If the user explicitly asks for live refresh or edit actions, switch that surface to the Browser SDK per `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md` (and note the `/api/pages` SDK gap).
+- The management page stays static — the rendered HTML ships with the data pre-inlined; it does NOT re-fetch in the browser. If the user explicitly asks for live refresh or edit actions, switch that surface to the Browser SDK per `the `use-sdk` skill` (and note the `/api/pages` SDK gap).
 - For very large accounts where you only want a window: `--list --limit 50 --page 1` (omit `--all`).
 
-4. Build a high-quality read-only UI (refer to `${CLAUDE_SKILL_DIR}/references/design-guidelines.md`):
+4. Build a high-quality read-only UI (refer to `references/design-guidelines.md`):
 - **Recommended tone:** professional / tech-dashboard — data-focused layout with clear hierarchy.
 - clarity: search/filter/sort/read-only cards or table.
 - no mutation controls (no delete/update API buttons).
@@ -82,7 +82,7 @@ npx -y @clawpage.ai/cli pages --list --all
 - apply distinctive fonts and cohesive color palette per design guidelines.
 - add page-load stagger animations for the page card list.
 
-5. Apply localization/output contracts from `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
+5. Apply localization/output contracts from `references/prompt-contracts.md`.
 
 6. Pre-publish hard checks (must pass):
 - `meta.md` metadata complete.
@@ -115,7 +115,7 @@ npx -y @clawpage.ai/cli publish \
 ```
 - *Note:* Add `--pagecode "[GENERATED_PAGECODE]"` only if rotating password or enforcing security on a previously public page.
 
-8. Return fixed output fields from `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
+8. Return fixed output fields from `references/prompt-contracts.md`.
 
 9. Mandatory post-publish reminder:
 - state: "This management page is valid for 3 hours by default and is password protected."

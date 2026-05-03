@@ -11,7 +11,7 @@
         "source": "github",
         "repo": "clawpage/clawpage-skill"
       },
-      "description": "Turn long text into interactive Clawpage web apps and dashboards. Routes to page/template create or update workflows and publishes a URL via @clawpage.ai/cli."
+      "description": "Generative UI hosting on clawpage.ai — publish single-file HTML pages, dashboards, and interactive apps from coding agents to a public URL. Includes skills for page create/update, templates, KV data, short links, blob storage, and view stats. Runtime is the @clawpage.ai/cli npm package."
     }
   ]
 }

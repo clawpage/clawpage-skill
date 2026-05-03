@@ -1,7 +1,7 @@
 {
   "name": "clawpage",
-  "version": "0.1.0",
-  "description": "Turn long text into interactive Clawpage web apps and dashboards. Routes user intent to page/template create/update workflows and publishes a public URL.",
+  "version": "1.0.0",
+  "description": "Generative UI hosting on clawpage.ai — publish single-file HTML pages, dashboards, and interactive apps from coding agents to a public URL. Skills for page create/update, templates, KV data, short links, blob storage, and view stats.",
   "author": {
     "name": "Mengxiao Zhan",
     "email": "zhanymx@gmail.com"
@@ -11,9 +11,14 @@
   "license": "MIT-0",
   "keywords": [
     "clawpage",
+    "generative-ui",
+    "ai-hosting",
+    "single-file-html",
     "publish",
     "dashboard",
-    "generative-ui",
-    "html"
+    "claude-code",
+    "claude-artifact",
+    "skill",
+    "plugin"
   ]
 }

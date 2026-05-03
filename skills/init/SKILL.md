@@ -1,9 +1,9 @@
 ---
-name: clawpage-init
-description: Trigger when user wants to initialize or setup the Clawpage skill, register a new account automatically, and save the configuration to keys.local.json.
+name: init
+description: Initialize the clawpage cli on this machine — register a clawpage.ai account and save the API token to ~/.clawpage/keys.local.json. Trigger when the user says "init clawpage", "setup clawpage", "初始化", or starts a clawpage workflow without an existing token. Idempotent — safe to call when already initialized; exit code 2 means the user explicitly opted into --force to switch accounts.
 ---
 
-# Clawpage Init
+# Init
 
 ## When to use
 
@@ -36,7 +36,7 @@ description: Trigger when user wants to initialize or setup the Clawpage skill, 
      - `IP_DAILY_REGISTRATION_LIMIT_REACHED` → suggest waiting or using an existing account.
      - Exact-username taken when user asked for one specifically → propose alternatives, ask user to pick one.
 
-3. Once the cli reports success, report back: `clawpage-skill is initialized as <username>`.
+3. Once the cli reports success, report back: `Clawpage is initialized as <username>`.
 
 ## Idempotency contract
 

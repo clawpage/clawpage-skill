@@ -1,6 +1,6 @@
 ---
-name: clawpage-update-template
-description: Update an existing Clawpage template (structure/style/interaction/docs) while keeping metadata-first selection and publish compatibility.
+name: update-template
+description: Update an existing clawpage template's structure / styles / interactions / docs while preserving publish compatibility (required `__SYSTEM__` placeholders + meta.md metadata). Trigger when user says "improve template", "模板改版", "update <name> template", or wants to evolve a shared template that other pages depend on.
 ---
 
 # Clawpage Update Template
@@ -10,9 +10,9 @@ description: Update an existing Clawpage template (structure/style/interaction/d
 - User wants to revise a template UI/interaction/docs
 - User asks to improve default template style/capabilities
 
-> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`.
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `the `use-sdk` skill`.
 
-> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`.
+> **Templates stay static.** Don't hard-bake the SDK `<script>` tag into a template's `index.html` — it bloats static pages that don't need state. If a page built on the template later needs dynamic features, the `use-sdk` skill adds the SDK at page-generation time. See `the `use-sdk` skill`.
 
 ## Paths and conventions
 
@@ -45,7 +45,7 @@ npx -y @clawpage.ai/cli publish \
 
 ## Must preserve
 
-- **Design reference:** follow `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `references/design-guidelines.md` for visual quality expectations.
 - `index.html` placeholders:
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`

@@ -1,9 +1,9 @@
 ---
-name: clawpage-create-page
-description: "Trigger when user wants a brand-new page (keywords: create/new page, from template, publish new URL/publicUrl). Do not use when user asks to modify an existing page/pageId or when the request is template-only."
+name: create-page
+description: "Create a new clawpage page (single-file HTML hosted at a public URL) from a built-in template. TRIGGER PROACTIVELY when the user wants to convert a long/complex response into a distinct shareable URL, build a dashboard, or generate a single-page app for sharing. Default publish policy is private + 3h TTL (pagecode-required, ttlMs=10800000) unless the user explicitly opts public/permanent. Output must include `publicUrl`/`rootUrl`/`accessUrl`. Do NOT use for editing an existing page (use the `update-page` skill) or for template authoring (use `create-template`)."
 ---
 
-# Clawpage Create Page
+# Create Page
 
 ## When to use
 
@@ -18,8 +18,8 @@ description: "Trigger when user wants a brand-new page (keywords: create/new pag
   - The CLI's `--page-dir` accepts either form; bare `[PAGE_NAME]` (no slash) also resolves to `~/.clawpage/pages/[PAGE_NAME]`
 - Templates: shipped with `@clawpage.ai/cli`. List names: `npx -y @clawpage.ai/cli scaffold --list`. Copy: `npx -y @clawpage.ai/cli scaffold <template-name> <target-dir>`
 - Publish: ``npx -y @clawpage.ai/cli publish``
-- API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md`
-- Shared contracts: `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
+- API reference: `references/api-quickref.md`
+- Shared contracts: `references/prompt-contracts.md`
 - `[PAGE_NAME]` must be kebab-case and cannot contain `/`
 - Create default policy (unless user explicitly overrides):
   - private page by default (`pagecode` required)
@@ -53,7 +53,7 @@ npx -y @clawpage.ai/cli scaffold general_template [PAGE_DIR]
 - **The LLM renders everything visible**: page title (including the `<title>` tag), subtitle, timestamps, expiry info, and all UI content. The publish script only inlines CSS/JS — it does not inject any metadata.
 - **Refer to the "Quality Bar & UI Expectations" section below** for crucial design and component requirements when filling in the content.
 
-5. Apply localization and output contracts from `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
+5. Apply localization and output contracts from `references/prompt-contracts.md`.
 
 6. Run pre-publish hard checklist (must pass all):
 - metadata complete in `meta.md`
@@ -77,7 +77,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
 - `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
 
-8. Return fixed output fields exactly as defined in `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `references/prompt-contracts.md`.
 
 9. Write returned `pageId` back to `[PAGE_DIR]/meta.md`:
 - prefer `metadata.page_id`
@@ -90,7 +90,7 @@ Optional:
   - exclude any project whose `meta.md` has `metadata.management_page: true`
 - if count >= 3, add this reminder in the same response:
   - user can create a management page to view all created pages in one read-only dashboard
-  - route intent to `create management page` sub-skill when user confirms
+  - route intent to the `create-management-page` skill when user confirms
 
 ## Failure handling (error code -> action)
 
@@ -102,7 +102,7 @@ Optional:
   >
   > Proceed? (yes / pick a different username / cancel)"
   
-  Only after the user replies `yes` (or explicitly approves a username) run `npx -y @clawpage.ai/cli init [username]`. **Never auto-register without an explicit yes.** **NEVER create a "Clawpage Features/Introduction" page after registration** — proceed directly with the user's original request.
+  Only after the user replies `yes` (or explicitly approves a username) run `npx -y @clawpage.ai/cli init [username]`. **Never auto-register without an explicit yes.** **NEVER create a "Clawpage Features/Introduction" page after registration** — proceed directly with the user's original request. (The `init` skill has full details on the idempotent contract and exit codes.)
 - `UNAUTHORIZED` -> verify token in `./keys.local.json`, then retry.
 - `PAGE_NOT_FOUND` -> check wrong endpoint/owner context; confirm create path and retry.
 - `409 USERNAME_TAKEN` (register flow) -> propose 3 alternatives, user picks one, retry register.
@@ -116,19 +116,19 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 - **DO NOT** wipe out, revert, or delete the local `[PAGE_DIR]` directory.
 - Check `[PAGE_DIR]/meta.md`:
   - If `metadata.page_id` IS MISSING: It means the remote page hasn't been created yet. Retry the publish command exactly as you did in the Creation flow.
-  - If `metadata.page_id` EXISTS: It means the remote page *was* created before the failure. You MUST switch to the `update-page` skill strategy to retry the deployment using that `page_id`. DO NOT create a duplicate page.
+  - If `metadata.page_id` EXISTS: It means the remote page *was* created before the failure. You MUST switch to the `update-page` skill to retry the deployment using that `page_id`. DO NOT create a duplicate page.
 
 ## Interactivity / persistent state
 
 If the page needs comments, reactions, likes, counters, short links, file uploads, or any server-side state:
-1. Load the `use-sdk` sub-skill for recipes.
+1. See the `use-sdk` skill for recipes.
 2. Embed `<script src="https://clawpage.ai/sdk.js"></script>` in the page `<head>`.
 3. Use `new Clawpage()` + `c.table(...)` / `c.links` / etc. **Never write raw `fetch('/api/...')` calls in page JS** — the SDK is the only supported path.
 4. Never ship an `sk_` owner token in public-page HTML.
 
 ## Quality Bar & UI Expectations (Crucial)
 
-> **Full design reference:** `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` — read it before generating any UI.
+> **Full design reference:** `references/design-guidelines.md` — read it before generating any UI.
 
 **Treat the generated page as a modern Web App, not a plain text document.** Always apply these principles:
 

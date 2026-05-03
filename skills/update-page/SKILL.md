@@ -1,6 +1,6 @@
 ---
-name: clawpage-update-page
-description: "Trigger when user wants to modify an existing page/project/pageId (keywords: update existing page, revise, page-id, 基于旧页面). Do not use for brand-new pages or template-only changes."
+name: update-page
+description: Update an existing clawpage page project and republish — preserves the same `pageId` / `publicUrl` / `rootUrl`. Trigger when the user mentions a known `pageId`, says "update existing page", "rework", "revise", "republish", or refers to an existing local page project (`~/.clawpage/pages/<name>` or `./.pages/<name>`, or "基于旧页面"). NEVER fabricate a `pageId` — if no existing page is identifiable, this is a `create-page` task instead.
 ---
 
 # Clawpage Update Page
@@ -18,8 +18,8 @@ description: "Trigger when user wants to modify an existing page/project/pageId 
   - Listing existing pages: `ls ~/.clawpage/pages/` (default) or `find ./.pages -mindepth 2 -maxdepth 2 -name meta.md` (project-scoped)
 - Page files: `meta.md`, `index.html`, `default.css`, `default.js`
 - Publish: ``npx -y @clawpage.ai/cli publish``
-- API reference: `${CLAUDE_SKILL_DIR}/references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
-- Shared contracts: `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`
+- API reference: `references/api-quickref.md` (`PATCH /api/pages/<pageId>`)
+- Shared contracts: `references/prompt-contracts.md`
 - `[PAGE_NAME]` must be kebab-case and cannot contain `/`
 
 ## Matching strategy (two-phase)
@@ -45,7 +45,7 @@ done
 
 4. If semantics changed, sync `meta.md` metadata and notes.
 
-5. Apply localization and output contracts from `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
+5. Apply localization and output contracts from `references/prompt-contracts.md`.
 
 6. Run pre-publish hard checklist (must pass all):
    - metadata complete in `meta.md`
@@ -68,7 +68,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection
 - `--page-name [SLUG]` rename page
 
-8. Return fixed output fields exactly as defined in `${CLAUDE_SKILL_DIR}/references/prompt-contracts.md`.
+8. Return fixed output fields exactly as defined in `references/prompt-contracts.md`.
 
 ## If `page-id` is missing
 
@@ -106,14 +106,14 @@ If the publish script fails for *any* reason (e.g., network timeout, 5xx error):
 ## Adding interactivity to an existing page
 
 If the edit introduces server-state features (comments, likes, counters, uploads, short links, stats):
-1. Use the `use-sdk` sub-skill.
+1. See the `use-sdk` skill.
 2. Add `<script src="https://clawpage.ai/sdk.js"></script>` if not already present.
 3. Use the SDK (`new Clawpage()`, `c.table(...)`, `c.links`, etc.) — raw `fetch('/api/...')` is forbidden in page JS.
 4. If the existing page has raw `fetch('/api/...')` calls, migrate them to the SDK as part of the edit.
 
 ## Quality Bar & UI Expectations (Crucial)
 
-> **Full design reference:** `${CLAUDE_SKILL_DIR}/references/design-guidelines.md` — read it before generating any UI.
+> **Full design reference:** `references/design-guidelines.md` — read it before generating any UI.
 
 **Treat the updated page as a modern Web App, not a plain text document.** Always apply these principles:
 

@@ -20,7 +20,7 @@ Short links shorten any `*.clawpage.ai` URL to `https://clawpage.ai/s/<7-char sl
 - External URLs (YouTube, Twitter, etc.) — **target must be `*.clawpage.ai`** or creation fails 400
 - Any scheme other than `https`
 
-> **Management pages:** if rendering link data in a pagecode-protected management page, use `c.links` from the Clawpage JS SDK — see `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`. Raw `fetch('/api/links/...')` in page JS is forbidden.
+> **Management pages:** if rendering link data in a pagecode-protected management page, use `c.links` from the Clawpage JS SDK — see `the `use-sdk` skill`. Raw `fetch('/api/links/...')` in page JS is forbidden.
 
 ## CLI usage
 

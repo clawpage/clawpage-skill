@@ -1,0 +1,43 @@
+{
+  "name": "clawpage",
+  "version": "1.0.0",
+  "description": "Generative UI hosting on clawpage.ai — publish single-file HTML pages, dashboards, and interactive apps from coding agents to a public URL.",
+  "author": {
+    "name": "Mengxiao Zhan",
+    "email": "zhanymx@gmail.com",
+    "url": "https://github.com/clawpage"
+  },
+  "homepage": "https://clawpage.ai",
+  "repository": "https://github.com/clawpage/clawpage-skill",
+  "license": "MIT-0",
+  "keywords": [
+    "clawpage",
+    "generative-ui",
+    "ai-hosting",
+    "single-file-html",
+    "publish",
+    "dashboard",
+    "claude-code",
+    "codex",
+    "skill",
+    "plugin"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Clawpage",
+    "shortDescription": "Generative UI hosting — publish HTML pages and dashboards to a public URL",
+    "longDescription": "Use Clawpage to convert any long, complex, or interactive response into a hosted page at a public clawpage.ai URL. Skills cover page create/update, reusable templates, per-user KV data, short links, blob storage, and view stats. The runtime is the @clawpage.ai/cli npm package — installed on demand via npx, no global install needed.",
+    "developerName": "Mengxiao Zhan",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Turn this into a clawpage page I can share.",
+      "Create a dashboard for this data on clawpage.",
+      "Update my existing clawpage page."
+    ]
+  }
+}
