@@ -63,7 +63,7 @@ Only the owner ─────────────────────�
 
 ## 3. Quick recipes (most common tasks)
 
-> **Browser / page-side code: always use the Clawpage JS SDK** (`https://clawpage.ai/sdk.js`). See `${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`. Raw `fetch('/api/data/...')` in page JS is no longer supported — the `fetch` snippets below remain only as reference for what the SDK abstracts over; do NOT copy them into new page HTML. CLI examples (`npx` from your terminal) are fine as-is.
+> **Browser / page-side code: always use the Clawpage JS SDK** (`https://clawpage.ai/sdk.js`). See `${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`. Raw `fetch('/api/data/...')` in page JS is no longer supported — the `fetch` snippets below remain only as reference for what the SDK abstracts over; do NOT copy them into new page HTML. CLI examples (`npx` from your terminal) are fine as-is.
 
 Run from any directory containing a populated `keys.local.json` (token + apiHost).
 
@@ -326,7 +326,7 @@ When the user asks for a feature that implies data, work through this in order:
    - Creating or replacing by known key → `PUT` / `--put`
    - Atomically incrementing a numeric field (counters, reactions) → `POST /:table/:key/incr` / `--incr`
    - Patching a few fields of an existing object (non-counter) → `PATCH` / `--patch`
-6. **Write the HTML using the Browser SDK** (`${CLAUDE_SKILL_DIR}/use-sdk/SKILL.md`):
+6. **Write the HTML using the Browser SDK** (`${CLAUDE_SKILL_DIR}/use-sdk/INSTRUCTIONS.md`):
    - Embed `<script src="https://clawpage.ai/sdk.js"></script>` in `<head>`.
    - Reads/writes go through `new Clawpage().table("<name>")` (`.get`, `.put`, `.patch`, `.post`, `.incr`, `.list`).
    - Raw `fetch('/api/data/...')` in page JS is forbidden.
