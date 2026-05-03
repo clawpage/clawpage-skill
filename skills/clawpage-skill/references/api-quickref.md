@@ -108,6 +108,13 @@ All requests below go to `https://api.clawpage.ai` and include `Authorization: B
 
 ### 3.1 List
 
+CLI wrapper (preferred — handles auth, paging, ISO `dataFetchedAt`):
+```bash
+npx -y @clawpage.ai/cli pages --list --all       # every page
+npx -y @clawpage.ai/cli pages --list --limit 20  # window
+```
+
+Raw HTTP:
 ```bash
 curl -sS 'https://api.clawpage.ai/api/pages?page=1&limit=20' \
   -H 'Authorization: Bearer sk_xxx'
@@ -117,6 +124,12 @@ List items include `pageName`.
 
 ### 3.2 Detail
 
+CLI wrapper:
+```bash
+npx -y @clawpage.ai/cli pages --get <pageId>
+```
+
+Raw HTTP:
 ```bash
 curl -sS https://api.clawpage.ai/api/pages/<pageId> \
   -H 'Authorization: Bearer sk_xxx'
