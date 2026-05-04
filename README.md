@@ -51,11 +51,11 @@ Updates: `/plugin update clawpage`.
 
 ### Codex
 
-```text
-codex plugins add https://github.com/clawpage/clawpage-skill
+```bash
+npx codex-marketplace add clawpage/clawpage-skill --plugin --global
 ```
 
-The plugin manifest lives at `.codex-plugin/plugin.json`.
+The plugin manifest lives at `.codex-plugin/plugin.json`. `--global` registers it in your Codex user config; drop the flag for project-scoped install.
 
 ### Gemini CLI
 

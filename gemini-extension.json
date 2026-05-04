@@ -1,5 +1,5 @@
 {
   "name": "clawpage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generative UI hosting on clawpage.ai — publish single-file HTML pages, dashboards, and interactive apps from coding agents to a public URL. Runtime is the @clawpage.ai/cli npm package."
 }

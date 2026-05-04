@@ -1,6 +1,12 @@
 ---
 name: create-management-page
-description: Create or refresh a read-only dashboard listing all of the user's clawpage pages. Trigger keywords: "管理页", "页面管理", "列出所有页面", "pages dashboard", "admin page", "read-only page list", "manage all my pages". Default policy: 3h TTL + pagecode-protected. SECURITY-CRITICAL — never embed `sk_*` tokens in browser-shipped JS, even on a pagecode-protected page.
+description: >-
+  Create or refresh a read-only dashboard listing all of the user's clawpage
+  pages. Trigger keywords — "管理页", "页面管理", "列出所有页面",
+  "pages dashboard", "admin page", "read-only page list", "manage all my
+  pages". Default policy is 3h TTL plus pagecode-protected. SECURITY-CRITICAL
+  — never embed `sk_*` tokens in browser-shipped JS, even on a
+  pagecode-protected page.
 ---
 
 # Clawpage Create/Update Management Page
