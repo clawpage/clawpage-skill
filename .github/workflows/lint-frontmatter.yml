@@ -1,0 +1,100 @@
+name: Lint frontmatter
+
+# Validate the YAML frontmatter at the top of every skills/<name>/SKILL.md and
+# commands/*.md. The plugin loader silently drops files whose frontmatter
+# fails to parse — this CI catches the failure at PR time instead of after
+# the user installs and wonders where a skill went.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "commands/**"
+      - ".github/workflows/lint-frontmatter.yml"
+  pull_request:
+    paths:
+      - "skills/**"
+      - "commands/**"
+      - ".github/workflows/lint-frontmatter.yml"
+
+jobs:
+  yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pyyaml==6.*
+
+      - name: Validate frontmatter
+        run: |
+          python3 << 'PY'
+          import pathlib, re, sys
+          import yaml
+
+          fail = []
+          targets = sorted(pathlib.Path(".").glob("skills/*/SKILL.md")) \
+                  + sorted(pathlib.Path(".").glob("commands/*.md"))
+          if not targets:
+              sys.exit("no skill / command files found — repo layout changed?")
+
+          for path in targets:
+              text = path.read_text(encoding="utf-8")
+              m = re.match(r"^---\n(.*?)\n---", text, re.DOTALL)
+              if not m:
+                  fail.append((path, "no YAML frontmatter block at top of file"))
+                  continue
+              try:
+                  d = yaml.safe_load(m.group(1))
+              except yaml.YAMLError as e:
+                  fail.append((path, f"YAML parse error: {e}"))
+                  continue
+              if not isinstance(d, dict):
+                  fail.append((path, f"frontmatter is not a mapping: type={type(d).__name__}"))
+                  continue
+
+              # `description` is required for every skill + command (it's what
+              # the loader / agent uses to decide when to trigger).
+              if "description" not in d:
+                  fail.append((path, "missing required key: description"))
+              elif not isinstance(d["description"], str):
+                  fail.append((path, f"description must be a string, got {type(d['description']).__name__}"))
+              elif not d["description"].strip():
+                  fail.append((path, "description is empty"))
+
+              # `name` is required ONLY for skills/. For commands/<slug>.md the
+              # slash command name is derived from the filename (e.g.
+              # commands/clawpage-init.md → /clawpage-init), so a `name` key in
+              # the frontmatter is unused.
+              parts = path.parts
+              if parts[0] == "skills" and len(parts) >= 3:
+                  if "name" not in d:
+                      fail.append((path, "missing required key: name"))
+                  elif not isinstance(d["name"], str):
+                      fail.append((path, f"name must be a string, got {type(d['name']).__name__}"))
+                  else:
+                      # name must match directory; mismatch silently mis-namespaces
+                      # the public skill id (clawpage:<actual> vs clawpage:<dir>).
+                      expected = parts[1]
+                      actual = d["name"]
+                      if actual != expected:
+                          fail.append(
+                              (
+                                  path,
+                                  f'name "{actual}" does not match directory "{expected}" '
+                                  f'(public skill id would be "clawpage:{actual}", expected "clawpage:{expected}")',
+                              )
+                          )
+
+          if fail:
+              for p, msg in fail:
+                  # GitHub Actions error annotation: shows up inline on the PR diff
+                  print(f"::error file={p}::{msg}", file=sys.stderr)
+              sys.exit(f"\n{len(fail)} frontmatter problem(s) across {len(targets)} files")
+
+          print(f"✓ {len(targets)} frontmatter blocks valid")
+          PY
