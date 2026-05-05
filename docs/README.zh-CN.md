@@ -30,10 +30,10 @@
 ### Codex
 
 ```bash
-codex plugins add https://github.com/clawpage/clawpage-skill
+npx codex-marketplace add clawpage/clawpage-skill --plugin --global
 ```
 
-仓库根有 `.codex-plugin/plugin.json` 作为 Codex manifest。
+仓库根有 `.codex-plugin/plugin.json` 作为 Codex manifest。`--global` 写入 Codex user config；想做项目级安装就去掉这个 flag。
 
 ### Gemini CLI
 

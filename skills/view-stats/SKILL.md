@@ -1,6 +1,11 @@
 ---
 name: view-stats
-description: Show page-view counts and day-by-day trends for the user's Clawpage pages. Use when the user asks "how many views has my page got", "what's my traffic", "which page is most popular". Covers public named pages, user home page, and short-link clicks. Privacy: only timestamp + page are tracked; no IP, UA, or geo.
+description: >-
+  Show page-view counts and day-by-day trends for the user's Clawpage pages.
+  Use when the user asks "how many views has my page got", "what's my traffic",
+  "which page is most popular". Covers public named pages, user home page, and
+  short-link clicks. Privacy note — only timestamp + page are tracked; no IP,
+  UA, or geo.
 ---
 
 # view-stats
