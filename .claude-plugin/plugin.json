@@ -1,7 +1,7 @@
 {
   "name": "clawpage",
-  "version": "1.0.1",
-  "description": "Generative UI hosting on clawpage.ai — publish single-file HTML pages, dashboards, and interactive apps from coding agents to a public URL. Skills for page create/update, templates, KV data, short links, blob storage, and view stats.",
+  "version": "1.1.0",
+  "description": "Generative UI hosting on clawpage.ai — publish single-file HTML pages, dashboards, and interactive apps from coding agents to a public URL. Skills for page create/update/delete, templates, KV data, short links, blob storage, and view stats.",
   "author": {
     "name": "Mengxiao Zhan",
     "email": "zhanymx@gmail.com"
