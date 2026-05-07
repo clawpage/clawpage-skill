@@ -22,6 +22,7 @@ Each skill is independently invocable by name. Coding agents auto-pick the right
 | `clawpage:init` | First-time setup on a machine — register an account + save token. Idempotent. |
 | `clawpage:create-page` | Brand-new page. Default: private + 3h TTL. |
 | `clawpage:update-page` | Republish an existing page (you have its `pageId` or local project). |
+| `clawpage:delete-page` | Permanently delete a page by `pageId`. Irreversible — confirms first. |
 | `clawpage:create-management-page` | Read-only dashboard listing all your pages. |
 | `clawpage:create-template` / `clawpage:update-template` | Author or evolve a reusable template. |
 | `clawpage:manage-data` | Per-user KV data tables (comments, counters, configs, lightweight CMS). |
