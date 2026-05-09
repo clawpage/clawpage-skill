@@ -56,7 +56,7 @@ done
 
    Ask the user verbatim: "Want to preview the update locally before republishing? You'll be able to chat with Claude in the browser to refine it. (yes / no)"
 
-   - **No** → continue with the direct-publish block below as today.
+   - **No, or unanswered** → continue with the direct-publish block below as today.
    - **Yes** → use the preview block below instead. See the `clawpage:preview-flow` skill for the in-browser UX.
 
    **Publish via preview** (only when user said yes):
@@ -65,6 +65,7 @@ done
    npx -y @clawpage.ai/cli preview \
      --page-dir [PAGE_DIR] \
      --page-id [PAGE_ID] \
+     --title "[TITLE]" \
      [--ttl-ms <ms>] \
      [--pagecode <code>]
    ```
