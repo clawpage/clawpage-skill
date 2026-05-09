@@ -208,3 +208,15 @@ Success response (200):
 - `401 UNAUTHORIZED`: missing or invalid token
 - `404 PAGE_NOT_FOUND`: page not found, or username does not match page owner
 - `409 USERNAME_TAKEN`: username already exists
+
+## `clawpage preview`
+
+Same args as `publish` plus interactive behavior. Starts a localhost server, opens the user's browser, blocks until the user clicks Publish in the overlay (or aborts).
+
+**Inputs:** `--page-dir` (required), `--title`, `--ttl-ms`, `--pagecode`, `--page-id` (optional, switches publish-click to PATCH/republish), `--keys-file`, `--api-host`.
+
+**Outputs:** identical JSON contract to `publish` on success; `{"ok": false, "errorCode": "PREVIEW_ABORTED"}` if user closes preview without publishing.
+
+**Side effects:** writes `<page-dir>/.preview.log` with chat-session activity (gitignore-able).
+
+**Used by:** `create-page`, `update-page` (when user opts in via the "preview before publishing?" prompt).
