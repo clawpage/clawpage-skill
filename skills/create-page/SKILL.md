@@ -60,6 +60,13 @@ npx -y @clawpage.ai/cli scaffold general_template [PAGE_DIR]
 - required `__SYSTEM__` placeholders preserved in HTML (`__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`)
 - dry-run succeeds
 
+6.5 **Ask whether to preview before publishing.**
+
+Ask the user verbatim: "Want to preview the page locally before publishing? You'll be able to chat with Claude in the browser to refine it. (yes / no)"
+
+- **No, or unanswered** → continue to step 7 below (existing direct-publish path; no change).
+- **Yes** → use step 7' instead of step 7. See the `clawpage:preview-flow` skill for the in-browser UX.
+
 7. Publish page:
 - **Resolve PAGECODE**: If a private page is required, generate a random 6-digit number (e.g., "123456"). Do not use fragile shell scripts for generation.
 
@@ -76,6 +83,22 @@ Optional:
 - `--ttl-ms [MS_OR_NULL]` override expiry (`null` = permanent); default is `10800000`
 - `--pagecode [CODE_OR_NULL]` set/remove access protection; default is a generated non-empty value
 - `--page-name [SLUG]` set page slug source (`pagecode: null` + `--page-name` helps get stable `publicUrl`)
+
+7'. **Publish via preview** (only when user said yes in step 6.5).
+
+```bash
+npx -y @clawpage.ai/cli preview \
+  --page-dir [PAGE_DIR] \
+  --title "[TITLE]" \
+  --ttl-ms 10800000 \
+  --pagecode "[GENERATED_PAGECODE]"
+```
+
+The CLI blocks until the user clicks Publish in the browser, Ctrl-C's the CLI, or closes the tab. Outcomes:
+
+- exit 0 with `{"ok": true, ...}` → continue to step 8 with this JSON. The shape is identical to `publish`'s output.
+- exit non-zero with `{"ok": false, "errorCode": "PREVIEW_ABORTED"}` → the user closed preview without publishing. Acknowledge: "Preview closed without publishing — your local files at `[PAGE_DIR]` are still saved if you want to revisit." Do not retry, do not switch to `publish`.
+- exit non-zero with a publish-time API error (e.g. `UNAUTHORIZED`, `OWNER_DAILY_PAGE_CREATE_LIMIT_REACHED`) → the preview server kept itself up so the user can retry from the browser. Surface the error message and stop; do not spawn a parallel `publish` from the skill.
 
 8. Return fixed output fields exactly as defined in `references/prompt-contracts.md`.
 
