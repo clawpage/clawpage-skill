@@ -52,7 +52,31 @@ done
    - required `__SYSTEM__` placeholders preserved in HTML (`__CONTENT_HTML__`, `__DEFAULT_CSS__`, `__DEFAULT_JS__`)
    - dry-run succeeds
 
-7. Publish update:
+7. **Ask whether to preview before publishing.**
+
+   Ask the user verbatim: "Want to preview the update locally before republishing? You'll be able to chat with Claude in the browser to refine it. (yes / no)"
+
+   - **No, or unanswered** → continue with the direct-publish block below as today.
+   - **Yes** → use the preview block below instead. See the `clawpage:preview-flow` skill for the in-browser UX.
+
+   **Publish via preview** (only when user said yes):
+
+   ```bash
+   npx -y @clawpage.ai/cli preview \
+     --page-dir [PAGE_DIR] \
+     --page-id [PAGE_ID] \
+     --title "[TITLE]" \
+     [--ttl-ms <ms>] \
+     [--pagecode <code>]
+   ```
+
+   The Publish button in the overlay is labeled "Republish" because `--page-id` was passed; on click, the backend is hit with `PATCH /api/pages/:id`. CLI exit semantics are identical to the create flow:
+
+   - exit 0 with `{"ok": true, "mode": "updated", ...}` → continue with the existing post-publish steps.
+   - exit non-zero `PREVIEW_ABORTED` → user closed preview; acknowledge and stop.
+   - exit non-zero with API error → preview kept itself up for retry; surface error and stop.
+
+8. Publish update:
    **Note:** Replace `[PAGE_DIR]` / `[PAGE_ID]` / `[TITLE]` with real values. The CLI accepts bare names (`my-dashboard`) and absolute / cwd-relative paths.
 
 ```bash
@@ -68,7 +92,7 @@ Optional:
 - `--pagecode [CODE_OR_NULL]` set/remove access protection
 - `--page-name [SLUG]` rename page
 
-8. Return fixed output fields exactly as defined in `references/prompt-contracts.md`.
+9. Return fixed output fields exactly as defined in `references/prompt-contracts.md`.
 
 ## If `page-id` is missing
 
