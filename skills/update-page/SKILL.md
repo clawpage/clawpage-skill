@@ -151,6 +151,7 @@ If the edit introduces server-state features (comments, likes, counters, uploads
 - **Keep WebApp behavior**, do not regress an interactive page into an article-only page.
 - **Preloaded Toolchain**: Rely heavily on the available preloaded toolchain. `general_template` provides TailwindCSS, Mermaid.js, and jQuery. Other templates provide TailwindCSS and possibly specific libraries (e.g., GSAP, ECharts). Check the `<head>` of `index.html` to see what is available.
 - **Modern Layout**: Use Tailwind utility classes for modern aesthetics (e.g., responsive grids, flexbox, glassmorphism `bg-white/60 backdrop-blur-md`, `rounded-xl`, `shadow-lg`). Do not output bare HTML tags without styling. **Color Warning:** The base template uses a light theme. DO NOT randomly generate dark background classes (e.g., `bg-gray-800`, `bg-slate-900`, `bg-black`) which cause severe text contrast issues. Stick to light, harmonious cards and panels unless specifically directed otherwise.
+- **Let the Layout Explain**: Avoid unnecessary secondary labels and descriptions. Grouping, order, size, icons and color say what a caption would (a dimmed control instead of "coming soon", a whole-card link instead of "see more →", step names on a connected line instead of a sentence under each). See `design-guidelines.md §5`. When updating, remove such lines you find rather than adding more.
 - **Spatial Composition**: Maintain or enhance the page's spatial structure — asymmetric layouts, negative space, full-bleed sections where appropriate.
 
 ### Typography & Color
@@ -171,6 +172,7 @@ If the edit introduces server-state features (comments, likes, counters, uploads
 ### Anti-Generic-AI Checklist
 
 - ❌ Regressing an interactive page to plain text
+- ❌ Subtitles, taglines, captions or "see more" lines the layout already makes clear
 - ❌ Adding new sections with mismatched fonts or colors
 - ❌ Flat solid-color backgrounds with no depth
 - ❌ Dark classes on light template without updating text colors
