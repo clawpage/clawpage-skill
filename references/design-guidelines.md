@@ -87,6 +87,16 @@ Prioritize **high-impact moments** over scattered micro-interactions:
 
 ## 5. Spatial Composition
 
+**Avoid unnecessary secondary labels and descriptions. Let the layout do the explaining.** Grouping, order, alignment, size, icons and color carry what a caption would spell out:
+
+- A dimmed or disabled control, not a "coming soon" line beside it.
+- A connected line of steps named by its stops, not a sentence under every step.
+- The whole card as the link, not a "see more →" line inside it; an arrow says where it goes.
+- One primary action per screen, not a sentence pointing at it.
+- A heading and the content under it, not a subtitle restating the heading, a tagline, or a line saying what the page or section does.
+
+Before publishing, cut every line that only describes the page, repeats a nearby label or reassures. Keep words that are content (facts, prompts, numbers, caveats a visitor needs).
+
 Go beyond predictable grids:
 
 - **Asymmetric layouts** — vary column widths, offset cards.
@@ -128,6 +138,7 @@ Create atmosphere and depth — don't default to flat solid colors:
 - ❌ Flat solid-color backgrounds with no depth or texture
 - ❌ Dark background classes on a light-themed template (or vice versa) without updating text colors
 - ❌ Placeholders left in final output (`Lorem ipsum`, `TODO`, `[PLACEHOLDER]`)
+- ❌ Secondary labels and descriptions the layout already makes clear (subtitles restating headings, taglines, "see more" lines, captions under self-evident items)
 
 ---
 

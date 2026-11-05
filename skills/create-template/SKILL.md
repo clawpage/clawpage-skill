@@ -26,7 +26,7 @@ Required files:
 
 ## Required constraints
 
-- **Design reference:** follow `references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `references/design-guidelines.md` for visual quality expectations; in particular, no slots for subtitles, taglines or captions the layout already makes clear (§5).
 - `index.html` must include placeholders:
   - `__CONTENT_HTML__`
   - `__DEFAULT_CSS__`

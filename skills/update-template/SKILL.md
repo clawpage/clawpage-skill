@@ -45,7 +45,7 @@ npx -y @clawpage.ai/cli publish \
 
 ## Must preserve
 
-- **Design reference:** follow `references/design-guidelines.md` for visual quality expectations.
+- **Design reference:** follow `references/design-guidelines.md` for visual quality expectations; in particular, no slots for subtitles, taglines or captions the layout already makes clear (§5).
 - `index.html` placeholders:
   - `__DEFAULT_CSS__`
   - `__DEFAULT_JS__`
